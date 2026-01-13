@@ -1,20 +1,81 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group = 'Progmeth_project'
-version = '1.0-SNAPSHOT'
+version = '1'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation 'org.openjfx:javafx-controls:24.0.1'
+    implementation 'org.openjfx:javafx-fxml:24.0.1'
+    implementation 'org.openjfx:javafx-web:24.0.1'
+    implementation 'org.openjfx:javafx-graphics:24.0.1'
+    implementation 'org.openjfx:javafx-media:24.0.1'
+    implementation 'org.openjfx:javafx-swing:24.0.1'
+
+    // TestFX dependencies
+    testImplementation 'org.testfx:testfx-core:4.0.17'
+    testImplementation 'org.testfx:testfx-junit5:4.0.17'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+javafx {
+    version = '24.0.1'
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.web', 'javafx.swing']
+}
+
+application {
+    mainClass = 'application.Main' // path to your main class
+}
+
+run {
+    standardInput = System.in
+    jvmArgs += '--enable-native-access=javafx.graphics'
 }
 
 test {
     useJUnitPlatform()
+
+    // TestFX configuration for JavaFX 24
+    systemProperty 'testfx.robot', 'glass'
+    systemProperty 'testfx.setup.timeout', '60000'
+    systemProperty 'testfx.launch.timeout', '60000'
+
+    // Required JVM arguments for JavaFX 24
+    jvmArgs '--add-opens', 'javafx.graphics/com.sun.javafx.application=ALL-UNNAMED'
+    jvmArgs '--add-opens', 'javafx.graphics/com.sun.glass.ui=ALL-UNNAMED'
+    jvmArgs '--add-exports', 'javafx.graphics/com.sun.glass.ui=ALL-UNNAMED'
+    jvmArgs '--add-exports', 'javafx.base/com.sun.javafx.runtime=ALL-UNNAMED'
+}
+
+// Configure the JAR task to include source code
+jar {
+    // Set duplicate handling strategy
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // Include compiled classes (default behavior)
+    from sourceSets.main.output
+
+    // Include source code
+    from sourceSets.main.allSource
+
+    // Make it executable by setting the main class
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass.get()
+                //'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' ')
+        )
+    }
+
+    // Set archive name
+    archiveFileName = "${project.name}-${project.version}-with-sources.jar"
 }
