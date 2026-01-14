@@ -1,28 +1,28 @@
-package logic.entity;
+package model.entity;
 
 import java.util.UUID;
 
-public class GameObject {
+public class Entity {
 
-    UUID objectId;
-    ObjectType objectType;
-    int posX, posY;
-    Direction direction;
+    private final UUID entityId;
+    private final EntityType entityType;
+    private int posX, posY;
+    private Direction direction;
 
-    public GameObject(ObjectType objectType, int posX, int posY, Direction direction) {
-        this.objectId = UUID.randomUUID();
-        this.objectType = objectType;
+    public Entity(EntityType entityType, int posX, int posY, Direction direction) {
+        this.entityId = UUID.randomUUID();
+        this.entityType = entityType;
         this.posX = posX;
         this.posY = posY;
         this.direction = direction;
     }
 
-    public UUID getObjectId() {
-        return objectId;
+    public UUID getEntityId() {
+        return entityId;
     }
 
-    public ObjectType getObjectType() {
-        return objectType;
+    public EntityType getType() {
+        return entityType;
     }
 
     public int getPosX() {

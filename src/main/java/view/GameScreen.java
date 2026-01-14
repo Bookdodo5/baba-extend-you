@@ -1,5 +1,6 @@
 package view;
 
+import logic.input.InputUtility;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -10,6 +11,10 @@ import static application.Constant.TARGET_HEIGHT;
 public class GameScreen extends Canvas {
     public GameScreen(double width, double height) {
         super(width, height);
+        this.setVisible(true);
+        this.setFocusTraversable(true);
+        this.setOnKeyPressed(event -> InputUtility.setKeyPressed(event.getCode(), true));
+        this.setOnKeyReleased(event -> InputUtility.setKeyPressed(event.getCode(), false));
     }
 
     public void render() {

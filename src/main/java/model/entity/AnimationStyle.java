@@ -1,5 +1,5 @@
-package logic.entity;
+package model.entity;
 
 public enum AnimationStyle {
-    STILL, WOBBLE, TILED, DIRECTIONAL
+    WOBBLE, TILED, DIRECTIONAL, CHARACTER
 }

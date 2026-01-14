@@ -44,6 +44,7 @@ public class Main extends Application {
         });
 
         root.getChildren().add(screen);
+        screen.requestFocus();
 
         AnimationTimer animation = new AnimationTimer() {
             @Override
