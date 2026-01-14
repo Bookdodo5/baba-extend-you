@@ -10,7 +10,7 @@ public class DestroyAction implements Action {
     private final LevelMap levelMap;
     private final Entity entity;
 
-    public DestroyAction(Entity entity, LevelMap levelMap) {
+    public DestroyAction(LevelMap levelMap, Entity entity) {
         this.levelMap = levelMap;
         this.entity = entity;
     }
