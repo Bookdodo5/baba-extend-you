@@ -1,12 +1,14 @@
 package model.map;
 
 import model.entity.Entity;
+import model.entity.EntityType;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class LevelMap {
     private final int width;
@@ -69,6 +71,12 @@ public class LevelMap {
 
     public List<Entity> getEntitiesAt(int x, int y) {
         return grid.getOrDefault(new Point(x, y), List.of());
+    }
+
+    public List<Entity> getEntitiesOfType(EntityType type) {
+        return entities.stream()
+                .filter(entity -> entity.getType() == type)
+                .collect(Collectors.toList());
     }
 
     public List<Entity> getEntities() {

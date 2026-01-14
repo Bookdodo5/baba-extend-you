@@ -16,35 +16,35 @@ public class TypeRegistry {
         return "sprites/" + typeId + ".png";
     }
 
-    static EntityType registerEntity(String typeId, AnimationStyle animationStyle) {
+    private static EntityType registerEntity(String typeId, AnimationStyle animationStyle) {
         String spritePath = getSpritePath(typeId);
         EntityType newType = new EntityType(ZIndexCounter++, typeId, spritePath, animationStyle);
         REGISTRY.put(typeId, newType);
         return newType;
     }
 
-    static NounType registerNoun(String typeId, EntityType referencedType) {
+    private static NounType registerNoun(String typeId, EntityType referencedType) {
         String spritePath = getSpritePath(typeId);
         NounType newType = new NounType(ZIndexCounter++, typeId, spritePath, referencedType);
         REGISTRY.put(typeId, newType);
         return newType;
     }
 
-    static VerbType registerVerb(String typeId, boolean acceptsNoun, boolean acceptsProperty) {
+    private static VerbType registerVerb(String typeId, boolean acceptsNoun, boolean acceptsProperty) {
         String spritePath = getSpritePath(typeId);
         VerbType newType = new VerbType(ZIndexCounter++, typeId, spritePath, acceptsNoun, acceptsProperty);
         REGISTRY.put(typeId, newType);
         return newType;
     }
 
-    static ConditionType registerCondition(String typeId) {
+    private static ConditionType registerCondition(String typeId) {
         String spritePath = getSpritePath(typeId);
         ConditionType newType = new ConditionType(ZIndexCounter++, typeId, spritePath);
         REGISTRY.put(typeId, newType);
         return newType;
     }
 
-    static PropertyType registerProperty(String typeId) {
+    private static PropertyType registerProperty(String typeId) {
         String spritePath = getSpritePath(typeId);
         PropertyType newType = new PropertyType(ZIndexCounter++, typeId, spritePath);
         REGISTRY.put(typeId, newType);
@@ -59,44 +59,40 @@ public class TypeRegistry {
         return REGISTRY.values();
     }
 
-    public static final EntityType BABA = registerEntity("baba", AnimationStyle.CHARACTER);
-    public static final EntityType KEKE = registerEntity("keke", AnimationStyle.CHARACTER);
+    public static final EntityType JAVA = registerEntity("java", AnimationStyle.CHARACTER);
+    public static final EntityType PYTHON = registerEntity("python", AnimationStyle.CHARACTER);
     public static final EntityType WALL = registerEntity("wall", AnimationStyle.TILED);
     public static final EntityType LAVA = registerEntity("lava", AnimationStyle.TILED);
     public static final EntityType WATER = registerEntity("water", AnimationStyle.TILED);
-    public static final EntityType CLOUD = registerEntity("cloud", AnimationStyle.TILED);
     public static final EntityType FLAG = registerEntity("flag", AnimationStyle.WOBBLE);
     public static final EntityType ROCK = registerEntity("rock", AnimationStyle.WOBBLE);
     public static final EntityType DOOR = registerEntity("door", AnimationStyle.WOBBLE);
     public static final EntityType KEY = registerEntity("key", AnimationStyle.WOBBLE);
     public static final EntityType TILE = registerEntity("tile", AnimationStyle.WOBBLE);
-    public static final EntityType JAVA = registerEntity("java", AnimationStyle.WOBBLE);
+    public static final EntityType WARNING = registerEntity("warning", AnimationStyle.WOBBLE);
+    public static final EntityType ERROR = registerEntity("error", AnimationStyle.WOBBLE);
     public static final EntityType CODE = registerEntity("code", AnimationStyle.WOBBLE);
     public static final EntityType FILE = registerEntity("file", AnimationStyle.WOBBLE);
     public static final EntityType DATABASE = registerEntity("database", AnimationStyle.WOBBLE);
     public static final EntityType GIT = registerEntity("git", AnimationStyle.WOBBLE);
     public static final EntityType CHIP = registerEntity("chip", AnimationStyle.WOBBLE);
-    public static final EntityType SKULL = registerEntity("skull", AnimationStyle.DIRECTIONAL);
-    public static final EntityType BLAHAJ = registerEntity("blahaj", AnimationStyle.DIRECTIONAL);
 
-    public static final NounType TEXT_BABA = registerNoun("text_baba", BABA);
-    public static final NounType TEXT_KEKE = registerNoun("text_keke", KEKE);
-    public static final NounType TEXT_FLAG = registerNoun("text_flag", FLAG);
+    public static final NounType TEXT_JAVA = registerNoun("text_baba", JAVA);
+    public static final NounType TEXT_PYTHON = registerNoun("text_keke", PYTHON);
     public static final NounType TEXT_WALL = registerNoun("text_wall", WALL);
-    public static final NounType TEXT_ROCK = registerNoun("text_rock", ROCK);
-    public static final NounType TEXT_SKULL = registerNoun("text_skull", SKULL);
+    public static final NounType TEXT_LAVA = registerNoun("text_lava", LAVA);
     public static final NounType TEXT_WATER = registerNoun("text_water", WATER);
+    public static final NounType TEXT_FLAG = registerNoun("text_flag", FLAG);
+    public static final NounType TEXT_ROCK = registerNoun("text_rock", ROCK);
     public static final NounType TEXT_DOOR = registerNoun("text_door", DOOR);
     public static final NounType TEXT_KEY = registerNoun("text_key", KEY);
     public static final NounType TEXT_TILE = registerNoun("text_tile", TILE);
-    public static final NounType TEXT_LAVA = registerNoun("text_lava", LAVA);
-    public static final NounType TEXT_BLAHAJ = registerNoun("text_blahaj", BLAHAJ);
-    public static final NounType TEXT_JAVA = registerNoun("text_java", JAVA);
+    public static final NounType TEXT_WARNING = registerNoun("text_java", WARNING);
+    public static final NounType TEXT_ERROR = registerNoun("text_java", ERROR);
     public static final NounType TEXT_CODE = registerNoun("text_code", CODE);
     public static final NounType TEXT_FILE = registerNoun("text_file", FILE);
     public static final NounType TEXT_DATABASE = registerNoun("text_database", DATABASE);
     public static final NounType TEXT_GIT = registerNoun("text_git", GIT);
-    public static final NounType TEXT_CLOUD = registerNoun("text_cloud", CLOUD);
     public static final NounType TEXT_CHIP = registerNoun("text_chip", CHIP);
 
     public static final VerbType IS = registerVerb("text_is", true, true);
@@ -122,4 +118,5 @@ public class TypeRegistry {
     public static final ConditionType ON = registerCondition("text_on");
     public static final ConditionType AND = registerCondition("text_and");
     public static final ConditionType NEAR = registerCondition("text_near");
+    public static final ConditionType FACING = registerCondition("text_facing");
 }
