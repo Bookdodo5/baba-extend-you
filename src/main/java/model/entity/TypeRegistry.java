@@ -7,49 +7,56 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TypeRegistry {
-    private static final Map<String, EntityType> VOCABULARY = new HashMap<>();
+    private static final Map<String, EntityType> REGISTRY = new HashMap<>();
     private static int ZIndexCounter = 0;
+
+    private TypeRegistry() {}
 
     private static String getSpritePath(String typeId) {
         return "sprites/" + typeId + ".png";
     }
 
-    private static EntityType registerEntity(String typeId, AnimationStyle animationStyle) {
+    static EntityType registerEntity(String typeId, AnimationStyle animationStyle) {
         String spritePath = getSpritePath(typeId);
         EntityType newType = new EntityType(ZIndexCounter++, typeId, spritePath, animationStyle);
-        VOCABULARY.put(typeId, newType);
+        REGISTRY.put(typeId, newType);
         return newType;
     }
 
-    private static NounType registerNoun(String typeId, EntityType referencedType) {
+    static NounType registerNoun(String typeId, EntityType referencedType) {
         String spritePath = getSpritePath(typeId);
         NounType newType = new NounType(ZIndexCounter++, typeId, spritePath, referencedType);
-        VOCABULARY.put(typeId, newType);
+        REGISTRY.put(typeId, newType);
         return newType;
     }
 
-    @SuppressWarnings("unchecked")
-    private static <T extends WordType> T registerWord(String typeId, PartOfSpeech partOfSpeech) {
+    static VerbType registerVerb(String typeId, boolean acceptsNoun, boolean acceptsProperty) {
         String spritePath = getSpritePath(typeId);
-        int z = ZIndexCounter++;
-        
-        WordType newType = switch (partOfSpeech) {
-            case VERB -> new VerbType(z, typeId, spritePath);
-            case PROPERTY -> new PropertyType(z, typeId, spritePath);
-            case CONDITION -> new ConditionType(z, typeId, spritePath);
-            case NOUN -> throw new IllegalStateException("Use registerNoun for nouns.");
-        };
-        
-        VOCABULARY.put(typeId, newType);
-        return (T) newType;
+        VerbType newType = new VerbType(ZIndexCounter++, typeId, spritePath, acceptsNoun, acceptsProperty);
+        REGISTRY.put(typeId, newType);
+        return newType;
+    }
+
+    static ConditionType registerCondition(String typeId) {
+        String spritePath = getSpritePath(typeId);
+        ConditionType newType = new ConditionType(ZIndexCounter++, typeId, spritePath);
+        REGISTRY.put(typeId, newType);
+        return newType;
+    }
+
+    static PropertyType registerProperty(String typeId) {
+        String spritePath = getSpritePath(typeId);
+        PropertyType newType = new PropertyType(ZIndexCounter++, typeId, spritePath);
+        REGISTRY.put(typeId, newType);
+        return newType;
     }
 
     public static EntityType getType(String typeId) {
-        return VOCABULARY.get(typeId);
+        return REGISTRY.get(typeId);
     }
 
     public static Collection<EntityType> getAllTypes() {
-        return VOCABULARY.values();
+        return REGISTRY.values();
     }
 
     public static final EntityType BABA = registerEntity("baba", AnimationStyle.CHARACTER);
@@ -92,27 +99,27 @@ public class TypeRegistry {
     public static final NounType TEXT_CLOUD = registerNoun("text_cloud", CLOUD);
     public static final NounType TEXT_CHIP = registerNoun("text_chip", CHIP);
 
-    public static final VerbType IS = registerWord("text_is", PartOfSpeech.VERB);
-    public static final VerbType HAS = registerWord("text_has", PartOfSpeech.VERB);
-    public static final VerbType EXTEND = registerWord("text_extend", PartOfSpeech.VERB);
+    public static final VerbType IS = registerVerb("text_is", true, true);
+    public static final VerbType HAS = registerVerb("text_has", true, false);
+    public static final VerbType EXTEND = registerVerb("text_extend", true, false);
 
-    public static final PropertyType YOU = registerWord("text_you", PartOfSpeech.PROPERTY);
-    public static final PropertyType WIN = registerWord("text_win", PartOfSpeech.PROPERTY);
-    public static final PropertyType DEFEAT = registerWord("text_defeat", PartOfSpeech.PROPERTY);
-    public static final PropertyType PUSH = registerWord("text_push", PartOfSpeech.PROPERTY);
-    public static final PropertyType STOP = registerWord("text_stop", PartOfSpeech.PROPERTY);
-    public static final PropertyType SINK = registerWord("text_sink", PartOfSpeech.PROPERTY);
-    public static final PropertyType HOT = registerWord("text_hot", PartOfSpeech.PROPERTY);
-    public static final PropertyType MELT = registerWord("text_melt", PartOfSpeech.PROPERTY);
-    public static final PropertyType OPEN = registerWord("text_open", PartOfSpeech.PROPERTY);
-    public static final PropertyType SHUT = registerWord("text_shut", PartOfSpeech.PROPERTY);
-    public static final PropertyType MOVE = registerWord("text_move", PartOfSpeech.PROPERTY);
-    public static final PropertyType PRIVATE = registerWord("text_private", PartOfSpeech.PROPERTY);
-    public static final PropertyType STATIC = registerWord("text_static", PartOfSpeech.PROPERTY);
-    public static final PropertyType FINAL = registerWord("text_final", PartOfSpeech.PROPERTY);
-    public static final PropertyType ABSTRACT = registerWord("text_abstract", PartOfSpeech.PROPERTY);
+    public static final PropertyType YOU = registerProperty("text_you");
+    public static final PropertyType WIN = registerProperty("text_win");
+    public static final PropertyType DEFEAT = registerProperty("text_defeat");
+    public static final PropertyType PUSH = registerProperty("text_push");
+    public static final PropertyType STOP = registerProperty("text_stop");
+    public static final PropertyType SINK = registerProperty("text_sink");
+    public static final PropertyType HOT = registerProperty("text_hot");
+    public static final PropertyType MELT = registerProperty("text_melt");
+    public static final PropertyType OPEN = registerProperty("text_open");
+    public static final PropertyType SHUT = registerProperty("text_shut");
+    public static final PropertyType MOVE = registerProperty("text_move");
+    public static final PropertyType PRIVATE = registerProperty("text_private");
+    public static final PropertyType STATIC = registerProperty("text_static");
+    public static final PropertyType FINAL = registerProperty("text_final");
+    public static final PropertyType ABSTRACT = registerProperty("text_abstract");
 
-    public static final ConditionType ON = registerWord("text_on", PartOfSpeech.CONDITION);
-    public static final ConditionType AND = registerWord("text_and", PartOfSpeech.CONDITION);
-    public static final ConditionType NEAR = registerWord("text_near", PartOfSpeech.CONDITION);
+    public static final ConditionType ON = registerCondition("text_on");
+    public static final ConditionType AND = registerCondition("text_and");
+    public static final ConditionType NEAR = registerCondition("text_near");
 }

@@ -49,6 +49,10 @@ public class LevelMap {
     }
 
     public void moveEntity(Entity entity, int newX, int newY) {
+        if (!entities.contains(entity)) {
+            throw new IllegalArgumentException("Entity with ID " + entity.getEntityId() + " does not exist in this map.");
+        }
+
         Point oldPosition = new Point(entity.getPosX(), entity.getPosY());
         List<Entity> cell = grid.get(oldPosition);
         if (cell != null) {
