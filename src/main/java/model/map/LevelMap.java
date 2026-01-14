@@ -1,0 +1,73 @@
+package model.map;
+
+import model.entity.Entity;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+public class LevelMap {
+    private final int width;
+    private final int height;
+    private final Map<Point, List<Entity>> grid;
+    private final List<Entity> entities;
+
+    public LevelMap(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.grid = new HashMap<>();
+        this.entities = new ArrayList<Entity>();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean isInside(int x, int y) {
+        return x >= 0 && x < width && y >= 0 && y < height;
+    }
+
+    public void addEntity(Entity entity) {
+        Point position = new Point(entity.getPosX(), entity.getPosY());
+        grid.computeIfAbsent(position, k -> new ArrayList<>()).add(entity);
+        entities.add(entity);
+    }
+
+    public void removeEntity(Entity entity) {
+        Point position = new Point(entity.getPosX(), entity.getPosY());
+        List<Entity> cell = grid.get(position);
+        if (cell != null) {
+            cell.remove(entity);
+        }
+        entities.remove(entity);
+    }
+
+    public void moveEntity(Entity entity, int newX, int newY) {
+        Point oldPosition = new Point(entity.getPosX(), entity.getPosY());
+        List<Entity> cell = grid.get(oldPosition);
+        if (cell != null) {
+            cell.remove(entity);
+            if (cell.isEmpty()) grid.remove(oldPosition);
+        }
+
+        entity.setPosX(newX);
+        entity.setPosY(newY);
+
+        Point newPosition = new Point(newX, newY);
+        grid.computeIfAbsent(newPosition, k -> new ArrayList<>()).add(entity);
+    }
+
+    public List<Entity> getEntitiesAt(int x, int y) {
+        return grid.getOrDefault(new Point(x, y), List.of());
+    }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
+}
