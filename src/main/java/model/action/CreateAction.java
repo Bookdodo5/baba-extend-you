@@ -12,7 +12,7 @@ public class CreateAction implements Action {
 
     public CreateAction(LevelMap levelMap, EntityType entityType, int posX, int posY) {
         this.levelMap = levelMap;
-        this.entity = new Entity(entityType, posX, posY, Direction.DOWN);
+        this.entity = new Entity(entityType, posX, posY);
     }
 
     @Override

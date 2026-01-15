@@ -24,7 +24,7 @@ class LevelMapTest {
 
     @Test
     void testAddEntity() {
-        Entity player = new Entity(javaType, 5, 5, Direction.RIGHT);
+        Entity player = new Entity(javaType, 5, 5);
         levelMap.addEntity(player);
 
         List<Entity> entitiesAt = levelMap.getEntitiesAt(5, 5);
@@ -34,7 +34,7 @@ class LevelMapTest {
 
     @Test
     void testMoveEntity() {
-        Entity player = new Entity(javaType, 1, 1, Direction.UP);
+        Entity player = new Entity(javaType, 1, 1);
         levelMap.addEntity(player);
 
         levelMap.moveEntity(player, 2, 2);
@@ -55,7 +55,7 @@ class LevelMapTest {
 
     @Test
     void testRemoveEntity() {
-        Entity player = new Entity(javaType, 0, 0, Direction.LEFT);
+        Entity player = new Entity(javaType, 0, 0);
         levelMap.addEntity(player);
         levelMap.removeEntity(player);
 

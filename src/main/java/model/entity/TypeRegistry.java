@@ -61,6 +61,7 @@ public class TypeRegistry {
 
     public static final EntityType JAVA = registerEntity("java", AnimationStyle.CHARACTER);
     public static final EntityType PYTHON = registerEntity("python", AnimationStyle.CHARACTER);
+    public static final EntityType STUDENT = registerEntity("student", AnimationStyle.CHARACTER);
     public static final EntityType WALL = registerEntity("wall", AnimationStyle.TILED);
     public static final EntityType LAVA = registerEntity("lava", AnimationStyle.TILED);
     public static final EntityType WATER = registerEntity("water", AnimationStyle.TILED);
@@ -79,6 +80,7 @@ public class TypeRegistry {
 
     public static final NounType TEXT_JAVA = registerNoun("text_baba", JAVA);
     public static final NounType TEXT_PYTHON = registerNoun("text_keke", PYTHON);
+    public static final NounType TEXT_STUDENT = registerNoun("text_student", STUDENT);
     public static final NounType TEXT_WALL = registerNoun("text_wall", WALL);
     public static final NounType TEXT_LAVA = registerNoun("text_lava", LAVA);
     public static final NounType TEXT_WATER = registerNoun("text_water", WATER);

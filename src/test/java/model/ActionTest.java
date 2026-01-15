@@ -26,7 +26,8 @@ class ActionTest {
         levelMap = new LevelMap(10, 10);
         actionStack = new ActionStack();
         EntityType javaType = new EntityType(1, "java", "java.png", AnimationStyle.CHARACTER);
-        entity = new Entity(javaType, 0, 0, Direction.RIGHT);
+        entity = new Entity(javaType, 0, 0);
+        entity.setDirection(Direction.RIGHT);
         levelMap.addEntity(entity);
     }
 

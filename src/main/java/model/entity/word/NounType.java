@@ -2,7 +2,7 @@ package model.entity.word;
 
 import model.entity.EntityType;
 
-public class NounType extends WordType {
+public class NounType extends EffectType {
     EntityType referencedType;
 
     public NounType(int zIndex, String typeId, String spritePath, EntityType referencedType) {

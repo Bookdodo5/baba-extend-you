@@ -9,12 +9,12 @@ public class Entity {
     private int posX, posY;
     private Direction direction;
 
-    public Entity(EntityType entityType, int posX, int posY, Direction direction) {
+    public Entity(EntityType entityType, int posX, int posY) {
         this.entityId = UUID.randomUUID();
         this.entityType = entityType;
         this.posX = posX;
         this.posY = posY;
-        this.direction = direction;
+        this.direction = Direction.DOWN;
     }
 
     public UUID getEntityId() {
