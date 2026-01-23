@@ -18,7 +18,7 @@ public class RuleParserTest {
         LevelMap levelMap = new LevelMap(10, 10);
         RuleParser ruleParser = new RuleParser();
 
-        levelMap.addEntity(new Entity(TypeRegistry.TEXT_ROCK, 1, 0));
+        levelMap.addEntity(new Entity(TypeRegistry.TEXT_PAPER, 1, 0));
         levelMap.addEntity(new Entity(TypeRegistry.IS, 1, 1));
         levelMap.addEntity(new Entity(TypeRegistry.HOT, 1, 2));
         levelMap.addEntity(new Entity(TypeRegistry.TEXT_DOOR, 1, 3));
@@ -42,7 +42,7 @@ public class RuleParserTest {
         levelMap.addEntity(new Entity(TypeRegistry.HAS, 4, 3));
         levelMap.addEntity(new Entity(TypeRegistry.TEXT_WATER, 5, 3));
 
-        levelMap.addEntity(new Entity(TypeRegistry.TEXT_CODE, 2, 5));
+        levelMap.addEntity(new Entity(TypeRegistry.TEXT_CHECK, 2, 5));
         levelMap.addEntity(new Entity(TypeRegistry.TEXT_WATER, 4, 5));
         levelMap.addEntity(new Entity(TypeRegistry.IS, 5, 5));
         levelMap.addEntity(new Entity(TypeRegistry.DEFEAT, 6, 5));

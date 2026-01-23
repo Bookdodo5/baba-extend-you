@@ -24,7 +24,7 @@ class ConditionEvaluatorTest {
         evaluator = new ConditionEvaluator();
         levelMap = new LevelMap(10, 10);
         java = new Entity(TypeRegistry.JAVA, 5, 5);
-        rock = new Entity(TypeRegistry.ROCK, 6, 5);
+        rock = new Entity(TypeRegistry.PAPER, 6, 5);
         java.setDirection(Direction.RIGHT);
         rock.setDirection(Direction.RIGHT);
         levelMap.addEntity(java);
@@ -39,7 +39,7 @@ class ConditionEvaluatorTest {
     @Test
     void testOnCondition() {
         Entity onText = new Entity(TypeRegistry.ON, 0, 0);
-        Entity rockText = new Entity(TypeRegistry.TEXT_ROCK, 1, 1);
+        Entity rockText = new Entity(TypeRegistry.TEXT_PAPER, 1, 1);
         Condition onRock = new Condition(onText, rockText);
         ArrayList<Condition> conditions = new ArrayList<>();
         conditions.add(onRock);
@@ -55,7 +55,7 @@ class ConditionEvaluatorTest {
     @Test
     void testNearCondition() {
         Entity nearText = new Entity(TypeRegistry.NEAR, 0, 0);
-        Entity rockText = new Entity(TypeRegistry.TEXT_ROCK, 1, 1);
+        Entity rockText = new Entity(TypeRegistry.TEXT_PAPER, 1, 1);
         Condition nearRock = new Condition(nearText, rockText);
         ArrayList<Condition> conditions = new ArrayList<>();
         conditions.add(nearRock);
@@ -83,7 +83,7 @@ class ConditionEvaluatorTest {
     @Test
     void testFacingCondition() {
         Entity facingText = new Entity(TypeRegistry.FACING, 0, 0);
-        Entity rockText = new Entity(TypeRegistry.TEXT_ROCK, 1, 1);
+        Entity rockText = new Entity(TypeRegistry.TEXT_PAPER, 1, 1);
         Condition facingRock = new Condition(facingText, rockText);
         ArrayList<Condition> conditions = new ArrayList<>();
         conditions.add(facingRock);

@@ -17,6 +17,14 @@ public class Entity {
         this.direction = Direction.DOWN;
     }
 
+    public Entity(Entity other) {
+        this.entityId = other.entityId;
+        this.entityType = other.entityType;
+        this.posX = other.posX;
+        this.posY = other.posY;
+        this.direction = other.direction;
+    }
+
     public UUID getEntityId() {
         return entityId;
     }

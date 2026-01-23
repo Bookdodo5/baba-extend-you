@@ -5,14 +5,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import logic.TurnLogic;
-import model.map.LevelLoadException;
+import logic.GameController;
 import model.map.LevelLoader;
 import model.map.LevelMap;
 import view.GameScreen;
 
-import static application.Constant.TARGET_WIDTH;
-import static application.Constant.TARGET_HEIGHT;
+import static application.Constant.TARGET_SCREEN_WIDTH;
+import static application.Constant.TARGET_SCREEN_HEIGHT;
 
 public class Main extends Application {
     public static void main(String[] args) {
@@ -20,8 +19,8 @@ public class Main extends Application {
     }
 
     private void updateScale(GameScreen screen, StackPane root) {
-        double widthScale = root.getWidth() / TARGET_WIDTH;
-        double heightScale = root.getHeight() / TARGET_HEIGHT;
+        double widthScale = root.getWidth() / TARGET_SCREEN_WIDTH;
+        double heightScale = root.getHeight() / TARGET_SCREEN_HEIGHT;
         double scale = Math.min(widthScale, heightScale);
         screen.setScaleX(scale);
         screen.setScaleY(scale);
@@ -31,21 +30,15 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         StackPane root = new StackPane();
         Scene scene = new Scene(root);
-        stage.setWidth(TARGET_WIDTH);
-        stage.setHeight(TARGET_HEIGHT);
+        stage.setWidth(TARGET_SCREEN_WIDTH);
+        stage.setHeight(TARGET_SCREEN_HEIGHT);
         stage.setScene(scene);
         stage.show();
 
-        LevelMap map;
-        try {
-            map = LevelLoader.loadLevel("mapTest.csv");
-        } catch (LevelLoadException | IllegalArgumentException e) {
-            System.err.println(e.getMessage());
-            return;
-        }
+        LevelMap map = LevelLoader.loadLevel("mapTest.csv");
 
-        TurnLogic logic = new TurnLogic();
-        GameScreen screen = new GameScreen(TARGET_WIDTH, TARGET_HEIGHT);
+        GameController logic = new GameController();
+        GameScreen screen = new GameScreen(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
 
         logic.setLevelMap(map);
 

@@ -3,30 +3,41 @@ package model.action;
 import java.util.Stack;
 
 public class ActionStack {
-    Stack<CompositeAction> undoStack;
-    Stack<CompositeAction> redoStack;
+
+    private record TurnAction(CompositeAction action, boolean isRuleReparse) {
+    }
+
+    Stack<TurnAction> undoStack;
+    Stack<TurnAction> redoStack;
 
     public ActionStack() {
         undoStack = new Stack<>();
         redoStack = new Stack<>();
     }
 
-    public void newAction(CompositeAction action) {
-        undoStack.push(action);
+    public void newAction(CompositeAction action, boolean reparseRules) {
+        undoStack.push(new TurnAction(action, reparseRules));
         redoStack.clear();
     }
 
-    public void undo() {
-        if(undoStack.empty()) return;
-        CompositeAction action = undoStack.pop();
-        action.undo();
-        redoStack.push(action);
+    public boolean undo() {
+        if(undoStack.empty()) return false;
+        TurnAction undoAction = undoStack.pop();
+        undoAction.action.undo();
+        redoStack.push(undoAction);
+        return undoAction.isRuleReparse;
     }
 
-    public void redo() {
-        if(redoStack.empty()) return;
-        CompositeAction action = redoStack.pop();
-        action.execute();
-        undoStack.push(action);
+    public boolean redo() {
+        if(redoStack.empty()) return false;
+        TurnAction redoAction = redoStack.pop();
+        redoAction.action.execute();
+        undoStack.push(redoAction);
+        return redoAction.isRuleReparse;
+    }
+
+    public void clear() {
+        undoStack.clear();
+        redoStack.clear();
     }
 }

@@ -5,8 +5,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import static application.Constant.TARGET_WIDTH;
-import static application.Constant.TARGET_HEIGHT;
+import static application.Constant.TARGET_SCREEN_WIDTH;
+import static application.Constant.TARGET_SCREEN_HEIGHT;
 
 public class GameScreen extends Canvas {
     public GameScreen(double width, double height) {
@@ -22,13 +22,13 @@ public class GameScreen extends Canvas {
         gc.clearRect(0, 0, getWidth(), getHeight());
 
         gc.setFill(Color.GREEN);
-        gc.fillRect(0, 0, TARGET_WIDTH / 2, TARGET_HEIGHT / 2);
+        gc.fillRect(0, 0, TARGET_SCREEN_WIDTH / 2, TARGET_SCREEN_HEIGHT / 2);
         gc.setFill(Color.RED);
-        gc.fillRect(TARGET_WIDTH / 2, 0, TARGET_WIDTH, TARGET_HEIGHT / 2);
+        gc.fillRect(TARGET_SCREEN_WIDTH / 2, 0, TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT / 2);
         gc.setFill(Color.BLUE);
-        gc.fillRect(TARGET_WIDTH / 2, TARGET_HEIGHT / 2, TARGET_WIDTH, TARGET_HEIGHT);
+        gc.fillRect(TARGET_SCREEN_WIDTH / 2, TARGET_SCREEN_HEIGHT / 2, TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
         gc.setFill(Color.YELLOW);
-        gc.fillRect(0, TARGET_HEIGHT / 2, TARGET_WIDTH / 2, TARGET_HEIGHT);
+        gc.fillRect(0, TARGET_SCREEN_HEIGHT / 2, TARGET_SCREEN_WIDTH / 2, TARGET_SCREEN_HEIGHT);
 
         gc.restore();
     }

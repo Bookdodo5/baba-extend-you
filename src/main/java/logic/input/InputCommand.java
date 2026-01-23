@@ -6,6 +6,8 @@ public enum InputCommand {
     MOVE_LEFT,
     MOVE_RIGHT,
     UNDO,
+    REDO,
+    RESET,
     MENU,
     WAIT,
     NONE

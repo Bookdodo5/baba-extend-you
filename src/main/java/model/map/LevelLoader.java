@@ -31,7 +31,8 @@ public class LevelLoader {
         InputStream inputStream = LevelLoader.class.getClassLoader().getResourceAsStream(fileName);
 
         if (inputStream == null) {
-            throw new IllegalArgumentException("File not found: " + fileName);
+            System.err.println("File not found: " + fileName);
+            return null;
         }
 
         try (Scanner myReader = new Scanner(inputStream)) {
@@ -61,7 +62,7 @@ public class LevelLoader {
             return levelMap;
         } catch (Exception e) {
             System.err.println(e.getMessage());
-            throw new LevelLoadException("Error loading level from file: " + fileName, e);
+            return null;
         }
     }
 }

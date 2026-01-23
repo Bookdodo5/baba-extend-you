@@ -1,0 +1,552 @@
+@startuml
+class model.action.RotateAction {
+- Direction startDirection
+- Direction endDirection
+- Entity entity
++ <<Create>> RotateAction(Entity,Direction)
++ void execute()
++ void undo()
+}
+
+
+class model.entity.EntityType {
+- String typeId
+- String spritePath
+- AnimationStyle animationStyle
+- int ZIndex
++ <<Create>> EntityType(int,String,String,AnimationStyle)
++ String getTypeId()
++ String getSpritePath()
++ AnimationStyle getAnimationStyle()
++ int getZIndex()
++ boolean isText()
+}
+
+
+class logic.controller.InteractionController {
+}
+class model.rule.Rule {
+- EntityType subject
+- VerbType verb
+- EffectType effect
+- Entity subjectText
+- Entity verbText
+- Entity effectText
+- List<Condition> conditions
++ <<Create>> Rule(Entity,Entity,Entity,List<Condition>)
++ EntityType getSubject()
++ VerbType getVerb()
++ EffectType getEffect()
++ Entity getSubjectText()
++ Entity getVerbText()
++ Entity getEffectText()
++ List<Condition> getConditions()
++ String getEntitySignature()
++ String toString()
+}
+
+
+class logic.rule.evaluator.conditionCheckers.OnChecker {
++ boolean isSatisfied(Entity,Condition,LevelMap)
+}
+
+class model.rule.Condition {
+- ConditionType condition
+- EntityType parameter
+- Entity conditionText
+- Entity parameterText
++ <<Create>> Condition(Entity,Entity)
++ ConditionType getCondition()
++ EntityType getParameter()
++ Entity getConditionText()
++ Entity getParameterText()
+}
+
+
+class logic.rule.evaluator.RuleEvaluator {
+- ConditionEvaluator conditionEvaluator
++ <<Create>> RuleEvaluator()
++ boolean hasProperty(Entity,PropertyType,LevelMap,Ruleset)
++ List<Entity> getEntitiesWithProperty(PropertyType,LevelMap,Ruleset)
++ List<Transformation> getTransformations(LevelMap,Ruleset)
+}
+
+
+class application.Main {
++ {static} void main(String[])
+- void updateScale(GameScreen,StackPane)
++ void start(Stage)
+}
+
+interface model.action.Action {
+~ void execute()
+~ void undo()
+}
+
+class logic.GameController {
+- LevelMap levelMap
+- LevelMap levelMapPrototype
+- Ruleset ruleset
+- RuleParser ruleParser
+- RuleEvaluator ruleEvaluator
+- ActionStack actionStack
+- long lastInputTime
++ void update()
+- void handleUndo()
+- void handleRedo()
+- void handleReset()
+- void handleMenu()
+- void parseRules()
++ void setLevelMap(LevelMap)
++ void processTurn()
++ void processMove(Direction)
+}
+
+
+class model.entity.Entity {
+- UUID entityId
+- EntityType entityType
+- int posX
+- Direction direction
++ <<Create>> Entity(EntityType,int,int)
++ <<Create>> Entity(Entity)
++ UUID getEntityId()
++ EntityType getType()
++ int getPosX()
++ void setPosX(int)
++ int getPosY()
++ void setPosY(int)
++ Direction getDirection()
++ void setDirection(Direction)
+}
+
+
+class model.entity.word.NounType {
+~ EntityType referencedType
++ <<Create>> NounType(int,String,String,EntityType)
++ EntityType getReferencedType()
+}
+
+
+class logic.input.InputUtility {
+- {static} Set<KeyCode> keyPressed
++ {static} boolean isPressed(KeyCode)
++ {static} void setKeyPressed(KeyCode,boolean)
++ {static} InputCommand getInputCommand()
+}
+
+
+class logic.rule.parser.RuleDeduplicator {
++ List<Rule> deduplicate(List<Rule>)
+- boolean checkSeen(Rule,Set<String>)
+}
+
+class logic.rule.parser.PermutationGenerator {
+- void generateRecursive(List<List<Entity>>,List<List<Entity>>,List<Entity>)
++ List<List<Entity>> generate(List<List<List<Entity>>>)
+}
+
+class logic.rule.parser.TextScanner {
++ List<List<List<Entity>>> scanText(LevelMap)
+- void scanLine(LevelMap,int,int,boolean,List<List<List<Entity>>>)
+}
+
+class logic.rule.evaluator.conditionCheckers.FacingChecker {
++ boolean isSatisfied(Entity,Condition,LevelMap)
+}
+
+class model.entity.TypeRegistry {
+- {static} Map<String,EntityType> REGISTRY
+- {static} int ZIndexCounter
++ {static} EntityType JAVA
++ {static} EntityType PYTHON
++ {static} EntityType STUDENT
++ {static} EntityType WALL
++ {static} EntityType LAVA
++ {static} EntityType WATER
++ {static} EntityType FLAG
++ {static} EntityType ROCK
++ {static} EntityType DOOR
++ {static} EntityType KEY
++ {static} EntityType TILE
++ {static} EntityType WARNING
++ {static} EntityType ERROR
++ {static} EntityType CODE
++ {static} EntityType FILE
++ {static} EntityType DATABASE
++ {static} EntityType GIT
++ {static} EntityType CHIP
++ {static} NounType TEXT_JAVA
++ {static} NounType TEXT_PYTHON
++ {static} NounType TEXT_XORGATE
++ {static} NounType TEXT_WALL
++ {static} NounType TEXT_LAVA
++ {static} NounType TEXT_WATER
++ {static} NounType TEXT_FLAG
++ {static} NounType TEXT_ROCK
++ {static} NounType TEXT_DOOR
++ {static} NounType TEXT_KEY
++ {static} NounType TEXT_TILE
++ {static} NounType TEXT_WARNING
++ {static} NounType TEXT_ERROR
++ {static} NounType TEXT_CODE
++ {static} NounType TEXT_FILE
++ {static} NounType TEXT_DATABASE
++ {static} NounType TEXT_GIT
++ {static} NounType TEXT_CHIP
++ {static} VerbType IS
++ {static} VerbType HAS
++ {static} VerbType EXTEND
++ {static} PropertyType YOU
++ {static} PropertyType WIN
++ {static} PropertyType DEFEAT
++ {static} PropertyType PUSH
++ {static} PropertyType STOP
++ {static} PropertyType SINK
++ {static} PropertyType HOT
++ {static} PropertyType MELT
++ {static} PropertyType OPEN
++ {static} PropertyType SHUT
++ {static} PropertyType MOVE
++ {static} PropertyType PRIVATE
++ {static} PropertyType STATIC
++ {static} PropertyType FINAL
++ {static} PropertyType ABSTRACT
++ {static} ConditionType ON
++ {static} ConditionType NEAR
++ {static} ConditionType FACING
++ {static} ConjunctionType AND
+- <<Create>> TypeRegistry()
+- {static} String getSpritePath(String)
+- {static} EntityType registerEntity(String,AnimationStyle)
+- {static} NounType registerNoun(String,EntityType)
+- {static} VerbType registerVerb(String,boolean,boolean)
+- {static} ConditionType registerCondition(String)
+- {static} PropertyType registerProperty(String)
+- {static} ConjunctionType registerConjunction(String)
++ {static} EntityType getType(String)
++ {static} Collection<EntityType> getAllTypes()
+}
+
+
+class logic.rule.parser.SemanticValidator {
++ List<Rule> validate(List<Rule>)
+- boolean isSemanticallyValid(Rule)
+}
+
+class model.entity.word.ConjunctionType {
++ <<Create>> ConjunctionType(int,String,String)
+}
+
+class model.entity.word.PropertyType {
++ <<Create>> PropertyType(int,String,String)
+}
+
+class model.action.MoveAction {
+- LevelMap levelMap
+- Entity entity
+- int endX
+- int startX
+- Direction endDirection
+- Direction startDirection
++ <<Create>> MoveAction(LevelMap,Entity,Direction)
++ void execute()
++ void undo()
+}
+
+
+enum model.entity.AnimationStyle {
++  WOBBLE
++  TILED
++  CHARACTER
+}
+
+class logic.rule.evaluator.ConditionEvaluator {
+- Map<EntityType,ConditionChecker> conditionCheckers
++ <<Create>> ConditionEvaluator()
++ boolean evaluate(Entity,List<Condition>,LevelMap)
+}
+
+
+class logic.rule.parser.SyntaxValidator {
++ List<Rule> validate(List<List<Entity>>)
+- void runStateMachine(StateMachineContext)
+- boolean handleStart(StateMachineContext,Entity)
+- boolean handleSubject(StateMachineContext,Entity)
+- boolean handleSubjectAnd(StateMachineContext,Entity)
+- boolean handleCondition(StateMachineContext,Entity)
+- boolean handleConditionNoun(StateMachineContext,Entity)
+- boolean handleConditionAnd(StateMachineContext,Entity)
+- boolean handleVerb(StateMachineContext,Entity)
+- boolean handleEffect(StateMachineContext,Entity)
+- boolean handleEffectAnd(StateMachineContext,Entity)
+}
+
+enum logic.rule.parser.State {
++  START
++  SUBJECT
++  SUBJECT_AND
++  CONDITION
++  CONDITION_NOUN
++  CONDITION_AND
++  VERB
++  EFFECT
++  EFFECT_AND
+}
+
+class logic.rule.parser.SyntaxValidator$StateMachineContext {
+- List<Rule> rules
+- List<Entity> subjects
+- List<Condition> conditions
+- Entity verb
+- Entity conditionOp
+- List<Entity> effects
+- List<Entity> sentence
+- int tokenIdx
+- State state
++ <<Create>> StateMachineContext(List<Entity>)
+~ boolean hasMoreTokens()
+~ Entity currentToken()
+~ void advance(State)
+~ void tryCreateRule()
+~ void reset()
+~ void onInvalid()
+}
+
+
+interface logic.rule.evaluator.conditionCheckers.ConditionChecker {
+~ boolean isSatisfied(Entity,Condition,LevelMap)
+}
+
+class model.entity.word.VerbType {
+- boolean acceptsNoun
+- boolean acceptsProperty
++ <<Create>> VerbType(int,String,String,boolean,boolean)
++ boolean acceptsNoun()
++ boolean acceptsProperty()
+}
+
+
+abstract class model.entity.word.WordType {
+- PartOfSpeech partOfSpeech
++ <<Create>> WordType(int,String,String,PartOfSpeech)
++ boolean isText()
++ PartOfSpeech getPartOfSpeech()
+}
+
+
+class model.map.LevelLoader {
+- <<Create>> LevelLoader()
++ {static} LevelMap loadLevel(String)
+}
+
+class model.action.TeleportAction {
+- LevelMap levelMap
+- Entity entity
+- int endX
+- int startX
++ <<Create>> TeleportAction(LevelMap,Entity,int,int)
++ void execute()
++ void undo()
+}
+
+
+enum model.entity.Direction {
++  UP
++  DOWN
++  LEFT
++  RIGHT
++ int dx
++ int dy
+~ <<Create>> Direction(int,int)
+}
+
+
+class model.entity.word.ConditionType {
++ <<Create>> ConditionType(int,String,String)
+}
+
+class logic.rule.evaluator.conditionCheckers.NearChecker {
++ boolean isSatisfied(Entity,Condition,LevelMap)
+}
+
+class model.action.DestroyAction {
+- LevelMap levelMap
+- Entity entity
++ <<Create>> DestroyAction(LevelMap,Entity)
++ void execute()
++ void undo()
+}
+
+
+class model.rule.Transformation {
+- Entity source
+- EntityType targetType
++ <<Create>> Transformation(Entity,EntityType)
++ Entity getSource()
++ EntityType getTargetType()
+}
+
+
+enum logic.input.InputCommand {
++  MOVE_UP
++  MOVE_DOWN
++  MOVE_LEFT
++  MOVE_RIGHT
++  UNDO
++  REDO
++  RESET
++  MENU
++  WAIT
++  NONE
+}
+
+class model.action.CompositeAction {
+- List<Action> actions
++ <<Create>> CompositeAction()
++ void add(Action)
++ void execute()
++ void undo()
+}
+
+
+class model.action.CreateAction {
+- LevelMap levelMap
+- Entity entity
++ <<Create>> CreateAction(LevelMap,EntityType,int,int)
++ void execute()
++ void undo()
+}
+
+
+class logic.rule.parser.RuleParser {
+- TextScanner textScanner
+- PermutationGenerator permutationGenerator
+- SyntaxValidator syntaxValidator
+- SemanticValidator semanticValidator
+- RuleDeduplicator ruleDeduplicator
++ <<Create>> RuleParser()
++ List<Rule> parseRules(LevelMap)
+}
+
+
+abstract class model.entity.word.EffectType {
++ <<Create>> EffectType(int,String,String,PartOfSpeech)
+}
+
+class view.GameScreen {
++ <<Create>> GameScreen(double,double)
++ void render()
+}
+
+class application.Constant {
++ {static} double TARGET_SCREEN_WIDTH
++ {static} double TARGET_SCREEN_HEIGHT
++ {static} long INPUT_COOLDOWN_MILLIS
+}
+
+class model.rule.Ruleset {
+- ArrayList<Rule> rules
++ <<Create>> Ruleset()
++ void addRules(List<Rule>)
++ void reset()
++ ArrayList<Rule> getRules()
+}
+
+
+interface logic.controller.WordInteraction {
+~ void onRuleCreated(Rule)
+~ void onRuleDeleted(Rule)
+~ boolean onAttemptMove(Entity,Direction,LevelMap)
+~ void onPreMove(Entity,Direction,LevelMap)
+~ void onPostMove(Entity,Direction,LevelMap)
+~ void onOverlap(Entity,Entity)
+~ void onTurnStart(LevelMap)
+~ void onTurnEnd(LevelMap)
+~ void onCreated(Entity)
+~ void onDestroyed(Entity)
+~ void onTransform(Entity,EntityType)
+~ void onUpdate(Entity,float)
+}
+
+enum model.entity.word.PartOfSpeech {
++  NOUN
++  VERB
++  PROPERTY
++  CONDITION
++  CONJUNCTION
+}
+
+class model.action.ActionStack {
+~ Stack<TurnAction> undoStack
+~ Stack<TurnAction> redoStack
++ <<Create>> ActionStack()
++ void newAction(CompositeAction,boolean)
++ boolean undo()
++ boolean redo()
++ void clear()
+}
+
+
+class model.action.ActionStack$TurnAction {
+- CompositeAction action
+- boolean isRuleReparse
+- <<Create>> TurnAction(CompositeAction,boolean)
++ CompositeAction action()
++ boolean isRuleReparse()
+}
+
+
+class logic.controller.MovementController {
+}
+class model.map.LevelMap {
+- int width
+- int height
+- Map<Point,List<Entity>> grid
+- List<Entity> entities
++ <<Create>> LevelMap(int,int)
++ <<Create>> LevelMap(LevelMap)
++ int getWidth()
++ int getHeight()
++ boolean isInside(int,int)
++ void addEntity(Entity)
++ void removeEntity(Entity)
++ void setEntityPosition(Entity,int,int)
++ List<Entity> getEntitiesAt(int,int)
++ List<Entity> getEntitiesOfType(EntityType)
++ List<Entity> getEntities()
+}
+
+
+class model.map.LevelLoadException {
++ <<Create>> LevelLoadException(String)
++ <<Create>> LevelLoadException(String,Throwable)
++ <<Create>> LevelLoadException(Throwable)
+}
+
+class logic.controller.TurnController {
+}
+
+
+model.action.Action <|.. model.action.RotateAction
+logic.rule.evaluator.conditionCheckers.ConditionChecker <|.. logic.rule.evaluator.conditionCheckers.OnChecker
+javafx.application.Application <|-- application.Main
+model.entity.word.EffectType <|-- model.entity.word.NounType
+logic.rule.evaluator.conditionCheckers.ConditionChecker <|.. logic.rule.evaluator.conditionCheckers.FacingChecker
+model.entity.word.WordType <|-- model.entity.word.ConjunctionType
+model.entity.word.EffectType <|-- model.entity.word.PropertyType
+model.action.Action <|.. model.action.MoveAction
+logic.rule.parser.SyntaxValidator +.. logic.rule.parser.SyntaxValidator$StateMachineContext
+model.entity.word.WordType <|-- model.entity.word.VerbType
+model.entity.EntityType <|-- model.entity.word.WordType
+model.action.Action <|.. model.action.TeleportAction
+model.entity.word.WordType <|-- model.entity.word.ConditionType
+logic.rule.evaluator.conditionCheckers.ConditionChecker <|.. logic.rule.evaluator.conditionCheckers.NearChecker
+model.action.Action <|.. model.action.DestroyAction
+model.action.Action <|.. model.action.CompositeAction
+model.action.Action <|.. model.action.CreateAction
+model.entity.word.WordType <|-- model.entity.word.EffectType
+javafx.scene.canvas.Canvas <|-- view.GameScreen
+model.action.ActionStack +.. model.action.ActionStack$TurnAction
+model.map.RuntimeException <|-- model.map.LevelLoadException
+@enduml

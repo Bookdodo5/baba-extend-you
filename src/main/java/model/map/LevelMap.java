@@ -23,6 +23,17 @@ public class LevelMap {
         this.entities = new ArrayList<Entity>();
     }
 
+    public LevelMap(LevelMap other) {
+        this.width = other.width;
+        this.height = other.height;
+        this.grid = new HashMap<>();
+        this.entities = new ArrayList<Entity>();
+        for (Entity entity : other.entities) {
+            Entity copiedEntity = new Entity(entity);
+            this.addEntity(copiedEntity);
+        }
+    }
+
     public int getWidth() {
         return width;
     }

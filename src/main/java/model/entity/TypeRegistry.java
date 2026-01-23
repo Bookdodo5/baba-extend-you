@@ -66,20 +66,20 @@ public class TypeRegistry {
         return REGISTRY.values();
     }
 
-    public static final EntityType JAVA = registerEntity("java", AnimationStyle.CHARACTER);
-    public static final EntityType PYTHON = registerEntity("python", AnimationStyle.CHARACTER);
-    public static final EntityType STUDENT = registerEntity("student", AnimationStyle.CHARACTER);
-    public static final EntityType WALL = registerEntity("wall", AnimationStyle.TILED);
+    public static final EntityType JAVA = registerEntity("java", AnimationStyle.WOBBLE);
+    public static final EntityType PYTHON = registerEntity("python", AnimationStyle.WOBBLE);
+    public static final EntityType XORGATE = registerEntity("xorgate", AnimationStyle.DIRECTIONAL);
+    public static final EntityType WIRE = registerEntity("wire", AnimationStyle.TILED);
     public static final EntityType LAVA = registerEntity("lava", AnimationStyle.TILED);
     public static final EntityType WATER = registerEntity("water", AnimationStyle.TILED);
     public static final EntityType FLAG = registerEntity("flag", AnimationStyle.WOBBLE);
-    public static final EntityType ROCK = registerEntity("rock", AnimationStyle.WOBBLE);
+    public static final EntityType PAPER = registerEntity("paper", AnimationStyle.WOBBLE);
     public static final EntityType DOOR = registerEntity("door", AnimationStyle.WOBBLE);
     public static final EntityType KEY = registerEntity("key", AnimationStyle.WOBBLE);
     public static final EntityType TILE = registerEntity("tile", AnimationStyle.WOBBLE);
     public static final EntityType WARNING = registerEntity("warning", AnimationStyle.WOBBLE);
     public static final EntityType ERROR = registerEntity("error", AnimationStyle.WOBBLE);
-    public static final EntityType CODE = registerEntity("code", AnimationStyle.WOBBLE);
+    public static final EntityType CHECK = registerEntity("check", AnimationStyle.WOBBLE);
     public static final EntityType FILE = registerEntity("file", AnimationStyle.WOBBLE);
     public static final EntityType DATABASE = registerEntity("database", AnimationStyle.WOBBLE);
     public static final EntityType GIT = registerEntity("git", AnimationStyle.WOBBLE);
@@ -87,18 +87,18 @@ public class TypeRegistry {
 
     public static final NounType TEXT_JAVA = registerNoun("text_java", JAVA);
     public static final NounType TEXT_PYTHON = registerNoun("text_python", PYTHON);
-    public static final NounType TEXT_STUDENT = registerNoun("text_student", STUDENT);
-    public static final NounType TEXT_WALL = registerNoun("text_wall", WALL);
+    public static final NounType TEXT_XORGATE = registerNoun("text_xorgate", XORGATE);
+    public static final NounType TEXT_WIRE = registerNoun("text_wire", WIRE);
     public static final NounType TEXT_LAVA = registerNoun("text_lava", LAVA);
     public static final NounType TEXT_WATER = registerNoun("text_water", WATER);
     public static final NounType TEXT_FLAG = registerNoun("text_flag", FLAG);
-    public static final NounType TEXT_ROCK = registerNoun("text_rock", ROCK);
+    public static final NounType TEXT_PAPER = registerNoun("text_rock", PAPER);
     public static final NounType TEXT_DOOR = registerNoun("text_door", DOOR);
     public static final NounType TEXT_KEY = registerNoun("text_key", KEY);
     public static final NounType TEXT_TILE = registerNoun("text_tile", TILE);
     public static final NounType TEXT_WARNING = registerNoun("text_warning", WARNING);
     public static final NounType TEXT_ERROR = registerNoun("text_error", ERROR);
-    public static final NounType TEXT_CODE = registerNoun("text_code", CODE);
+    public static final NounType TEXT_CHECK = registerNoun("text_check", CHECK);
     public static final NounType TEXT_FILE = registerNoun("text_file", FILE);
     public static final NounType TEXT_DATABASE = registerNoun("text_database", DATABASE);
     public static final NounType TEXT_GIT = registerNoun("text_git", GIT);
@@ -127,6 +127,7 @@ public class TypeRegistry {
     public static final ConditionType ON = registerCondition("text_on");
     public static final ConditionType NEAR = registerCondition("text_near");
     public static final ConditionType FACING = registerCondition("text_facing");
+    public static final ConditionType INSTANCEOF = registerCondition("text_instanceof");
 
     public static final ConjunctionType AND = registerConjunction("text_and");
 }

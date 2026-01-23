@@ -17,7 +17,7 @@ class ActionTest {
     void setUp() {
         levelMap = new LevelMap(10, 10);
         actionStack = new ActionStack();
-        EntityType javaType = new EntityType(1, "java", "java.png", AnimationStyle.CHARACTER);
+        EntityType javaType = new EntityType(1, "java", "java.png", AnimationStyle.DIRECTIONAL);
         entity = new Entity(javaType, 0, 0);
         entity.setDirection(Direction.RIGHT);
         levelMap.addEntity(entity);
@@ -95,10 +95,10 @@ class ActionTest {
         action2.add(new RotateAction(entity, Direction.DOWN));
 
         action1.execute();
-        actionStack.newAction(action1);
+        actionStack.newAction(action1, false);
         actionStack.undo(); //action1 in redo stack
         
-        actionStack.newAction(action2); //redo stack cleared
+        actionStack.newAction(action2, true); //redo stack cleared
         
         actionStack.redo(); //nothing
         assertEquals(Direction.RIGHT, entity.getDirection());
@@ -111,7 +111,7 @@ class ActionTest {
         composite.add(new CreateAction(levelMap, TypeRegistry.PYTHON, 6, 6));
 
         composite.execute();
-        actionStack.newAction(composite);
+        actionStack.newAction(composite, false);
 
         assertEquals(1, entity.getPosY());
         assertEquals(1, levelMap.getEntitiesAt(6, 6).size());

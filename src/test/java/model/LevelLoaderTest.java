@@ -23,7 +23,7 @@ public class LevelLoaderTest {
 
         List<Entity> entitiesAt00 = result.getEntitiesAt(0, 0);
         assertEquals(1, entitiesAt00.size());
-        assertEquals(TypeRegistry.WALL, entitiesAt00.get(0).getType());
+        assertEquals(TypeRegistry.WIRE, entitiesAt00.get(0).getType());
         assertEquals(0, entitiesAt00.get(0).getPosX());
         assertEquals(0, entitiesAt00.get(0).getPosY());
         assertEquals(Direction.DOWN, entitiesAt00.get(0).getDirection());
