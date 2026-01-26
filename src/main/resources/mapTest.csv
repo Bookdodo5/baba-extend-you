@@ -1,4 +1,13 @@
-5,3
-wall+rock,wall,text_java,text_is,text_you
-java,.,text_flag,text_is,text_win
-.,.,flag,.,rock
+18,12
+wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire
+wire,      .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         wire
+wire,      .,         .,         text_wire, is,        push,      .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         wire
+wire,      .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         wire
+wire,      .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         wire
+wire,      .,         .,         .,         .,         .,         .,         .,         .,         text_paper,is,        stop,      .,         .,         .,         .,         .,         wire
+wire,      .,         java,      .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         wire
+wire,      .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         wire
+wire,      text_java, is,        you,       .,         .,         .,         paper,     paper,     paper,     .,         .,         flag,      .,         .,         .,         .,         wire
+wire,      .,         .,         .,         .,         .,         .,         paper,     .,         paper,     .,         .,         .,         .,         .,         .,         .,         wire
+wire,      .,         .,         .,         .,         .,         .,         .,         .,         .,         .,         text_flag, is,        win,       .,         .,         .,         wire
+wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire,      wire

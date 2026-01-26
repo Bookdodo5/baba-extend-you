@@ -5,6 +5,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import logic.controller.GameController;
+import logic.controller.GameState;
 import logic.controller.LevelController;
 import model.map.LevelLoader;
 import model.map.LevelMap;
@@ -18,14 +20,6 @@ public class Main extends Application {
         Application.launch(args);
     }
 
-    private void updateScale(GameScreen screen, StackPane root) {
-        double widthScale = root.getWidth() / TARGET_SCREEN_WIDTH;
-        double heightScale = root.getHeight() / TARGET_SCREEN_HEIGHT;
-        double scale = Math.min(widthScale, heightScale);
-        screen.setScaleX(scale);
-        screen.setScaleY(scale);
-    }
-
     @Override
     public void start(Stage stage) throws Exception {
         StackPane root = new StackPane();
@@ -35,19 +29,17 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        LevelMap map = LevelLoader.loadLevel("mapTest.csv");
-
-        LevelController logic = new LevelController();
+        GameController gameController = GameController.getInstance();
+        LevelController levelController = new LevelController();
         GameScreen screen = new GameScreen(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
 
-        logic.setLevelMap(map);
+        gameController.setLevelController(levelController);
+        gameController.setGameScreen(screen);
+        gameController.startGame();
+        gameController.playMap("mapTest.csv");
 
-        root.widthProperty().addListener((obs, oldVal, newVal) -> {
-            updateScale(screen, root);
-        });
-        root.heightProperty().addListener((obs, oldVal, newVal) -> {
-            updateScale(screen, root);
-        });
+        root.widthProperty().addListener((obs, oldVal, newVal) -> screen.updateScale(root));
+        root.heightProperty().addListener((obs, oldVal, newVal) -> screen.updateScale(root));
 
         root.getChildren().add(screen);
         screen.requestFocus();
@@ -56,7 +48,9 @@ public class Main extends Application {
             @Override
             public void handle(long now) {
                 screen.render();
-                logic.update();
+                if(gameController.getState() == GameState.PLAYING) {
+                    levelController.update();
+                }
             }
         };
 

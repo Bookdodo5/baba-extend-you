@@ -51,7 +51,7 @@ public class LevelController {
             case UNDO -> handleUndo();
             case REDO -> handleRedo();
             case RESET -> handleReset();
-            case MENU -> handleMenu();
+            case MENU -> handlePause();
             case WAIT -> processTurn(null);
             case MOVE_UP -> processTurn(Direction.UP);
             case MOVE_DOWN -> processTurn(Direction.DOWN);
@@ -81,14 +81,17 @@ public class LevelController {
     private void handleReset() {
         System.out.println("Reset action triggered");
         levelMap = new LevelMap(levelMapPrototype);
+        GameController.getInstance().setCurrentMap(levelMap);
         actionStack.clear();
     }
 
-    private void handleMenu() {
-        System.exit(0);
+    private void handlePause() {
+        System.out.println("Pause action triggered");
+        GameController.getInstance().pauseGame();
     }
 
     private void processTurn(Direction direction) {
+        System.out.println("Processing turn with direction: " + direction);
         CompositeAction action = turnOrchestrator.runTurn(direction, levelMap, ruleset, ruleParser);
         actionStack.newAction(action);
     }
