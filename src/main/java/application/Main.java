@@ -5,7 +5,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import logic.GameController;
+import logic.controller.LevelController;
 import model.map.LevelLoader;
 import model.map.LevelMap;
 import view.GameScreen;
@@ -37,7 +37,7 @@ public class Main extends Application {
 
         LevelMap map = LevelLoader.loadLevel("mapTest.csv");
 
-        GameController logic = new GameController();
+        LevelController logic = new LevelController();
         GameScreen screen = new GameScreen(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
 
         logic.setLevelMap(map);

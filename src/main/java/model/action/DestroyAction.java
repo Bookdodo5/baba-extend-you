@@ -9,10 +9,14 @@ public class DestroyAction implements Action {
 
     private final LevelMap levelMap;
     private final Entity entity;
+    private final int posX;
+    private final int posY;
 
     public DestroyAction(LevelMap levelMap, Entity entity) {
         this.levelMap = levelMap;
         this.entity = entity;
+        this.posX = levelMap.getEntityX(entity);
+        this.posY = levelMap.getEntityY(entity);
     }
 
     public Entity getEntity() {
@@ -26,6 +30,6 @@ public class DestroyAction implements Action {
 
     @Override
     public void undo() {
-        levelMap.addEntity(entity);
+        levelMap.setEntityPosition(entity, posX, posY);
     }
 }

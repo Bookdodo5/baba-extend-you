@@ -31,15 +31,15 @@ class InteractionHandlerTest {
     }
 
     private Entity addEntity(EntityType type, int x, int y) {
-        Entity entity = new Entity(type, x, y);
-        levelMap.addEntity(entity);
+        Entity entity = new Entity(type);
+        levelMap.setEntityPosition(entity, x, y);
         return entity;
     }
 
     private void rule(EntityType subject, EntityType operator, EntityType effect) {
-        Entity subjectEntity = new Entity(subject, 0, rules.size());
-        Entity operatorEntity = new Entity(operator, 1, rules.size());
-        Entity effectEntity = new Entity(effect, 2, rules.size());
+        Entity subjectEntity = new Entity(subject);
+        Entity operatorEntity = new Entity(operator);
+        Entity effectEntity = new Entity(effect);
         rules.add(new Rule(subjectEntity, operatorEntity, effectEntity, List.of()));
     }
 

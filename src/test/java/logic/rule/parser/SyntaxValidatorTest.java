@@ -20,9 +20,9 @@ public class SyntaxValidatorTest {
     void testSubjectVerbEffect() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_JAVA, 0, 0),
-                new Entity(TypeRegistry.IS, 1, 0),
-                new Entity(TypeRegistry.YOU, 2, 0)
+                new Entity(TypeRegistry.TEXT_JAVA),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.YOU)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -39,13 +39,13 @@ public class SyntaxValidatorTest {
     void testMultipleSubjectAndEffect() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_JAVA, 0, 0),
-                new Entity(TypeRegistry.AND, 1, 0),
-                new Entity(TypeRegistry.TEXT_PYTHON, 2, 0),
-                new Entity(TypeRegistry.IS, 3, 0),
-                new Entity(TypeRegistry.YOU, 4, 0),
-                new Entity(TypeRegistry.AND, 5, 0),
-                new Entity(TypeRegistry.PUSH, 6, 0)
+                new Entity(TypeRegistry.TEXT_JAVA),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.TEXT_PYTHON),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.YOU),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.PUSH)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -69,11 +69,11 @@ public class SyntaxValidatorTest {
     void testSentenceWithCondition() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_JAVA, 0, 0),
-                new Entity(TypeRegistry.ON, 1, 0),
-                new Entity(TypeRegistry.TEXT_PAPER, 2, 0),
-                new Entity(TypeRegistry.IS, 3, 0),
-                new Entity(TypeRegistry.YOU, 4, 0)
+                new Entity(TypeRegistry.TEXT_JAVA),
+                new Entity(TypeRegistry.ON),
+                new Entity(TypeRegistry.TEXT_PAPER),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.YOU)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -94,16 +94,16 @@ public class SyntaxValidatorTest {
     void testMultipleCondition() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_FILE, 0, 0),
-                new Entity(TypeRegistry.ON, 1, 0),
-                new Entity(TypeRegistry.TEXT_XORGATE, 2, 0),
-                new Entity(TypeRegistry.AND, 3, 0),
-                new Entity(TypeRegistry.NEAR, 4, 0),
-                new Entity(TypeRegistry.TEXT_WARNING, 5, 0),
-                new Entity(TypeRegistry.AND, 6, 0),
-                new Entity(TypeRegistry.TEXT_CHECK, 7, 0),
-                new Entity(TypeRegistry.IS, 8, 0),
-                new Entity(TypeRegistry.TEXT_ERROR, 9, 0)
+                new Entity(TypeRegistry.TEXT_FILE),
+                new Entity(TypeRegistry.ON),
+                new Entity(TypeRegistry.TEXT_XORGATE),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.NEAR),
+                new Entity(TypeRegistry.TEXT_WARNING),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.TEXT_CHECK),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.TEXT_ERROR)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -132,12 +132,12 @@ public class SyntaxValidatorTest {
     void testMultipleVerb() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_CHIP, 0, 0),
-                new Entity(TypeRegistry.IS, 1, 0),
-                new Entity(TypeRegistry.PUSH, 2, 0),
-                new Entity(TypeRegistry.AND, 3, 0),
-                new Entity(TypeRegistry.EXTEND, 4, 0),
-                new Entity(TypeRegistry.TEXT_PAPER, 5, 0)
+                new Entity(TypeRegistry.TEXT_CHIP),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.PUSH),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.EXTEND),
+                new Entity(TypeRegistry.TEXT_PAPER)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -160,11 +160,11 @@ public class SyntaxValidatorTest {
     void testValidSubsentences() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_JAVA, 0, 0),
-                new Entity(TypeRegistry.IS, 1, 0),
-                new Entity(TypeRegistry.TEXT_FLAG, 2, 0),
-                new Entity(TypeRegistry.AND, 3, 0),
-                new Entity(TypeRegistry.AND, 4, 0)
+                new Entity(TypeRegistry.TEXT_JAVA),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.TEXT_FLAG),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.AND)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -182,15 +182,15 @@ public class SyntaxValidatorTest {
     void testComplicatedString() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_GIT, 0, 0),
-                new Entity(TypeRegistry.IS, 1, 0),
-                new Entity(TypeRegistry.TEXT_ERROR, 2, 0),
-                new Entity(TypeRegistry.AND, 3, 0),
-                new Entity(TypeRegistry.TEXT_PYTHON, 4, 0),
-                new Entity(TypeRegistry.FACING, 5, 0),
-                new Entity(TypeRegistry.TEXT_XORGATE, 6, 0),
-                new Entity(TypeRegistry.HAS, 7, 0),
-                new Entity(TypeRegistry.TEXT_ERROR, 8, 0)
+                new Entity(TypeRegistry.TEXT_GIT),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.TEXT_ERROR),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.TEXT_PYTHON),
+                new Entity(TypeRegistry.FACING),
+                new Entity(TypeRegistry.TEXT_XORGATE),
+                new Entity(TypeRegistry.HAS),
+                new Entity(TypeRegistry.TEXT_ERROR)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -219,36 +219,36 @@ public class SyntaxValidatorTest {
     void testInvalidSentences() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> shortSentence = List.of(
-                new Entity(TypeRegistry.TEXT_JAVA, 0, 0),
-                new Entity(TypeRegistry.IS, 1, 0)
+                new Entity(TypeRegistry.TEXT_JAVA),
+                new Entity(TypeRegistry.IS)
         );
 
         List<Rule> rules1 = validator.validate(List.of(shortSentence));
         assertTrue(rules1.isEmpty());
 
         List<Entity> gibberish = List.of(
-                new Entity(TypeRegistry.AND, 0, 0),
-                new Entity(TypeRegistry.IS, 1, 0),
-                new Entity(TypeRegistry.FACING, 2, 0),
-                new Entity(TypeRegistry.YOU, 3, 0),
-                new Entity(TypeRegistry.HAS, 4, 0),
-                new Entity(TypeRegistry.PUSH, 5, 0),
-                new Entity(TypeRegistry.TEXT_PAPER, 6, 0),
-                new Entity(TypeRegistry.TEXT_JAVA, 7, 0)
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.FACING),
+                new Entity(TypeRegistry.YOU),
+                new Entity(TypeRegistry.HAS),
+                new Entity(TypeRegistry.PUSH),
+                new Entity(TypeRegistry.TEXT_PAPER),
+                new Entity(TypeRegistry.TEXT_JAVA)
         );
 
         List<Rule> rules2 = validator.validate(List.of(gibberish));
         assertTrue(rules2.isEmpty());
 
         List<Entity> invalidSyntax = List.of(
-                new Entity(TypeRegistry.TEXT_JAVA, 0, 0),
-                new Entity(TypeRegistry.ON, 1, 0),
-                new Entity(TypeRegistry.TEXT_CHECK, 2, 0),
-                new Entity(TypeRegistry.AND, 3, 0),
-                new Entity(TypeRegistry.NEAR, 4, 0),
-                new Entity(TypeRegistry.TEXT_DATABASE, 5, 0),
-                new Entity(TypeRegistry.IS, 6, 0),
-                new Entity(TypeRegistry.FACING, 7, 0)
+                new Entity(TypeRegistry.TEXT_JAVA),
+                new Entity(TypeRegistry.ON),
+                new Entity(TypeRegistry.TEXT_CHECK),
+                new Entity(TypeRegistry.AND),
+                new Entity(TypeRegistry.NEAR),
+                new Entity(TypeRegistry.TEXT_DATABASE),
+                new Entity(TypeRegistry.IS),
+                new Entity(TypeRegistry.FACING)
         );
 
         List<Rule> rules3 = validator.validate(List.of(invalidSyntax));

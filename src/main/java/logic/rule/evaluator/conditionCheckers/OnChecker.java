@@ -11,8 +11,8 @@ import java.util.List;
 public class OnChecker implements ConditionChecker {
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
-        int checkX = entity.getPosX();
-        int checkY = entity.getPosY();
+        int checkX = levelMap.getEntityX(entity);
+        int checkY = levelMap.getEntityY(entity);
         EntityType targetOn = condition.getParameter();
         List<Entity> entitiesToCheck = levelMap.getEntitiesAt(checkX, checkY);
         return entitiesToCheck.stream()

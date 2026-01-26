@@ -31,21 +31,21 @@ class CollisionResolverTest {
         rules.clear();
     }
 
-    private Entity addEntity(EntityType type, int x, int y, Direction direction) {
-        Entity entity = new Entity(type, x, y);
+    private Entity setEntityPosition(EntityType type, int x, int y, Direction direction) {
+        Entity entity = new Entity(type);
         entity.setDirection(direction);
-        levelMap.addEntity(entity);
+        levelMap.setEntityPosition(entity, x, y);
         return entity;
     }
 
-    private Entity addEntity(EntityType type, int x, int y) {
-        return addEntity(type, x, y, Direction.RIGHT);
+    private Entity setEntityPosition(EntityType type, int x, int y) {
+        return setEntityPosition(type, x, y, Direction.RIGHT);
     }
 
     private void rule(EntityType subject, EntityType property) {
-        Entity subjectEntity = new Entity(subject, 0, rules.size());
-        Entity is = new Entity(TypeRegistry.IS, 1, rules.size());
-        Entity propertyEntity = new Entity(property, 2, rules.size());
+        Entity subjectEntity = new Entity(subject);
+        Entity is = new Entity(TypeRegistry.IS);
+        Entity propertyEntity = new Entity(property);
         rules.add(new Rule(subjectEntity, is, propertyEntity, List.of()));
     }
 
@@ -65,20 +65,20 @@ class CollisionResolverTest {
 
     @Test
     void testResolveCollisionsSimpleMove() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
 
         MoveIntent intent = new MoveIntent(javaEntity, Direction.RIGHT, false);
         CompositeAction result = resolveCollisions(List.of(intent));
         result.execute();
 
-        assertEquals(6, javaEntity.getPosX());
-        assertEquals(5, javaEntity.getPosY());
+        assertEquals(6, levelMap.getEntityX(javaEntity));
+        assertEquals(5, levelMap.getEntityY(javaEntity));
     }
 
     @Test
     void testResolveCollisionsMoveToBoundary() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 0, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 0, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
 
         MoveIntent intent = new MoveIntent(javaEntity, Direction.LEFT, false);
@@ -86,14 +86,14 @@ class CollisionResolverTest {
         result.execute();
 
         // Should not move outside boundary
-        assertEquals(0, javaEntity.getPosX());
-        assertEquals(5, javaEntity.getPosY());
+        assertEquals(0, levelMap.getEntityX(javaEntity));
+        assertEquals(5, levelMap.getEntityY(javaEntity));
     }
 
     @Test
     void testResolveCollisionsWithStop() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.STOP);
 
@@ -102,14 +102,14 @@ class CollisionResolverTest {
         result.execute();
 
         // Should not move into STOP entity
-        assertEquals(5, javaEntity.getPosX());
-        assertEquals(5, javaEntity.getPosY());
+        assertEquals(5, levelMap.getEntityX(javaEntity));
+        assertEquals(5, levelMap.getEntityY(javaEntity));
     }
 
     @Test
     void testResolveCollisionsWithPush() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.PUSH);
 
@@ -118,17 +118,17 @@ class CollisionResolverTest {
         result.execute();
 
         // JAVA should move to (6, 5) and PYTHON should be pushed to (7, 5)
-        assertEquals(6, javaEntity.getPosX());
-        assertEquals(5, javaEntity.getPosY());
-        assertEquals(7, pythonEntity.getPosX());
-        assertEquals(5, pythonEntity.getPosY());
+        assertEquals(6, levelMap.getEntityX(javaEntity));
+        assertEquals(5, levelMap.getEntityY(javaEntity));
+        assertEquals(7, levelMap.getEntityX(pythonEntity));
+        assertEquals(5, levelMap.getEntityY(pythonEntity));
     }
 
     @Test
     void testResolveCollisionsWithPushChain() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = addEntity(TypeRegistry.PAPER, 7, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 7, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.PUSH);
         rule(TypeRegistry.TEXT_PAPER, TypeRegistry.PUSH);
@@ -138,16 +138,16 @@ class CollisionResolverTest {
         result.execute();
 
         // All should be pushed
-        assertEquals(6, javaEntity.getPosX());
-        assertEquals(7, pythonEntity.getPosX());
-        assertEquals(8, paperEntity.getPosX());
+        assertEquals(6, levelMap.getEntityX(javaEntity));
+        assertEquals(7, levelMap.getEntityX(pythonEntity));
+        assertEquals(8, levelMap.getEntityX(paperEntity));
     }
 
     @Test
     void testResolveCollisionsWithPushIntoStop() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = addEntity(TypeRegistry.PAPER, 7, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 7, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.PUSH);
         rule(TypeRegistry.TEXT_PAPER, TypeRegistry.STOP);
@@ -157,14 +157,14 @@ class CollisionResolverTest {
         result.execute();
 
         // Nothing should move because push is blocked by STOP
-        assertEquals(5, javaEntity.getPosX());
-        assertEquals(6, pythonEntity.getPosX());
+        assertEquals(5, levelMap.getEntityX(javaEntity));
+        assertEquals(6, levelMap.getEntityX(pythonEntity));
     }
 
     @Test
     void testResolveCollisionsWithPushIntoBoundary() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 8, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 9, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 8, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 9, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.PUSH);
 
@@ -173,14 +173,14 @@ class CollisionResolverTest {
         result.execute();
 
         // Nothing should move because push would go outside boundary
-        assertEquals(8, javaEntity.getPosX());
-        assertEquals(9, pythonEntity.getPosX());
+        assertEquals(8, levelMap.getEntityX(javaEntity));
+        assertEquals(9, levelMap.getEntityX(pythonEntity));
     }
 
     @Test
     void testResolveCollisionsWithMovePropertyBounce() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.MOVE);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.STOP);
 
@@ -189,16 +189,16 @@ class CollisionResolverTest {
         result.execute();
 
         // JAVA should bounce back to (4, 5) and face LEFT
-        assertEquals(4, javaEntity.getPosX());
-        assertEquals(5, javaEntity.getPosY());
+        assertEquals(4, levelMap.getEntityX(javaEntity));
+        assertEquals(5, levelMap.getEntityY(javaEntity));
         assertEquals(Direction.LEFT, javaEntity.getDirection());
     }
 
     @Test
     void testResolveCollisionsWithMovePropertyBounceIntoStop() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = addEntity(TypeRegistry.PAPER, 4, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 4, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.MOVE);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.STOP);
         rule(TypeRegistry.TEXT_PAPER, TypeRegistry.STOP);
@@ -208,15 +208,15 @@ class CollisionResolverTest {
         result.execute();
 
         // JAVA should rotate but not move (STOP at both sides)
-        assertEquals(5, javaEntity.getPosX());
+        assertEquals(5, levelMap.getEntityX(javaEntity));
         assertEquals(Direction.LEFT, javaEntity.getDirection());
     }
 
     @Test
     void testResolveCollisionsWithMovePropertyBounceIntoPush() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = addEntity(TypeRegistry.PAPER, 4, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 4, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.MOVE);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.STOP);
         rule(TypeRegistry.TEXT_PAPER, TypeRegistry.PUSH);
@@ -226,15 +226,15 @@ class CollisionResolverTest {
         result.execute();
 
         // JAVA should rotate and push PAPER
-        assertEquals(4, javaEntity.getPosX());
+        assertEquals(4, levelMap.getEntityX(javaEntity));
         assertEquals(Direction.LEFT, javaEntity.getDirection());
-        assertEquals(3, paperEntity.getPosX());
+        assertEquals(3, levelMap.getEntityX(paperEntity));
     }
 
     @Test
     void testResolveCollisionsCreatingEntityStack() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 7, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 7, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.MOVE);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.MOVE);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.STOP);
@@ -247,21 +247,21 @@ class CollisionResolverTest {
         result1.execute();
 
         // Both should move towards each other
-        assertEquals(6, javaEntity.getPosX());
-        assertEquals(6, pythonEntity.getPosX());
+        assertEquals(6, levelMap.getEntityX(javaEntity));
+        assertEquals(6, levelMap.getEntityX(pythonEntity));
 
         CompositeAction result2 = resolveCollisions(List.of(intent1, intent2));
         result2.execute();
 
         // Both should move past each other
-        assertEquals(7, javaEntity.getPosX());
-        assertEquals(5, pythonEntity.getPosX());
+        assertEquals(7, levelMap.getEntityX(javaEntity));
+        assertEquals(5, levelMap.getEntityX(pythonEntity));
     }
 
     @Test
     void testResolveCollisionsPushAndStop() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 6, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.PUSH);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.STOP);
@@ -271,14 +271,14 @@ class CollisionResolverTest {
         result.execute();
 
         // PYTHON has both PUSH and STOP, so it should be pushable
-        assertEquals(6, javaEntity.getPosX());
-        assertEquals(7, pythonEntity.getPosX());
+        assertEquals(6, levelMap.getEntityX(javaEntity));
+        assertEquals(7, levelMap.getEntityX(pythonEntity));
     }
 
     @Test
     void testResolveCollisionsYouAndStop() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 0, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 1, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 0, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 1, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.STOP);
@@ -290,15 +290,15 @@ class CollisionResolverTest {
         result.execute();
 
         // Nothing should move because both are STOP
-        assertEquals(0, javaEntity.getPosX());
-        assertEquals(1, pythonEntity.getPosX());
+        assertEquals(0, levelMap.getEntityX(javaEntity));
+        assertEquals(1, levelMap.getEntityX(pythonEntity));
     }
 
 
     @Test
     void testResolveCollisionsYouStacking() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 0, 5);
-        Entity pythonEntity = addEntity(TypeRegistry.PYTHON, 1, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 0, 5);
+        Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 1, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.YOU);
 
@@ -308,13 +308,13 @@ class CollisionResolverTest {
         result.execute();
 
         // Both should stack together at (0, 5)
-        assertEquals(0, javaEntity.getPosX());
-        assertEquals(0, pythonEntity.getPosX());
+        assertEquals(0, levelMap.getEntityX(javaEntity));
+        assertEquals(0, levelMap.getEntityX(pythonEntity));
     }
 
     @Test
     void testResolveCollisionsEmptySpace() {
-        Entity javaEntity = addEntity(TypeRegistry.JAVA, 5, 5);
+        Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
 
         MoveIntent intent = new MoveIntent(javaEntity, Direction.RIGHT, false);
@@ -322,6 +322,6 @@ class CollisionResolverTest {
         result.execute();
 
         // Should move normally into empty space
-        assertEquals(6, javaEntity.getPosX());
+        assertEquals(6, levelMap.getEntityX(javaEntity));
     }
 }

@@ -18,16 +18,16 @@ public class MoveAction implements Action {
         this.entity = entity;
         this.startDirection = entity.getDirection();
         this.endDirection = direction;
-        this.endX = entity.getPosX() + direction.dx;
-        this.endY = entity.getPosY() + direction.dy;
-        startX = entity.getPosX();
-        startY = entity.getPosY();
+        this.endX = levelMap.getEntityX(entity) + direction.dx;
+        this.endY = levelMap.getEntityY(entity) + direction.dy;
+        startX = levelMap.getEntityX(entity);
+        startY = levelMap.getEntityY(entity);
     }
 
     @Override
     public void execute() {
-        startX = entity.getPosX();
-        startY = entity.getPosY();
+        startX = levelMap.getEntityX(entity);
+        startY = levelMap.getEntityY(entity);
         startDirection = entity.getDirection();
         levelMap.setEntityPosition(entity, endX, endY);
         entity.setDirection(endDirection);

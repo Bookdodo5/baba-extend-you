@@ -6,22 +6,17 @@ public class Entity {
 
     private final UUID entityId;
     private final EntityType entityType;
-    private int posX, posY;
     private Direction direction;
 
-    public Entity(EntityType entityType, int posX, int posY) {
+    public Entity(EntityType entityType) {
         this.entityId = UUID.randomUUID();
         this.entityType = entityType;
-        this.posX = posX;
-        this.posY = posY;
         this.direction = Direction.DOWN;
     }
 
     public Entity(Entity other) {
         this.entityId = other.entityId;
         this.entityType = other.entityType;
-        this.posX = other.posX;
-        this.posY = other.posY;
         this.direction = other.direction;
     }
 
@@ -33,21 +28,6 @@ public class Entity {
         return entityType;
     }
 
-    public int getPosX() {
-        return posX;
-    }
-
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
 
     public Direction getDirection() {
         return direction;

@@ -17,9 +17,9 @@ class PermutationGeneratorTest {
 
         List<List<List<Entity>>> textTiles = new ArrayList<>();
         List<List<Entity>> line = new ArrayList<>();
-        line.add(List.of(new Entity(TypeRegistry.TEXT_JAVA, 0, 0)));
-        line.add(List.of(new Entity(TypeRegistry.IS, 1, 0)));
-        line.add(List.of(new Entity(TypeRegistry.YOU, 2, 0)));
+        line.add(List.of(new Entity(TypeRegistry.TEXT_JAVA)));
+        line.add(List.of(new Entity(TypeRegistry.IS)));
+        line.add(List.of(new Entity(TypeRegistry.YOU)));
         textTiles.add(line);
 
         List<List<Entity>> perms = generator.generate(textTiles);
@@ -38,13 +38,13 @@ class PermutationGeneratorTest {
         List<List<List<Entity>>> textTiles = new ArrayList<>();
         List<List<Entity>> line = new ArrayList<>();
         line.add(List.of(
-                new Entity(TypeRegistry.TEXT_JAVA, 0, 0),
-                new Entity(TypeRegistry.TEXT_PYTHON, 0, 0)
+                new Entity(TypeRegistry.TEXT_JAVA),
+                new Entity(TypeRegistry.TEXT_PYTHON)
         ));
-        line.add(List.of(new Entity(TypeRegistry.IS, 1, 0)));
+        line.add(List.of(new Entity(TypeRegistry.IS)));
         line.add(List.of(
-                new Entity(TypeRegistry.YOU, 2, 0),
-                new Entity(TypeRegistry.PUSH, 2, 0)
+                new Entity(TypeRegistry.YOU),
+                new Entity(TypeRegistry.PUSH)
         ));
         textTiles.add(line);
 
@@ -68,15 +68,15 @@ class PermutationGeneratorTest {
 
         // line 1: 2 permutations (A or B) x 1 x 1 = 2
         List<List<Entity>> line1 = new ArrayList<>();
-        line1.add(List.of(new Entity(TypeRegistry.TEXT_JAVA, 0, 0), new Entity(TypeRegistry.TEXT_PYTHON, 0, 0)));
-        line1.add(List.of(new Entity(TypeRegistry.ON, 1, 0)));
-        line1.add(List.of(new Entity(TypeRegistry.TEXT_PAPER, 2, 0)));
+        line1.add(List.of(new Entity(TypeRegistry.TEXT_JAVA), new Entity(TypeRegistry.TEXT_PYTHON)));
+        line1.add(List.of(new Entity(TypeRegistry.ON)));
+        line1.add(List.of(new Entity(TypeRegistry.TEXT_PAPER)));
 
         // line 2: 1 permutation
         List<List<Entity>> line2 = new ArrayList<>();
-        line2.add(List.of(new Entity(TypeRegistry.IS, 0, 1)));
-        line2.add(List.of(new Entity(TypeRegistry.PUSH, 1, 1)));
-        line2.add(List.of(new Entity(TypeRegistry.YOU, 2, 1)));
+        line2.add(List.of(new Entity(TypeRegistry.IS)));
+        line2.add(List.of(new Entity(TypeRegistry.PUSH)));
+        line2.add(List.of(new Entity(TypeRegistry.YOU)));
 
         textTiles.add(line1);
         textTiles.add(line2);

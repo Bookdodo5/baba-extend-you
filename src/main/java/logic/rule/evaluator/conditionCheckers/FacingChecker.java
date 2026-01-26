@@ -14,8 +14,8 @@ public class FacingChecker implements ConditionChecker {
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
         EntityType targetNear = condition.getParameter();
         Direction facing = entity.getDirection();
-        int checkX = entity.getPosX() + facing.dx;
-        int checkY = entity.getPosY() + facing.dy;
+        int checkX = levelMap.getEntityX(entity) + facing.dx;
+        int checkY = levelMap.getEntityY(entity) + facing.dy;
         List<Entity> entitiesToCheck = levelMap.getEntitiesAt(checkX, checkY);
         return entitiesToCheck.stream()
                 .anyMatch(e -> e.getType() == targetNear && e != entity);

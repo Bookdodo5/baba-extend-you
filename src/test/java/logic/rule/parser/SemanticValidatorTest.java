@@ -16,11 +16,11 @@ public class SemanticValidatorTest {
     @Test
     void testVerbValidation() {
         SemanticValidator validator = new SemanticValidator();
-        Entity rock = new Entity(TypeRegistry.TEXT_PAPER, 0, 0);
-        Entity is = new Entity(TypeRegistry.IS, 1, 0);
-        Entity has = new Entity(TypeRegistry.HAS, 2, 0);
-        Entity wire = new Entity(TypeRegistry.TEXT_WIRE, 3, 0);
-        Entity sink = new Entity(TypeRegistry.SINK, 3, 0);
+        Entity rock = new Entity(TypeRegistry.TEXT_PAPER);
+        Entity is = new Entity(TypeRegistry.IS);
+        Entity has = new Entity(TypeRegistry.HAS);
+        Entity wire = new Entity(TypeRegistry.TEXT_WIRE);
+        Entity sink = new Entity(TypeRegistry.SINK);
 
         Rule nounIsNoun = new Rule(rock, is, wire, new ArrayList<>());
         Rule nounHasNoun = new Rule(rock, has, wire, new ArrayList<>());

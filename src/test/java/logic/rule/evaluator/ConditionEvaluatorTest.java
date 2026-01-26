@@ -28,12 +28,12 @@ class ConditionEvaluatorTest {
         evaluator = new ConditionEvaluator();
         levelMap = new LevelMap(10, 10);
         ruleset = new Ruleset();
-        java = new Entity(TypeRegistry.JAVA, 5, 5);
-        paper = new Entity(TypeRegistry.PAPER, 6, 5);
+        java = new Entity(TypeRegistry.JAVA);
+        paper = new Entity(TypeRegistry.PAPER);
         java.setDirection(Direction.RIGHT);
         paper.setDirection(Direction.RIGHT);
-        levelMap.addEntity(java);
-        levelMap.addEntity(paper);
+        levelMap.setEntityPosition(java, 5, 5);
+        levelMap.setEntityPosition(paper, 6, 5);
     }
 
     @Test
@@ -43,8 +43,8 @@ class ConditionEvaluatorTest {
 
     @Test
     void testOnCondition() {
-        Entity onText = new Entity(TypeRegistry.ON, 0, 0);
-        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER, 1, 1);
+        Entity onText = new Entity(TypeRegistry.ON);
+        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER);
         Condition onPaper = new Condition(onText, paperText);
         ArrayList<Condition> conditions = new ArrayList<>();
         conditions.add(onPaper);
@@ -59,8 +59,8 @@ class ConditionEvaluatorTest {
 
     @Test
     void testNearCondition() {
-        Entity nearText = new Entity(TypeRegistry.NEAR, 0, 0);
-        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER, 1, 1);
+        Entity nearText = new Entity(TypeRegistry.NEAR);
+        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER);
         Condition nearPaper = new Condition(nearText, paperText);
         ArrayList<Condition> conditions = new ArrayList<>();
         conditions.add(nearPaper);
@@ -87,8 +87,8 @@ class ConditionEvaluatorTest {
 
     @Test
     void testFacingCondition() {
-        Entity facingText = new Entity(TypeRegistry.FACING, 0, 0);
-        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER, 1, 1);
+        Entity facingText = new Entity(TypeRegistry.FACING);
+        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER);
         Condition facingPaper = new Condition(facingText, paperText);
         ArrayList<Condition> conditions = new ArrayList<>();
         conditions.add(facingPaper);
@@ -115,12 +115,12 @@ class ConditionEvaluatorTest {
     
     @Test
     void testInstanceofCondition() {
-        Entity error = new Entity(TypeRegistry.ERROR, 7, 7);
-        levelMap.addEntity(error);
+        Entity error = new Entity(TypeRegistry.ERROR);
+        levelMap.setEntityPosition(error, 7, 7);
 
         // ERROR instanceof ERROR should be true
-        Entity instanceofText = new Entity(TypeRegistry.INSTANCEOF, 0, 0);
-        Entity errorText = new Entity(TypeRegistry.TEXT_ERROR, 1, 1);
+        Entity instanceofText = new Entity(TypeRegistry.INSTANCEOF);
+        Entity errorText = new Entity(TypeRegistry.TEXT_ERROR);
         Condition instanceofError = new Condition(instanceofText, errorText);
         ArrayList<Condition> conditions1 = new ArrayList<>();
         conditions1.add(instanceofError);
@@ -128,7 +128,7 @@ class ConditionEvaluatorTest {
         assertTrue(evaluator.evaluate(error, conditions1, levelMap, ruleset));
 
         // ERROR instanceof PAPER should be false
-        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER, 2, 2);
+        Entity paperText = new Entity(TypeRegistry.TEXT_PAPER);
         Condition instanceofPaper = new Condition(instanceofText, paperText);
         ArrayList<Condition> conditions2 = new ArrayList<>();
         conditions2.add(instanceofPaper);
@@ -136,9 +136,9 @@ class ConditionEvaluatorTest {
         assertFalse(evaluator.evaluate(error, conditions2, levelMap, ruleset));
 
         // ERROR EXTEND WARNING, then ERROR instanceof WARNING should be true
-        Entity extendText = new Entity(TypeRegistry.EXTEND, 0, 0);
-        Entity warningText = new Entity(TypeRegistry.TEXT_WARNING, 3, 3);
-        Entity warning = new Entity(TypeRegistry.WARNING, 3, 3);
+        Entity extendText = new Entity(TypeRegistry.EXTEND);
+        Entity warningText = new Entity(TypeRegistry.TEXT_WARNING);
+        Entity warning = new Entity(TypeRegistry.WARNING);
         Rule errorExtendsWarning = new Rule(errorText, extendText, warningText, List.of());
         ruleset.setRules(List.of(errorExtendsWarning));
 
@@ -155,7 +155,7 @@ class ConditionEvaluatorTest {
         assertFalse(evaluator.evaluate(error, conditions2, levelMap, ruleset));
 
         // ERROR EXTEND WARNING, WARNING EXTEND JAVA, then ERROR instanceof JAVA should be true
-        Entity javaText = new Entity(TypeRegistry.TEXT_JAVA, 4, 4);
+        Entity javaText = new Entity(TypeRegistry.TEXT_JAVA);
         Rule warningExtendsJava = new Rule(warningText, extendText, javaText, List.of());
         ruleset.setRules(List.of(errorExtendsWarning, warningExtendsJava));
 

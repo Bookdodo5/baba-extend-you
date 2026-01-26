@@ -18,7 +18,7 @@ public class CollisionResolver {
         CompositeAction action = new CompositeAction();
 
         for (Direction direction : Direction.values()) {
-            List<MoveIntent> intentsInDirection = getIntentsInDirection(intents, direction);
+            List<MoveIntent> intentsInDirection = getIntentsInDirection(intents, direction, levelMap);
 
             for (MoveIntent intent : intentsInDirection) {
                 processIntent(intent, action, levelMap, ruleEvaluator, ruleset);
@@ -28,16 +28,16 @@ public class CollisionResolver {
         return action;
     }
 
-    private List<MoveIntent> getIntentsInDirection(List<MoveIntent> intents, Direction direction) {
+    private List<MoveIntent> getIntentsInDirection(List<MoveIntent> intents, Direction direction, LevelMap levelMap) {
         return intents.stream()
                 .filter(intent -> intent.getDirection() == direction)
                 .sorted(Comparator.comparingInt(intent -> {
                     Entity entity = intent.getEntity();
                     return switch (direction) {
-                        case UP -> entity.getPosY();
-                        case DOWN -> -entity.getPosY();
-                        case LEFT -> entity.getPosX();
-                        case RIGHT -> -entity.getPosX();
+                        case UP -> levelMap.getEntityY(entity);
+                        case DOWN -> -levelMap.getEntityY(entity);
+                        case LEFT -> levelMap.getEntityX(entity);
+                        case RIGHT -> -levelMap.getEntityX(entity);
                     };
                 }))
                 .toList();
@@ -46,8 +46,8 @@ public class CollisionResolver {
     private void processIntent(MoveIntent intent, CompositeAction action, LevelMap levelMap, RuleEvaluator ruleEvaluator, Ruleset ruleset) {
         Entity entity = intent.getEntity();
         Direction direction = intent.getDirection();
-        int targetX = entity.getPosX() + direction.dx;
-        int targetY = entity.getPosY() + direction.dy;
+        int targetX = levelMap.getEntityX(entity) + direction.dx;
+        int targetY = levelMap.getEntityY(entity) + direction.dy;
 
         if (!levelMap.isInside(targetX, targetY)) {
             handleStop(intent, action, levelMap, ruleEvaluator, ruleset);
@@ -77,8 +77,8 @@ public class CollisionResolver {
     private boolean tryPush(MoveIntent intent, CompositeAction action, LevelMap levelMap, RuleEvaluator ruleEvaluator, Ruleset ruleset) {
         Entity entity = intent.getEntity();
         Direction direction = intent.getDirection();
-        int targetX = entity.getPosX() + direction.dx;
-        int targetY = entity.getPosY() + direction.dy;
+        int targetX = levelMap.getEntityX(entity) + direction.dx;
+        int targetY = levelMap.getEntityY(entity) + direction.dy;
 
         if (!levelMap.isInside(targetX, targetY)) {
             return false;

@@ -55,7 +55,7 @@ public class LevelLoader {
                     for (String entityId : entityIds) {
                         EntityType entityType = TypeRegistry.getType(entityId);
                         if (entityType == null) continue;
-                        levelMap.addEntity(new Entity(entityType, j, i));
+                        levelMap.setEntityPosition(new Entity(entityType), j, i);
                     }
                 }
             }

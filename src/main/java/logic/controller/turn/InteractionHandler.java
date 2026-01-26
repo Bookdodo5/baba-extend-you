@@ -32,7 +32,7 @@ public class InteractionHandler {
         ruleEvaluator.getTransformations(levelMap, ruleset).forEach(transformation -> {
             Entity source = transformation.getSource();
             EntityType targetType = transformation.getTargetType();
-            action.add(new CreateAction(levelMap, targetType, source.getPosX(), source.getPosY()));
+            action.add(new CreateAction(levelMap, targetType, levelMap.getEntityX(source), levelMap.getEntityY(source)));
             action.add(new DestroyAction(levelMap, source));
         });
     }
@@ -40,8 +40,8 @@ public class InteractionHandler {
     private void processYouDefeat(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         List<Entity> youEntities = ruleEvaluator.getEntitiesWithProperty(TypeRegistry.YOU, levelMap, ruleset);
         for (Entity youEntity : youEntities) {
-            int x = youEntity.getPosX();
-            int y = youEntity.getPosY();
+            int x = levelMap.getEntityX(youEntity);
+            int y = levelMap.getEntityY(youEntity);
             if (ruleEvaluator.hasEntityWithPropertyAt(TypeRegistry.DEFEAT, levelMap, ruleset, x, y)) {
                 action.add(new DestroyAction(levelMap, youEntity));
             }
@@ -51,8 +51,8 @@ public class InteractionHandler {
     private void processHotMelt(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         List<Entity> meltEntities = ruleEvaluator.getEntitiesWithProperty(TypeRegistry.MELT, levelMap, ruleset);
         for (Entity meltEntity : meltEntities) {
-            int x = meltEntity.getPosX();
-            int y = meltEntity.getPosY();
+            int x = levelMap.getEntityX(meltEntity);
+            int y = levelMap.getEntityY(meltEntity);
             if (ruleEvaluator.hasEntityWithPropertyAt(TypeRegistry.HOT, levelMap, ruleset, x, y)) {
                 action.add(new DestroyAction(levelMap, meltEntity));
             }
@@ -64,8 +64,8 @@ public class InteractionHandler {
         Set<String> processedPositions = new HashSet<>();
 
         for (Entity sinkEntity : sinkEntities) {
-            int x = sinkEntity.getPosX();
-            int y = sinkEntity.getPosY();
+            int x = levelMap.getEntityX(sinkEntity);
+            int y = levelMap.getEntityY(sinkEntity);
             String positionKey = x + "," + y;
 
             if (processedPositions.contains(positionKey)) {
@@ -95,8 +95,8 @@ public class InteractionHandler {
                     .map(a -> (DestroyAction) a)
                     .filter(a -> a.getEntity() == source)
                     .forEach(a -> {
-                        int posX = a.getEntity().getPosX();
-                        int posY = a.getEntity().getPosY();
+                        int posX = levelMap.getEntityX(a.getEntity());
+                        int posY = levelMap.getEntityY(a.getEntity());
                         action.add(new CreateAction(levelMap, targetType, posX, posY));
                     });
         }

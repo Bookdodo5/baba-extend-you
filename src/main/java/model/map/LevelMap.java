@@ -14,23 +14,24 @@ public class LevelMap {
     private final int width;
     private final int height;
     private final Map<Point, List<Entity>> grid;
-    private final List<Entity> entities;
+    private final Map<Entity, Point> entityPositions;
 
     public LevelMap(int width, int height) {
         this.width = width;
         this.height = height;
         this.grid = new HashMap<>();
-        this.entities = new ArrayList<Entity>();
+        this.entityPositions = new HashMap<>();
     }
 
     public LevelMap(LevelMap other) {
         this.width = other.width;
         this.height = other.height;
         this.grid = new HashMap<>();
-        this.entities = new ArrayList<Entity>();
-        for (Entity entity : other.entities) {
+        this.entityPositions = new HashMap<>();
+        for (Entity entity : other.getEntities()) {
             Entity copiedEntity = new Entity(entity);
-            this.addEntity(copiedEntity);
+            Point position = other.entityPositions.get(entity);
+            this.setEntityPosition(copiedEntity, position.x, position.y);
         }
     }
 
@@ -46,51 +47,58 @@ public class LevelMap {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    public void addEntity(Entity entity) {
-        Point position = new Point(entity.getPosX(), entity.getPosY());
-        grid.computeIfAbsent(position, k -> new ArrayList<>()).add(entity);
-        entities.add(entity);
-    }
-
     public void removeEntity(Entity entity) {
-        Point position = new Point(entity.getPosX(), entity.getPosY());
-        List<Entity> cell = grid.get(position);
-        if (cell != null) {
-            cell.remove(entity);
+        Point position = entityPositions.get(entity);
+        if (position != null) {
+            List<Entity> cell = grid.get(position);
+            if (cell != null) {
+                cell.remove(entity);
+                if (cell.isEmpty()) {
+                    grid.remove(position);
+                }
+            }
+            entityPositions.remove(entity);
         }
-        entities.remove(entity);
     }
 
     public void setEntityPosition(Entity entity, int newX, int newY) {
-        if (!entities.contains(entity)) {
-            throw new IllegalArgumentException("Entity with ID " + entity.getEntityId() + " does not exist in this map.");
+        Point oldPosition = entityPositions.get(entity);
+        if (oldPosition != null) {
+            List<Entity> cell = grid.get(oldPosition);
+            if (cell != null) {
+                cell.remove(entity);
+                if (cell.isEmpty()) {
+                    grid.remove(oldPosition);
+                }
+            }
         }
-
-        Point oldPosition = new Point(entity.getPosX(), entity.getPosY());
-        List<Entity> cell = grid.get(oldPosition);
-        if (cell != null) {
-            cell.remove(entity);
-            if (cell.isEmpty()) grid.remove(oldPosition);
-        }
-
-        entity.setPosX(newX);
-        entity.setPosY(newY);
 
         Point newPosition = new Point(newX, newY);
         grid.computeIfAbsent(newPosition, k -> new ArrayList<>()).add(entity);
+        entityPositions.put(entity, newPosition);
+    }
+
+    public Point getEntityPosition(Entity entity) {
+        Point position = entityPositions.get(entity);
+        if (position == null) {
+            throw new IllegalStateException("Entity not found in map: " + entity.getEntityId());
+        }
+        return new Point(position);
+    }
+
+    public int getEntityX(Entity entity) {
+        return getEntityPosition(entity).x;
+    }
+
+    public int getEntityY(Entity entity) {
+        return getEntityPosition(entity).y;
     }
 
     public List<Entity> getEntitiesAt(int x, int y) {
         return grid.getOrDefault(new Point(x, y), List.of());
     }
 
-    public List<Entity> getEntitiesOfType(EntityType type) {
-        return entities.stream()
-                .filter(entity -> entity.getType() == type)
-                .collect(Collectors.toList());
-    }
-
     public List<Entity> getEntities() {
-        return entities;
+        return new ArrayList<>(entityPositions.keySet());
     }
 }

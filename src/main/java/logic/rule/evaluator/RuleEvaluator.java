@@ -40,7 +40,7 @@ public class RuleEvaluator {
 
     public List<Entity> getEntitiesWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, int x, int y) {
         return getEntitiesWithProperty(property, levelMap, ruleset).stream()
-                .filter(entity -> entity.getPosX() == x && entity.getPosY() == y)
+                .filter(entity -> levelMap.getEntityX(entity) == x && levelMap.getEntityY(entity) == y)
                 .toList();
     }
 

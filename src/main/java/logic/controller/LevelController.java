@@ -1,4 +1,4 @@
-package logic;
+package logic.controller;
 
 import logic.controller.turn.TurnOrchestrator;
 import logic.input.InputCommand;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static application.Constant.INPUT_COOLDOWN_MILLIS;
 
-public class GameController {
+public class LevelController {
     private LevelMap levelMap;
     private LevelMap levelMapPrototype;
     private final Ruleset ruleset;
@@ -25,7 +25,7 @@ public class GameController {
 
     private long lastInputTime = 0L;
 
-    public GameController() {
+    public LevelController() {
         this.ruleset = new Ruleset();
         this.ruleParser = new RuleParser();
         this.actionStack = new ActionStack();

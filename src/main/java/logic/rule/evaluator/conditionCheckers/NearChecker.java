@@ -11,8 +11,8 @@ import java.util.List;
 public class NearChecker implements ConditionChecker {
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
-        int entityX = entity.getPosX();
-        int entityY = entity.getPosY();
+        int entityX = levelMap.getEntityX(entity);
+        int entityY = levelMap.getEntityY(entity);
         EntityType targetNear = condition.getParameter();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {

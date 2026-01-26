@@ -18,9 +18,9 @@ class ActionTest {
         levelMap = new LevelMap(10, 10);
         actionStack = new ActionStack();
         EntityType javaType = new EntityType(1, "java", "java.png", AnimationStyle.DIRECTIONAL);
-        entity = new Entity(javaType, 0, 0);
+        entity = new Entity(javaType);
         entity.setDirection(Direction.RIGHT);
-        levelMap.addEntity(entity);
+        levelMap.setEntityPosition(entity, 0, 0);
     }
 
     @Test
@@ -28,13 +28,13 @@ class ActionTest {
         MoveAction move = new MoveAction(levelMap, entity, Direction.DOWN);
 
         move.execute();
-        assertEquals(0, entity.getPosX());
-        assertEquals(1, entity.getPosY());
+        assertEquals(0, levelMap.getEntityX(entity));
+        assertEquals(1, levelMap.getEntityY(entity));
         assertEquals(Direction.DOWN, entity.getDirection());
 
         move.undo();
-        assertEquals(0, entity.getPosX());
-        assertEquals(0, entity.getPosY());
+        assertEquals(0, levelMap.getEntityX(entity));
+        assertEquals(0, levelMap.getEntityY(entity));
         assertEquals(Direction.RIGHT, entity.getDirection());
     }
 
@@ -100,14 +100,14 @@ class ActionTest {
         composite.execute();
         actionStack.newAction(composite);
 
-        assertEquals(1, entity.getPosY());
+        assertEquals(1, levelMap.getEntityY(entity));
         assertEquals(1, levelMap.getEntitiesAt(6, 6).size());
         assertEquals(1, levelMap.getEntitiesAt(0, 1).size());
         assertEquals(Direction.DOWN, levelMap.getEntitiesAt(0, 1).get(0).getDirection());
         assertEquals(2, levelMap.getEntities().size());
 
         actionStack.undo();
-        assertEquals(0, entity.getPosY());
+        assertEquals(0, levelMap.getEntityY(entity));
         assertEquals(0, levelMap.getEntitiesAt(6, 6).size());
         assertEquals(0, levelMap.getEntitiesAt(0, 1).size());
         assertEquals(1, levelMap.getEntitiesAt(0, 0).size());
@@ -115,7 +115,7 @@ class ActionTest {
         assertEquals(1, levelMap.getEntities().size());
 
         actionStack.redo();
-        assertEquals(1, entity.getPosY());
+        assertEquals(1, levelMap.getEntityY(entity));
         assertEquals(1, levelMap.getEntitiesAt(6, 6).size());
         assertEquals(1, levelMap.getEntitiesAt(0, 1).size());
         assertEquals(Direction.DOWN, levelMap.getEntitiesAt(0, 1).get(0).getDirection());

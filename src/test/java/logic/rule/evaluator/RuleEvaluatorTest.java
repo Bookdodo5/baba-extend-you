@@ -21,7 +21,7 @@ class RuleEvaluatorTest {
     private LevelMap levelMap;
     private Ruleset ruleset;
     private Entity javaEntity;
-    private Entity rockEntity;
+    private Entity paperEntity;
     private Entity flagEntity;
 
     @BeforeEach
@@ -30,33 +30,33 @@ class RuleEvaluatorTest {
         levelMap = new LevelMap(10, 10);
         ruleset = new Ruleset();
 
-        javaEntity = new Entity(TypeRegistry.JAVA, 5, 5);
-        rockEntity = new Entity(TypeRegistry.PAPER, 6, 5);
-        flagEntity = new Entity(TypeRegistry.FLAG, 7, 5);
+        javaEntity = new Entity(TypeRegistry.JAVA);
+        paperEntity = new Entity(TypeRegistry.PAPER);
+        flagEntity = new Entity(TypeRegistry.FLAG);
 
         javaEntity.setDirection(Direction.RIGHT);
-        rockEntity.setDirection(Direction.RIGHT);
+        paperEntity.setDirection(Direction.RIGHT);
         flagEntity.setDirection(Direction.RIGHT);
 
-        levelMap.addEntity(javaEntity);
-        levelMap.addEntity(rockEntity);
-        levelMap.addEntity(flagEntity);
+        levelMap.setEntityPosition(javaEntity, 5, 5);
+        levelMap.setEntityPosition(paperEntity, 6, 5);
+        levelMap.setEntityPosition(flagEntity, 7, 5);
     }
 
     private Rule createSimpleRule(EntityType subjectType, EntityType propertyType) {
-        Entity subject = new Entity(subjectType, 0, 0);
-        Entity is = new Entity(TypeRegistry.IS, 1, 0);
-        Entity property = new Entity(propertyType, 2, 0);
+        Entity subject = new Entity(subjectType);
+        Entity is = new Entity(TypeRegistry.IS);
+        Entity property = new Entity(propertyType);
         return new Rule(subject, is, property, List.of());
     }
 
     private Rule createRuleWithCondition(EntityType subjectType, EntityType propertyType,
                                          EntityType conditionType, EntityType conditionTarget) {
-        Entity subject = new Entity(subjectType, 0, 0);
-        Entity conditionEntity = new Entity(conditionType, 1, 0);
-        Entity conditionTargetEntity = new Entity(conditionTarget, 2, 0);
-        Entity is = new Entity(TypeRegistry.IS, 3, 0);
-        Entity property = new Entity(propertyType, 4, 0);
+        Entity subject = new Entity(subjectType);
+        Entity conditionEntity = new Entity(conditionType);
+        Entity conditionTargetEntity = new Entity(conditionTarget);
+        Entity is = new Entity(TypeRegistry.IS);
+        Entity property = new Entity(propertyType);
 
         Condition condition = new Condition(conditionEntity, conditionTargetEntity);
         return new Rule(subject, is, property, List.of(condition));
@@ -79,9 +79,9 @@ class RuleEvaluatorTest {
         ruleset.setRules(List.of(rule1, rule2));
 
         assertTrue(evaluator.hasProperty(javaEntity, TypeRegistry.YOU, levelMap, ruleset));
-        assertTrue(evaluator.hasProperty(rockEntity, TypeRegistry.PUSH, levelMap, ruleset));
+        assertTrue(evaluator.hasProperty(paperEntity, TypeRegistry.PUSH, levelMap, ruleset));
         assertFalse(evaluator.hasProperty(javaEntity, TypeRegistry.PUSH, levelMap, ruleset));
-        assertFalse(evaluator.hasProperty(rockEntity, TypeRegistry.YOU, levelMap, ruleset));
+        assertFalse(evaluator.hasProperty(paperEntity, TypeRegistry.YOU, levelMap, ruleset));
     }
 
     @Test
@@ -95,7 +95,7 @@ class RuleEvaluatorTest {
         assertFalse(evaluator.hasProperty(javaEntity, TypeRegistry.YOU, levelMap, ruleset));
 
         // Java is on rock
-        levelMap.setEntityPosition(rockEntity, 5, 5);
+        levelMap.setEntityPosition(paperEntity, 5, 5);
         assertTrue(evaluator.hasProperty(javaEntity, TypeRegistry.YOU, levelMap, ruleset));
     }
 
@@ -129,7 +129,7 @@ class RuleEvaluatorTest {
         List<Entity> entities = evaluator.getEntitiesWithProperty(TypeRegistry.PUSH, levelMap, ruleset);
         assertEquals(2, entities.size());
         assertTrue(entities.contains(javaEntity));
-        assertTrue(entities.contains(rockEntity));
+        assertTrue(entities.contains(paperEntity));
     }
 
     @Test
@@ -184,7 +184,7 @@ class RuleEvaluatorTest {
         // Check that both java and rock should transform to flag
         List<Entity> sources = transformations.stream().map(Transformation::getSource).toList();
         assertTrue(sources.contains(javaEntity));
-        assertTrue(sources.contains(rockEntity));
+        assertTrue(sources.contains(paperEntity));
         transformations.forEach(t -> assertEquals(TypeRegistry.FLAG, t.getTargetType()));
     }
 
@@ -200,7 +200,7 @@ class RuleEvaluatorTest {
         assertTrue(transformations.isEmpty());
 
         // Java is on rock
-        levelMap.setEntityPosition(rockEntity, 5, 5);
+        levelMap.setEntityPosition(paperEntity, 5, 5);
         transformations = evaluator.getTransformations(levelMap, ruleset);
         assertEquals(1, transformations.size());
         assertEquals(javaEntity, transformations.getFirst().getSource());
