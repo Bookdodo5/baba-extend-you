@@ -94,7 +94,7 @@ public class SyntaxValidatorTest {
     void testMultipleCondition() {
         SyntaxValidator validator = new SyntaxValidator();
         List<Entity> sentence = List.of(
-                new Entity(TypeRegistry.TEXT_FILE),
+                new Entity(TypeRegistry.TEXT_BUG),
                 new Entity(TypeRegistry.ON),
                 new Entity(TypeRegistry.TEXT_XORGATE),
                 new Entity(TypeRegistry.AND),
@@ -110,7 +110,7 @@ public class SyntaxValidatorTest {
         assertEquals(1, rules.size());
 
         Rule r = rules.get(0);
-        assertEquals(TypeRegistry.FILE, r.getSubject());
+        assertEquals(TypeRegistry.BUG, r.getSubject());
         assertEquals(TypeRegistry.IS, r.getVerb());
         assertEquals(TypeRegistry.ERROR, r.getEffect());
         assertEquals(3, r.getConditions().size());

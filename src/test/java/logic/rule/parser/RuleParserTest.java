@@ -21,16 +21,16 @@ public class RuleParserTest {
         levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_PAPER), 1, 0);
         levelMap.setEntityPosition(new Entity(TypeRegistry.IS), 1, 1);
         levelMap.setEntityPosition(new Entity(TypeRegistry.HOT), 1, 2);
-        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_DOOR), 1, 3);
+        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_PYTHON), 1, 3);
         levelMap.setEntityPosition(new Entity(TypeRegistry.AND), 1, 3);
         levelMap.setEntityPosition(new Entity(TypeRegistry.EXTEND), 1, 4);
         levelMap.setEntityPosition(new Entity(TypeRegistry.MOVE), 1, 5);
-        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_KEY), 1, 5);
+        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_ERROR), 1, 5);
 
         levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_TILE), 3, 0);
         levelMap.setEntityPosition(new Entity(TypeRegistry.AND), 3, 1);
         levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_TILE), 3, 2);
-        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_KEY), 3, 3);
+        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_ERROR), 3, 3);
         levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_LAVA), 3, 4);
         levelMap.setEntityPosition(new Entity(TypeRegistry.NEAR), 3, 5);
 

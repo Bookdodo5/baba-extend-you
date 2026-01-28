@@ -106,7 +106,7 @@ class TextScannerTest {
         levelMap.setEntityPosition(new Entity(TypeRegistry.IS), 3, 1);
         levelMap.setEntityPosition(new Entity(TypeRegistry.YOU), 4, 1);
 
-        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_KEY), 3, 0);
+        levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_PYTHON), 3, 0);
         levelMap.setEntityPosition(new Entity(TypeRegistry.SINK), 3, 2);
 
         levelMap.setEntityPosition(new Entity(TypeRegistry.TEXT_PAPER), 0, 2);
