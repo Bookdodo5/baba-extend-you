@@ -46,8 +46,8 @@ public class TurnOrchestrator {
 
         // Handle interactions
         CompositeAction interactAction = interactionHandler.handleInteractions(levelMap, ruleset, ruleEvaluator);
-        interactAction.execute();
         ruleset.setRules(ruleParser.parseRules(levelMap));
+        interactAction.execute();
 
         // Check win
         if(ruleEvaluator.isWinConditionMet(levelMap, ruleset)) {

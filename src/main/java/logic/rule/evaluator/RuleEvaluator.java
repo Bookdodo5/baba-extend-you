@@ -8,6 +8,7 @@ import model.map.LevelMap;
 import model.rule.Rule;
 import model.rule.Ruleset;
 
+import java.awt.*;
 import java.util.List;
 import model.rule.Transformation;
 
@@ -47,9 +48,17 @@ public class RuleEvaluator {
                 .toList();
     }
 
+    public List<Entity> getEntitiesWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, Point position) {
+        return getEntitiesWithPropertyAt(property, levelMap, ruleset, position.x, position.y);
+    }
+
     public boolean hasEntityWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, int x, int y) {
         return levelMap.getEntitiesAt(x, y).stream()
                 .anyMatch(entity -> hasProperty(entity, property, levelMap, ruleset));
+    }
+
+    public boolean hasEntityWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, Point position) {
+        return hasEntityWithPropertyAt(property, levelMap, ruleset, position.x, position.y);
     }
 
     public List<Transformation> getTransformations(LevelMap levelMap, Ruleset ruleset) {

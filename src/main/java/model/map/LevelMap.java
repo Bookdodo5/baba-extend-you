@@ -139,6 +139,10 @@ public class LevelMap {
         return grid.getOrDefault(new Point(x, y), List.of());
     }
 
+    public List<Entity> getEntitiesAt(Point position) {
+        return getEntitiesAt(position.x, position.y);
+    }
+
     /** Get all entites on the map.
      *
      * @return A list of all entities on the map.

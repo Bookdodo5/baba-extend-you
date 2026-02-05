@@ -96,6 +96,62 @@ class InteractionHandlerTest {
     }
 
     @Test
+    void testProcessMoreSingle() {
+        Entity paper = addEntity(TypeRegistry.PAPER, 3, 3);
+        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.MORE);
+
+        CompositeAction result = executeInteractions();
+        assertEquals(4, result.size());
+
+        result.execute();
+        assertEquals(5, levelMap.getEntities().size());
+        assertTrue(levelMap.getEntitiesAt(3, 3).contains(paper));
+        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(3, 4).getFirst().getType());
+        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(3, 2).getFirst().getType());
+        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(2, 3).getFirst().getType());
+        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(4, 3).getFirst().getType());
+    }
+
+    @Test
+    void testProcessMoreWithBlockers() {
+        addEntity(TypeRegistry.PAPER, 3, 3);
+        addEntity(TypeRegistry.PAPER, 3, 4);
+        addEntity(TypeRegistry.WIRE, 3, 2);
+        addEntity(TypeRegistry.JAVA, 2, 3);
+        addEntity(TypeRegistry.ERROR, 4, 3);
+        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.MORE);
+        rule(TypeRegistry.TEXT_WIRE, TypeRegistry.IS, TypeRegistry.STOP);
+        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.PUSH);
+        rule(TypeRegistry.TEXT_ERROR, TypeRegistry.IS, TypeRegistry.DEFEAT); // Should not matter
+
+        CompositeAction result = executeInteractions();
+        assertEquals(4, result.size());
+
+        result.execute();
+        assertEquals(9, levelMap.getEntities().size());
+        assertEquals(2, levelMap.getEntitiesAt(4, 3).size()); // error + new paper
+        assertEquals(1, levelMap.getEntitiesAt(3, 4).size()); // paper2 blocking more
+        assertEquals(1, levelMap.getEntitiesAt(3, 2).size()); // stop blocking more
+        assertEquals(1, levelMap.getEntitiesAt(2, 3).size()); // push blocking more
+    }
+
+    @Test
+    void testProcessMoreMultiple() {
+        addEntity(TypeRegistry.PAPER, 3, 3);
+        addEntity(TypeRegistry.JAVA, 2, 3);
+        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.MORE);
+        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.MORE);
+
+        CompositeAction result = executeInteractions();
+        assertEquals(8, result.size());
+
+        result.execute();
+        assertEquals(10, levelMap.getEntities().size());
+        assertEquals(2, levelMap.getEntitiesAt(3, 3).size()); // java + new paper
+        assertEquals(2, levelMap.getEntitiesAt(2, 3).size()); // paper + new java
+    }
+
+    @Test
     void testProcessYouDefeatDestroysYouEntity() {
         Entity java = addEntity(TypeRegistry.JAVA, 5, 5);
         addEntity(TypeRegistry.PAPER, 5, 5);

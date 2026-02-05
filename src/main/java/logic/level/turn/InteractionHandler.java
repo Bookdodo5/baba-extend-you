@@ -5,6 +5,7 @@ import model.action.Action;
 import model.action.CompositeAction;
 import model.action.CreateAction;
 import model.action.DestroyAction;
+import model.entity.Direction;
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.entity.TypeRegistry;
@@ -12,6 +13,8 @@ import model.map.LevelMap;
 import model.rule.Ruleset;
 import model.rule.Transformation;
 
+import java.awt.*;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +27,7 @@ public class InteractionHandler {
     public CompositeAction handleInteractions(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator) {
         CompositeAction action = new CompositeAction();
         processTransformation(levelMap, ruleset, ruleEvaluator, action);
+        processMore(levelMap, ruleset, ruleEvaluator, action);
         processSink(levelMap, ruleset, ruleEvaluator, action);
         processYouDefeat(levelMap, ruleset, ruleEvaluator, action);
         processHotMelt(levelMap, ruleset, ruleEvaluator, action);
@@ -35,9 +39,32 @@ public class InteractionHandler {
         ruleEvaluator.getTransformations(levelMap, ruleset).forEach(transformation -> {
             Entity source = transformation.getSource();
             EntityType targetType = transformation.getTargetType();
-            action.add(new CreateAction(levelMap, targetType, levelMap.getEntityX(source), levelMap.getEntityY(source)));
+            Point position = levelMap.getEntityPosition(source);
+            action.add(new CreateAction(levelMap, targetType, position.x, position.y));
             action.add(new DestroyAction(levelMap, source));
         });
+    }
+
+    private void processMore(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
+        List<Entity> entities = ruleEvaluator.getEntitiesWithProperty(TypeRegistry.MORE, levelMap, ruleset);
+        for (Entity entity : entities) {
+            Point position = levelMap.getEntityPosition(entity);
+            for(Direction direction : Direction.values()) {
+                int adjacentX = position.x + direction.dx;
+                int adjacentY = position.y + direction.dy;
+                if(ruleEvaluator.hasEntityWithPropertyAt(TypeRegistry.PUSH, levelMap, ruleset, adjacentX, adjacentY)) {
+                    continue;
+                }
+                if(ruleEvaluator.hasEntityWithPropertyAt(TypeRegistry.STOP, levelMap, ruleset, adjacentX, adjacentY)) {
+                    continue;
+                }
+                if(levelMap.getEntitiesAt(adjacentX, adjacentY).stream().anyMatch(e -> e.getType() == entity.getType())) {
+                    continue;
+                }
+                CreateAction createAction = new CreateAction(levelMap, entity.getType(), adjacentX, adjacentY);
+                action.add(createAction);
+            }
+        }
     }
 
     private void processYouDefeat(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
@@ -98,9 +125,8 @@ public class InteractionHandler {
                     .map(a -> (DestroyAction) a)
                     .filter(a -> a.getEntity() == source)
                     .forEach(a -> {
-                        int posX = levelMap.getEntityX(a.getEntity());
-                        int posY = levelMap.getEntityY(a.getEntity());
-                        action.add(new CreateAction(levelMap, targetType, posX, posY));
+                        Point position = levelMap.getEntityPosition(a.getEntity());
+                        action.add(new CreateAction(levelMap, targetType, position.x, position.y));
                     });
         }
     }

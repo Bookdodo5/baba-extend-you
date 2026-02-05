@@ -125,6 +125,7 @@ public class TypeRegistry {
     public static final PropertyType HOT = registerProperty("hot");
     public static final PropertyType MELT = registerProperty("melt");
     public static final PropertyType MOVE = registerProperty("move");
+    public static final PropertyType MORE = registerProperty("more");
 
     public static final ConditionType ON = registerCondition("on");
     public static final ConditionType NEAR = registerCondition("near");
