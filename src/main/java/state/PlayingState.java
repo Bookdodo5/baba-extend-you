@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static application.Constant.*;
+
 public class PlayingState implements GameState {
 
     private final LevelController levelController;
@@ -48,7 +50,7 @@ public class PlayingState implements GameState {
     @Override
     public void update() {
         boolean success = GameController.getInstance().processWin();
-        if(success) {
+        if (success) {
             return;
         }
 
@@ -66,15 +68,8 @@ public class PlayingState implements GameState {
     @Override
     public void render(GraphicsContext gc) {
 
-        final int SPRITE_SIZE = 32;
-        final int MILLISECONDS_PER_FRAME = 150;
-        final int WOBBLE_FRAME_COUNT = 3;
-
         long currentTime = System.currentTimeMillis();
-
         LevelMap levelMap = levelController.getLevelMap();
-
-
 
         gc.setFill(javafx.scene.paint.Color.rgb(0, 0, 100, 0.5));
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
@@ -86,17 +81,31 @@ public class PlayingState implements GameState {
             int xCoordinate = levelMap.getEntityX(entity);
             int yCoordinate = levelMap.getEntityY(entity);
 
-
-            switch (entityType.getAnimationStyle()){
+            switch (entityType.getAnimationStyle()) {
                 case WOBBLE -> {
-                    int animationFrameNumber = (int) (currentTime % (MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT)) / MILLISECONDS_PER_FRAME;
-                    gc.drawImage(image,SPRITE_SIZE*animationFrameNumber,0,SPRITE_SIZE,SPRITE_SIZE,SPRITE_SIZE*xCoordinate,SPRITE_SIZE*yCoordinate,SPRITE_SIZE,SPRITE_SIZE);
+                    long totalCycleMs = MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT;
+                    int frameInCycle = (int) (currentTime % totalCycleMs);
+                    int animationFrameNumber = frameInCycle / MILLISECONDS_PER_FRAME;
+                    gc.drawImage(
+                            image,
+                            SPRITE_SIZE * animationFrameNumber, 0,
+                            SPRITE_SIZE, SPRITE_SIZE,
+                            SPRITE_SIZE * xCoordinate,
+                            SPRITE_SIZE * yCoordinate,
+                            SPRITE_SIZE, SPRITE_SIZE
+                    );
                 }
                 case null, default -> {
-                    gc.drawImage(image,0,0,SPRITE_SIZE,SPRITE_SIZE,SPRITE_SIZE*xCoordinate,SPRITE_SIZE*yCoordinate,SPRITE_SIZE,SPRITE_SIZE);
+                    gc.drawImage(
+                            image,
+                            0, 0,
+                            SPRITE_SIZE, SPRITE_SIZE,
+                            SPRITE_SIZE * xCoordinate,
+                            SPRITE_SIZE * yCoordinate,
+                            SPRITE_SIZE, SPRITE_SIZE
+                    );
                 }
             }
-
 
 
         }
