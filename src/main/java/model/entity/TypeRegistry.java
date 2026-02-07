@@ -29,7 +29,7 @@ public class TypeRegistry {
     private TypeRegistry() {}
 
     private static String getSpritePath(String typeId) {
-        return "sprites/" + typeId + ".png";
+        return "sprite/" + typeId.toUpperCase() + ".png";
     }
 
     private static EntityType registerEntity(String typeId, AnimationStyle animationStyle) {
