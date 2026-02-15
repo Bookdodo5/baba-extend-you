@@ -33,6 +33,10 @@ public class PlayingState implements GameState {
         particles.add(particle);
     }
 
+    public LevelController getLevelController() {
+        return levelController;
+    }
+
     public PlayingState() {
         levelController = new LevelController();
         particles = new ArrayList<>();
@@ -65,6 +69,7 @@ public class PlayingState implements GameState {
         }
 
         levelController.update(this);
+
         particles.removeIf(Particle::isDead);
         particles.forEach(Particle::update);
 
@@ -82,7 +87,8 @@ public class PlayingState implements GameState {
     @Override
     public void render(GraphicsContext gc) {
 
-        gc.setFill(Color.rgb(20, 25, 30));
+        //gc.setFill(Color.rgb(20, 25, 30));
+        gc.setFill(Color.rgb(40, 35, 49));
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         renderEntities(gc);

@@ -16,7 +16,7 @@ public class SemanticValidatorTest {
     @Test
     void testVerbValidation() {
         SemanticValidator validator = new SemanticValidator();
-        Entity rock = new Entity(TypeRegistry.TEXT_PAPER);
+        Entity rock = new Entity(TypeRegistry.TEXT_DOCUMENT);
         Entity is = new Entity(TypeRegistry.IS);
         Entity has = new Entity(TypeRegistry.HAS);
         Entity wire = new Entity(TypeRegistry.TEXT_WIRE);

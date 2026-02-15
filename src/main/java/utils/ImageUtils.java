@@ -1,6 +1,7 @@
 package utils;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
@@ -46,5 +47,23 @@ public class ImageUtils {
         }
 
         return coloredImage;
+    }
+
+    public static Image scaleNearestNeighbor(Image source, double scale) {
+        int scaledWidth = (int) (source.getWidth() * scale);
+        int scaledHeight = (int) (source.getHeight() * scale);
+
+        WritableImage scaledImage = new WritableImage(scaledWidth, scaledHeight);
+        PixelReader reader = source.getPixelReader();
+
+        for (int y = 0; y < scaledHeight; y++) {
+            for (int x = 0; x < scaledWidth; x++) {
+                int sourceX = (int) (x / scale);
+                int sourceY = (int) (y / scale);
+                scaledImage.getPixelWriter().setArgb(x, y, reader.getArgb(sourceX, sourceY));
+            }
+        }
+
+        return scaledImage;
     }
 }

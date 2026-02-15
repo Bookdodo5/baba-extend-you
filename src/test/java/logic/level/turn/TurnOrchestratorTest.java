@@ -90,9 +90,9 @@ class TurnOrchestratorTest {
     @Test
     void testRunTurnYouWithPush() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 6, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 6, 5);
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU, 0);
-        addRule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.PUSH, 1);
+        addRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.PUSH, 1);
 
         runTurn(Direction.RIGHT);
         assertEquals(6, levelMap.getX(javaEntity));
@@ -112,9 +112,9 @@ class TurnOrchestratorTest {
     @Test
     void testRunTurnYouWithStop() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 9, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 8, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 8, 5);
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU, 0);
-        addRule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.STOP, 1);
+        addRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.STOP, 1);
 
         runTurn(Direction.RIGHT); // blocked by boundary
         assertEquals(9, levelMap.getX(javaEntity));
@@ -142,20 +142,20 @@ class TurnOrchestratorTest {
     @Test
     void testRunTurnWithTransformation() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
-        addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.TEXT_PAPER, 0);
+        addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.TEXT_DOCUMENT, 0);
 
         runTurn(Direction.DOWN);
         assertFalse(levelMap.getEntities().contains(javaEntity));
         assertEquals(1, levelMap.getEntitiesAt(5, 5).size());
-        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(5, 5).getFirst().getType());
+        assertEquals(TypeRegistry.DOCUMENT, levelMap.getEntitiesAt(5, 5).getFirst().getType());
     }
 
     @Test
     void testRunTurnWithYouDefeat() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 4, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 5, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 5, 5);
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU, 0);
-        addRule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.DEFEAT, 1);
+        addRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.DEFEAT, 1);
 
         runTurn(Direction.RIGHT);
         assertFalse(levelMap.getEntities().contains(javaEntity));
@@ -165,7 +165,7 @@ class TurnOrchestratorTest {
     @Test
     void testRunTurnWithSink() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 4, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 5, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 5, 5);
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.SINK, 0);
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU, 1);
 
@@ -191,15 +191,15 @@ class TurnOrchestratorTest {
     @Test
     void testRunTurnComplexScenario() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 7, 5, Direction.LEFT);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 7, 5, Direction.LEFT);
         Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 8, 8);
 
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU, 0);
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.STOP, 1);
-        addRule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.MOVE, 2);
+        addRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.MOVE, 2);
         addRule(TypeRegistry.TEXT_PYTHON, TypeRegistry.IS, TypeRegistry.TEXT_FLAG, 3);
         addRule(TypeRegistry.TEXT_FLAG, TypeRegistry.IS, TypeRegistry.SINK, 4);
-        addRule(TypeRegistry.TEXT_FLAG, TypeRegistry.HAS, TypeRegistry.TEXT_PAPER, 5);
+        addRule(TypeRegistry.TEXT_FLAG, TypeRegistry.HAS, TypeRegistry.TEXT_DOCUMENT, 5);
 
         runTurn(Direction.RIGHT);
         assertEquals(6, levelMap.getX(javaEntity));
@@ -215,16 +215,16 @@ class TurnOrchestratorTest {
         runTurn(Direction.DOWN);
         assertFalse(levelMap.getEntities().contains(javaEntity));
         assertEquals(1, levelMap.getEntitiesAt(8, 8).size());
-        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(8, 8).getFirst().getType());
+        assertEquals(TypeRegistry.DOCUMENT, levelMap.getEntitiesAt(8, 8).getFirst().getType());
     }
 
     @Test
     void testRunTurnRulesReparsedAfterMove() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
-        setEntityPosition(TypeRegistry.TEXT_PAPER, 6, 4);
+        setEntityPosition(TypeRegistry.TEXT_DOCUMENT, 6, 4);
         setEntityPosition(TypeRegistry.IS, 6, 5);
         setEntityPosition(TypeRegistry.PUSH, 6, 6);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 5, 6);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 5, 6);
 
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU, 0);
 
@@ -232,7 +232,7 @@ class TurnOrchestratorTest {
         assertTrue(levelMap.getEntitiesAt(5, 6).contains(javaEntity));
         assertTrue(levelMap.getEntitiesAt(5, 7).contains(paperEntity));
 
-        runTurn(Direction.RIGHT); // PAPER IS PUSH now broken
+        runTurn(Direction.RIGHT); // DOCUMENT IS PUSH now broken
         runTurn(Direction.LEFT);
         runTurn(Direction.DOWN);
         assertTrue(levelMap.getEntitiesAt(5, 7).contains(javaEntity));
@@ -243,14 +243,14 @@ class TurnOrchestratorTest {
     void testRunTurnMultipleYouEntities() {
         Entity javaEntity1 = setEntityPosition(TypeRegistry.JAVA, 5, 8);
         Entity javaEntity2 = setEntityPosition(TypeRegistry.JAVA, 5, 9);
-        Entity paperEntity1 = setEntityPosition(TypeRegistry.PAPER, 7, 8);
-        Entity paperEntity2 = setEntityPosition(TypeRegistry.PAPER, 7, 9);
+        Entity paperEntity1 = setEntityPosition(TypeRegistry.DOCUMENT, 7, 8);
+        Entity paperEntity2 = setEntityPosition(TypeRegistry.DOCUMENT, 7, 9);
         Entity pythonEntity1 = setEntityPosition(TypeRegistry.PYTHON, 9, 6, Direction.DOWN);
         Entity pythonEntity2 = setEntityPosition(TypeRegistry.PYTHON, 9, 8, Direction.DOWN);
         addRule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU, 0);
-        addRule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.YOU, 1);
+        addRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.YOU, 1);
         addRule(TypeRegistry.TEXT_PYTHON, TypeRegistry.IS, TypeRegistry.YOU, 2);
-        addRule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.STOP, 3);
+        addRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.STOP, 3);
         addRule(TypeRegistry.TEXT_PYTHON, TypeRegistry.IS, TypeRegistry.MOVE, 4);
 
         runTurn(Direction.DOWN);

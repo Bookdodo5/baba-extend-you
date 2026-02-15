@@ -18,7 +18,7 @@ public class RuleParserTest {
         LevelMap levelMap = new LevelMap(10, 10);
         RuleParser ruleParser = new RuleParser();
 
-        levelMap.setPosition(new Entity(TypeRegistry.TEXT_PAPER), 1, 0);
+        levelMap.setPosition(new Entity(TypeRegistry.TEXT_DOCUMENT), 1, 0);
         levelMap.setPosition(new Entity(TypeRegistry.IS), 1, 1);
         levelMap.setPosition(new Entity(TypeRegistry.HOT), 1, 2);
         levelMap.setPosition(new Entity(TypeRegistry.TEXT_PYTHON), 1, 3);

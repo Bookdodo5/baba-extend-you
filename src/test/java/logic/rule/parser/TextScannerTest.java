@@ -43,7 +43,7 @@ class TextScannerTest {
     @Test
     void testVerticalScan() {
         // place text words vertically at x=4: (4,1),(4,2),(4,3)
-        Entity rockText = new Entity(TypeRegistry.TEXT_PAPER);
+        Entity rockText = new Entity(TypeRegistry.TEXT_DOCUMENT);
         Entity is = new Entity(TypeRegistry.IS);
         Entity you = new Entity(TypeRegistry.YOU);
         levelMap.setPosition(rockText, 4, 1);
@@ -55,7 +55,7 @@ class TextScannerTest {
         assertEquals(1, results.size());
         List<List<Entity>> seq = results.get(0);
         assertEquals(3, seq.size());
-        assertEquals(TypeRegistry.TEXT_PAPER, seq.get(0).get(0).getType());
+        assertEquals(TypeRegistry.TEXT_DOCUMENT, seq.get(0).get(0).getType());
         assertEquals(TypeRegistry.IS, seq.get(1).get(0).getType());
         assertEquals(TypeRegistry.YOU, seq.get(2).get(0).getType());
     }
@@ -102,14 +102,14 @@ class TextScannerTest {
         // two horizontal sequences on different rows
         levelMap.setPosition(new Entity(TypeRegistry.TEXT_JAVA), 0, 1);
         levelMap.setPosition(new Entity(TypeRegistry.ON), 1, 1);
-        levelMap.setPosition(new Entity(TypeRegistry.TEXT_PAPER), 2, 1);
+        levelMap.setPosition(new Entity(TypeRegistry.TEXT_DOCUMENT), 2, 1);
         levelMap.setPosition(new Entity(TypeRegistry.IS), 3, 1);
         levelMap.setPosition(new Entity(TypeRegistry.YOU), 4, 1);
 
         levelMap.setPosition(new Entity(TypeRegistry.TEXT_PYTHON), 3, 0);
         levelMap.setPosition(new Entity(TypeRegistry.SINK), 3, 2);
 
-        levelMap.setPosition(new Entity(TypeRegistry.TEXT_PAPER), 0, 2);
+        levelMap.setPosition(new Entity(TypeRegistry.TEXT_DOCUMENT), 0, 2);
         levelMap.setPosition(new Entity(TypeRegistry.IS), 1, 2);
         levelMap.setPosition(new Entity(TypeRegistry.PUSH), 2, 2);
 

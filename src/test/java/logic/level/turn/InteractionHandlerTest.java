@@ -58,7 +58,7 @@ class InteractionHandlerTest {
     @Test
     void testProcessTransformationSingle() {
         Entity java = addEntity(TypeRegistry.JAVA, 5, 5);
-        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.TEXT_PAPER);
+        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.TEXT_DOCUMENT);
 
         CompositeAction result = executeInteractions();
 
@@ -66,7 +66,7 @@ class InteractionHandlerTest {
         result.execute();
 
         assertFalse(levelMap.getEntities().contains(java));
-        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(5, 5).getFirst().getType());
+        assertEquals(TypeRegistry.DOCUMENT, levelMap.getEntitiesAt(5, 5).getFirst().getType());
     }
 
     @Test
@@ -97,8 +97,8 @@ class InteractionHandlerTest {
 
     @Test
     void testProcessMoreSingle() {
-        Entity paper = addEntity(TypeRegistry.PAPER, 3, 3);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.MORE);
+        Entity paper = addEntity(TypeRegistry.DOCUMENT, 3, 3);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.MORE);
 
         CompositeAction result = executeInteractions();
         assertEquals(4, result.size());
@@ -106,20 +106,20 @@ class InteractionHandlerTest {
         result.execute();
         assertEquals(5, levelMap.getEntities().size());
         assertTrue(levelMap.getEntitiesAt(3, 3).contains(paper));
-        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(3, 4).getFirst().getType());
-        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(3, 2).getFirst().getType());
-        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(2, 3).getFirst().getType());
-        assertEquals(TypeRegistry.PAPER, levelMap.getEntitiesAt(4, 3).getFirst().getType());
+        assertEquals(TypeRegistry.DOCUMENT, levelMap.getEntitiesAt(3, 4).getFirst().getType());
+        assertEquals(TypeRegistry.DOCUMENT, levelMap.getEntitiesAt(3, 2).getFirst().getType());
+        assertEquals(TypeRegistry.DOCUMENT, levelMap.getEntitiesAt(2, 3).getFirst().getType());
+        assertEquals(TypeRegistry.DOCUMENT, levelMap.getEntitiesAt(4, 3).getFirst().getType());
     }
 
     @Test
     void testProcessMoreWithBlockers() {
-        addEntity(TypeRegistry.PAPER, 3, 3);
-        addEntity(TypeRegistry.PAPER, 3, 4);
+        addEntity(TypeRegistry.DOCUMENT, 3, 3);
+        addEntity(TypeRegistry.DOCUMENT, 3, 4);
         addEntity(TypeRegistry.WIRE, 3, 2);
         addEntity(TypeRegistry.JAVA, 2, 3);
         addEntity(TypeRegistry.ERROR, 4, 3);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.MORE);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.MORE);
         rule(TypeRegistry.TEXT_WIRE, TypeRegistry.IS, TypeRegistry.STOP);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.PUSH);
         rule(TypeRegistry.TEXT_ERROR, TypeRegistry.IS, TypeRegistry.DEFEAT); // Should not matter
@@ -137,9 +137,9 @@ class InteractionHandlerTest {
 
     @Test
     void testProcessMoreMultiple() {
-        addEntity(TypeRegistry.PAPER, 3, 3);
+        addEntity(TypeRegistry.DOCUMENT, 3, 3);
         addEntity(TypeRegistry.JAVA, 2, 3);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.MORE);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.MORE);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.MORE);
 
         CompositeAction result = executeInteractions();
@@ -154,9 +154,9 @@ class InteractionHandlerTest {
     @Test
     void testProcessYouDefeatDestroysYouEntity() {
         Entity java = addEntity(TypeRegistry.JAVA, 5, 5);
-        addEntity(TypeRegistry.PAPER, 5, 5);
+        addEntity(TypeRegistry.DOCUMENT, 5, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.DEFEAT);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.DEFEAT);
 
         CompositeAction result = executeInteractions();
         result.execute();
@@ -167,9 +167,9 @@ class InteractionHandlerTest {
     @Test
     void testProcessYouDefeatNoOverlap() {
         Entity java = addEntity(TypeRegistry.JAVA, 5, 5);
-        addEntity(TypeRegistry.PAPER, 3, 3);
+        addEntity(TypeRegistry.DOCUMENT, 3, 3);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.DEFEAT);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.DEFEAT);
 
         CompositeAction result = executeInteractions();
         result.execute();
@@ -205,9 +205,9 @@ class InteractionHandlerTest {
 
     @Test
     void testProcessSinkDestroysAllAtPosition() {
-        Entity paper = addEntity(TypeRegistry.PAPER, 3, 3);
+        Entity paper = addEntity(TypeRegistry.DOCUMENT, 3, 3);
         Entity python = addEntity(TypeRegistry.PYTHON, 3, 3);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.SINK);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.SINK);
 
         CompositeAction result = executeInteractions();
         result.execute();
@@ -219,8 +219,8 @@ class InteractionHandlerTest {
 
     @Test
     void testProcessSinkNoOverlap() {
-        Entity paper = addEntity(TypeRegistry.PAPER, 3, 3);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.IS, TypeRegistry.SINK);
+        Entity paper = addEntity(TypeRegistry.DOCUMENT, 3, 3);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.IS, TypeRegistry.SINK);
 
         CompositeAction result = executeInteractions();
         assertEquals(0, result.size());
@@ -233,7 +233,7 @@ class InteractionHandlerTest {
     void testProcessHasCreatesEntityOnDestruction() {
         Entity java = addEntity(TypeRegistry.JAVA, 5, 5);
         addEntity(TypeRegistry.PYTHON, 5, 5);
-        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.HAS, TypeRegistry.TEXT_PAPER);
+        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.HAS, TypeRegistry.TEXT_DOCUMENT);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.IS, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.IS, TypeRegistry.DEFEAT);
 
@@ -242,14 +242,14 @@ class InteractionHandlerTest {
 
         assertFalse(levelMap.getEntities().contains(java));
         assertEquals(1, levelMap.getEntitiesAt(5, 5).stream()
-                .filter(e -> e.getType() == TypeRegistry.PAPER)
+                .filter(e -> e.getType() == TypeRegistry.DOCUMENT)
                 .count());
     }
 
     @Test
     void testProcessHasNoDestruction() {
         addEntity(TypeRegistry.JAVA, 5, 5);
-        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.HAS, TypeRegistry.TEXT_PAPER);
+        rule(TypeRegistry.TEXT_JAVA, TypeRegistry.HAS, TypeRegistry.TEXT_DOCUMENT);
 
         CompositeAction result = executeInteractions();
         assertEquals(0, result.size());

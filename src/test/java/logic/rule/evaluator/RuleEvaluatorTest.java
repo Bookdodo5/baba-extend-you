@@ -31,7 +31,7 @@ class RuleEvaluatorTest {
         ruleset = new Ruleset();
 
         javaEntity = new Entity(TypeRegistry.JAVA);
-        paperEntity = new Entity(TypeRegistry.PAPER);
+        paperEntity = new Entity(TypeRegistry.DOCUMENT);
         flagEntity = new Entity(TypeRegistry.FLAG);
 
         javaEntity.setDirection(Direction.RIGHT);
@@ -73,8 +73,8 @@ class RuleEvaluatorTest {
         // JAVA IS YOU
         Rule rule1 = createSimpleRule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
 
-        // PAPER IS PUSH
-        Rule rule2 = createSimpleRule(TypeRegistry.TEXT_PAPER, TypeRegistry.PUSH);
+        // DOCUMENT IS PUSH
+        Rule rule2 = createSimpleRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.PUSH);
 
         ruleset.setRules(List.of(rule1, rule2));
 
@@ -86,9 +86,9 @@ class RuleEvaluatorTest {
 
     @Test
     void testHasPropertyWithCondition() {
-        // JAVA ON PAPER IS YOU
+        // JAVA ON DOCUMENT IS YOU
         Rule rule = createRuleWithCondition(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU,
-                                           TypeRegistry.ON, TypeRegistry.TEXT_PAPER);
+                                           TypeRegistry.ON, TypeRegistry.TEXT_DOCUMENT);
         ruleset.setRules(List.of(rule));
 
         // Java is not on rock
@@ -121,8 +121,8 @@ class RuleEvaluatorTest {
         // JAVA IS PUSH
         Rule rule1 = createSimpleRule(TypeRegistry.TEXT_JAVA, TypeRegistry.PUSH);
 
-        // PAPER IS PUSH
-        Rule rule2 = createSimpleRule(TypeRegistry.TEXT_PAPER, TypeRegistry.PUSH);
+        // DOCUMENT IS PUSH
+        Rule rule2 = createSimpleRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.PUSH);
 
         ruleset.setRules(List.of(rule1, rule2));
 
@@ -134,9 +134,9 @@ class RuleEvaluatorTest {
 
     @Test
     void testGetEntitiesWithPropertyWithCondition() {
-        // JAVA FACING PAPER IS WIN
+        // JAVA FACING DOCUMENT IS WIN
         Rule rule = createRuleWithCondition(TypeRegistry.TEXT_JAVA, TypeRegistry.WIN,
-                                           TypeRegistry.FACING, TypeRegistry.TEXT_PAPER);
+                                           TypeRegistry.FACING, TypeRegistry.TEXT_DOCUMENT);
         ruleset.setRules(List.of(rule));
 
         // Java is facing rock
@@ -158,14 +158,14 @@ class RuleEvaluatorTest {
 
     @Test
     void testGetTransformationsSingle() {
-        // JAVA IS PAPER
-        Rule rule = createSimpleRule(TypeRegistry.TEXT_JAVA, TypeRegistry.TEXT_PAPER);
+        // JAVA IS DOCUMENT
+        Rule rule = createSimpleRule(TypeRegistry.TEXT_JAVA, TypeRegistry.TEXT_DOCUMENT);
         ruleset.setRules(List.of(rule));
 
         List<Transformation> transformations = evaluator.getTransformations(levelMap, ruleset);
         assertEquals(1, transformations.size());
         assertEquals(javaEntity, transformations.getFirst().getSource());
-        assertEquals(TypeRegistry.PAPER, transformations.getFirst().getTargetType());
+        assertEquals(TypeRegistry.DOCUMENT, transformations.getFirst().getTargetType());
     }
 
     @Test
@@ -173,8 +173,8 @@ class RuleEvaluatorTest {
         // JAVA IS FLAG
         Rule rule1 = createSimpleRule(TypeRegistry.TEXT_JAVA, TypeRegistry.TEXT_FLAG);
 
-        // PAPER IS FLAG
-        Rule rule2 = createSimpleRule(TypeRegistry.TEXT_PAPER, TypeRegistry.TEXT_FLAG);
+        // DOCUMENT IS FLAG
+        Rule rule2 = createSimpleRule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.TEXT_FLAG);
 
         ruleset.setRules(List.of(rule1, rule2));
 
@@ -190,9 +190,9 @@ class RuleEvaluatorTest {
 
     @Test
     void testGetTransformationsWithCondition() {
-        // JAVA ON PAPER IS FLAG
+        // JAVA ON DOCUMENT IS FLAG
         Rule rule = createRuleWithCondition(TypeRegistry.TEXT_JAVA, TypeRegistry.TEXT_FLAG,
-                                           TypeRegistry.ON, TypeRegistry.TEXT_PAPER);
+                                           TypeRegistry.ON, TypeRegistry.TEXT_DOCUMENT);
         ruleset.setRules(List.of(rule));
 
         // Java is not on rock

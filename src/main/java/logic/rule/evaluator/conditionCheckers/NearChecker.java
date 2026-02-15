@@ -1,5 +1,6 @@
 package logic.rule.evaluator.conditionCheckers;
 
+import logic.rule.evaluator.InheritanceResolver;
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.map.LevelMap;
@@ -12,6 +13,8 @@ import java.util.List;
 public class NearChecker implements ConditionChecker {
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
+        InheritanceResolver inheritanceResolver = new InheritanceResolver();
+
         int entityX = levelMap.getX(entity);
         int entityY = levelMap.getY(entity);
         EntityType targetNear = condition.getParameter();
@@ -22,7 +25,7 @@ public class NearChecker implements ConditionChecker {
                 if (!levelMap.isInside(checkX, checkY)) continue;
                 List<Entity> entitiesToCheck = levelMap.getEntitiesAt(checkX, checkY);
                 boolean match = entitiesToCheck.stream()
-                        .anyMatch(e -> e.getType() == targetNear && e != entity);
+                        .anyMatch(e -> inheritanceResolver.isInstanceOf(e, targetNear, levelMap, ruleset) && e != entity);
                 if (match) {
                     return true;
                 }

@@ -71,10 +71,11 @@ public class TypeRegistry {
     public static final EntityType LAVA = registerEntity("lava", AnimationStyle.TILED);
     public static final EntityType WATER = registerEntity("water", AnimationStyle.TILED);
     public static final EntityType TILE = registerEntity("tile", AnimationStyle.WOBBLE);
-    public static final EntityType PAPER = registerEntity("paper", AnimationStyle.WOBBLE);
+    public static final EntityType DOCUMENT = registerEntity("document", AnimationStyle.WOBBLE);
     public static final EntityType ERROR = registerEntity("error", AnimationStyle.WOBBLE);
     public static final EntityType CHECK = registerEntity("check", AnimationStyle.WOBBLE);
     public static final EntityType WARNING = registerEntity("warning", AnimationStyle.WOBBLE);
+    public static final EntityType RECORD = registerEntity("record", AnimationStyle.WOBBLE);
     public static final EntityType WIRE = registerEntity("wire", AnimationStyle.TILED);
     public static final EntityType GIT = registerEntity("git", AnimationStyle.WOBBLE);
     public static final EntityType DATABASE = registerEntity("database", AnimationStyle.WOBBLE);
@@ -92,9 +93,10 @@ public class TypeRegistry {
     public static final NounType TEXT_LAVA = registerNoun("text_lava", LAVA);
     public static final NounType TEXT_WATER = registerNoun("text_water", WATER);
     public static final NounType TEXT_FLAG = registerNoun("text_flag", FLAG);
-    public static final NounType TEXT_PAPER = registerNoun("text_paper", PAPER);
+    public static final NounType TEXT_DOCUMENT = registerNoun("text_document", DOCUMENT);
     public static final NounType TEXT_TILE = registerNoun("text_tile", TILE);
     public static final NounType TEXT_WARNING = registerNoun("text_warning", WARNING);
+    public static final NounType TEXT_RECORD = registerNoun("text_record", RECORD);
     public static final NounType TEXT_ERROR = registerNoun("text_error", ERROR);
     public static final NounType TEXT_CHECK = registerNoun("text_check", CHECK);
     public static final NounType TEXT_BUG = registerNoun("text_bug", BUG);

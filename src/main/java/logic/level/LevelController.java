@@ -64,6 +64,8 @@ public class LevelController {
 
     public void update(PlayingState playingState) {
 
+        addPassiveParticles(playingState);
+
         long currentTime = System.currentTimeMillis();
 
         InputCommand triggered = InputUtility.getTriggered();
@@ -114,7 +116,7 @@ public class LevelController {
         // TODO (SOUND) : play undo sound
     }
 
-    private void handleReset() {
+    public void handleReset() {
         System.out.println("Reset action triggered");
         levelMap = new LevelMap(levelMapPrototype);
         actionStack.clear();
@@ -128,11 +130,11 @@ public class LevelController {
         if(actions.getActions().isEmpty()) {
             return;
         }
-        addParticles(actions, playingState);
+        addTurnParticles(actions, playingState);
         actionStack.newAction(actions);
     }
 
-    private void addParticles(CompositeAction actions, PlayingState playingState) {
+    private void addTurnParticles(CompositeAction actions, PlayingState playingState) {
         for(Action action : actions.getActions()) {
             if(action instanceof MoveAction moveAction) {
                 moveAction.addParticle(playingState);
@@ -140,8 +142,12 @@ public class LevelController {
                 destroyAction.addParticle(playingState);
             }
         }
+    }
+
+    private void addPassiveParticles(PlayingState playingState) {
+
         for(Entity entity : ruleEvaluator.getEntitiesWithProperty(TypeRegistry.HOT, levelMap, ruleset)) {
-            if(Math.random() < 0.05) {
+            if(Math.random() < 0.002) {
                 playingState.addParticle(new Particle(
                         levelMap.getX(entity) + (Math.random() - 0.5) / 2.0,
                         levelMap.getY(entity) + (Math.random() - 0.5) / 2.0,
@@ -149,6 +155,18 @@ public class LevelController {
                         (Math.random()) / 1000.0,
                         ParticleType.HOT,
                         Color.GRAY
+                ));
+            }
+        }
+        for(Entity entity : ruleEvaluator.getEntitiesWithProperty(TypeRegistry.WIN, levelMap, ruleset)) {
+            if(Math.random() < 0.02) {
+                playingState.addParticle(new Particle(
+                        levelMap.getX(entity) + (Math.random() - 0.5) / 2.0,
+                        levelMap.getY(entity) + (Math.random() - 0.5) / 2.0,
+                        (Math.random() - 0.5) / 400.0,
+                        (Math.random() - 0.5) / 400.0,
+                        ParticleType.CROSS,
+                        Color.LIGHTGOLDENRODYELLOW
                 ));
             }
         }

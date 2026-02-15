@@ -1,5 +1,6 @@
 package logic.rule.evaluator.conditionCheckers;
 
+import logic.rule.evaluator.InheritanceResolver;
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.map.LevelMap;
@@ -12,11 +13,13 @@ import java.util.List;
 public class OnChecker implements ConditionChecker {
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
+        InheritanceResolver inheritanceResolver = new InheritanceResolver();
+
         int checkX = levelMap.getX(entity);
         int checkY = levelMap.getY(entity);
         EntityType targetOn = condition.getParameter();
         List<Entity> entitiesToCheck = levelMap.getEntitiesAt(checkX, checkY);
         return entitiesToCheck.stream()
-                .anyMatch(e -> e.getType() == targetOn && e != entity);
+                .anyMatch(e -> inheritanceResolver.isInstanceOf(e, targetOn, levelMap, ruleset) && e != entity);
     }
 }

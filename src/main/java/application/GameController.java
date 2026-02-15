@@ -1,6 +1,7 @@
 package application;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
 import model.map.LevelLoader;
 import model.map.LevelMap;
 import model.particle.Particle;
@@ -19,6 +20,7 @@ import java.util.*;
  */
 public class GameController {
     private static GameController instance;
+    private StackPane rootPane = new StackPane();
     private final Map<GameStateEnum, GameState> stateMap;
     private final Set<String> completedLevels;
     private GameState currentState;
@@ -34,6 +36,10 @@ public class GameController {
         stateMap.put(GameStateEnum.MAP, new MapState());
         stateMap.put(GameStateEnum.TITLE, new TitleState());
         stateMap.put(GameStateEnum.PAUSED, new PauseState());
+    }
+
+    public StackPane getRootPane() {
+        return rootPane;
     }
 
     public static GameController getInstance() {
@@ -81,6 +87,10 @@ public class GameController {
 
     public boolean isLevelCompleted(String levelFilePath) {
         return completedLevels.contains(levelFilePath);
+    }
+
+    public String getCurrentLevelFilePath() {
+        return currentLevelFilePath;
     }
 
     public void update() {

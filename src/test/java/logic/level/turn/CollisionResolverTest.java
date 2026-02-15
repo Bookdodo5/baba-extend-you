@@ -128,10 +128,10 @@ class CollisionResolverTest {
     void testResolveCollisionsWithPushChain() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
         Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 7, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.RECORD, 7, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.PUSH);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.PUSH);
+        rule(TypeRegistry.TEXT_RECORD, TypeRegistry.PUSH);
 
         MoveIntent intent = new MoveIntent(javaEntity, Direction.RIGHT, false);
         CompositeAction result = resolveCollisions(List.of(intent));
@@ -147,10 +147,10 @@ class CollisionResolverTest {
     void testResolveCollisionsWithPushIntoStop() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5);
         Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 7, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 7, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.PUSH);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.STOP);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.STOP);
 
         MoveIntent intent = new MoveIntent(javaEntity, Direction.RIGHT, false);
         CompositeAction result = resolveCollisions(List.of(intent));
@@ -198,10 +198,10 @@ class CollisionResolverTest {
     void testResolveCollisionsWithMovePropertyBounceIntoStop() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
         Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 4, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 4, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.MOVE);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.STOP);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.STOP);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.STOP);
 
         MoveIntent intent = new MoveIntent(javaEntity, Direction.RIGHT, true);
         CompositeAction result = resolveCollisions(List.of(intent));
@@ -216,16 +216,16 @@ class CollisionResolverTest {
     void testResolveCollisionsWithMovePropertyBounceIntoPush() {
         Entity javaEntity = setEntityPosition(TypeRegistry.JAVA, 5, 5, Direction.RIGHT);
         Entity pythonEntity = setEntityPosition(TypeRegistry.PYTHON, 6, 5);
-        Entity paperEntity = setEntityPosition(TypeRegistry.PAPER, 4, 5);
+        Entity paperEntity = setEntityPosition(TypeRegistry.DOCUMENT, 4, 5);
         rule(TypeRegistry.TEXT_JAVA, TypeRegistry.MOVE);
         rule(TypeRegistry.TEXT_PYTHON, TypeRegistry.STOP);
-        rule(TypeRegistry.TEXT_PAPER, TypeRegistry.PUSH);
+        rule(TypeRegistry.TEXT_DOCUMENT, TypeRegistry.PUSH);
 
         MoveIntent intent = new MoveIntent(javaEntity, Direction.RIGHT, true);
         CompositeAction result = resolveCollisions(List.of(intent));
         result.execute();
 
-        // JAVA should rotate and push PAPER
+        // JAVA should rotate and push DOCUMENT
         assertEquals(4, levelMap.getX(javaEntity));
         assertEquals(Direction.LEFT, javaEntity.getDirection());
         assertEquals(3, levelMap.getX(paperEntity));

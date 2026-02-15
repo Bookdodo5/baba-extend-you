@@ -70,7 +70,7 @@ class PermutationGeneratorTest {
         List<List<Entity>> line1 = new ArrayList<>();
         line1.add(List.of(new Entity(TypeRegistry.TEXT_JAVA), new Entity(TypeRegistry.TEXT_PYTHON)));
         line1.add(List.of(new Entity(TypeRegistry.ON)));
-        line1.add(List.of(new Entity(TypeRegistry.TEXT_PAPER)));
+        line1.add(List.of(new Entity(TypeRegistry.TEXT_DOCUMENT)));
 
         // line 2: 1 permutation
         List<List<Entity>> line2 = new ArrayList<>();

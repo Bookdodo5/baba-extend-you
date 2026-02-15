@@ -56,6 +56,9 @@ public class InteractionHandler {
                 if(occupiedPositions.contains(new Point(adjacentX, adjacentY))) {
                     continue;
                 }
+                if(!levelMap.isInside(adjacentX, adjacentY)) {
+                    continue;
+                }
                 if(ruleEvaluator.hasEntityWithPropertyAt(TypeRegistry.PUSH, levelMap, ruleset, adjacentX, adjacentY)) {
                     continue;
                 }
@@ -131,7 +134,7 @@ public class InteractionHandler {
                     .filter(a -> a.getEntity() == source)
                     .forEach(a -> {
                         Point position = levelMap.getPosition(a.getEntity());
-                        action.add(new CreateAction(levelMap, targetType, position.x, position.y));
+                        action.add(new CreateAction(levelMap, targetType, source.getDirection(), position.x, position.y));
                     });
         }
     }

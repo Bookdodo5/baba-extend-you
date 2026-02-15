@@ -1,0 +1,12 @@
+17,11
+text_tile   , is          , defeat      , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .
+has         , wire        , wire        , wire        , wire        , wire        , .           , text_database, is          , you         , .           , wire        , wire        , wire        , wire        , wire        , .
+text_flag   , wire        , .           , .           , .           , wire        , .           , .           , .           , .           , .           , wire        , .           , .           , tile        , wire        , .
+.           , wire        , .           , database    , .           , .           , .           , text_tile   , is          , more        , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , wire        , wire        , wire        , wire        , .           , .           , .           , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , text_database, is          , stop        , wire        , .           , .           , .           , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , text_wire   , is          , stop        , wire        , .           , .           , .           , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , text_flag   , is          , win         , wire        , .           , .           , .           , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , wire        , wire        , wire        , wire        , .           , .           , .           , .           , .           , .           , .           , .           , .           , wire        , .
+.           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .

@@ -28,18 +28,18 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        StackPane root = new StackPane();
+        GameController gameController = GameController.getInstance();
+        GameScreen screen = new GameScreen(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
+
+        StackPane root = gameController.getRootPane();
         Scene scene = new Scene(root);
         stage.setWidth(TARGET_SCREEN_WIDTH);
         stage.setHeight(TARGET_SCREEN_HEIGHT);
         stage.setScene(scene);
         stage.show();
 
-        GameController gameController = GameController.getInstance();
-        GameScreen screen = new GameScreen(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
-
         // REMOVE THIS LINE AFTER LEVEL SELECTOR IS DONE
-        gameController.playLevel("map/17_LINKED_LIST.csv");
+        gameController.playLevel("map/23_TRIGGER.csv");
 
         screen.updateScale(root);
         root.widthProperty().addListener((_, _, _) -> screen.updateScale(root));

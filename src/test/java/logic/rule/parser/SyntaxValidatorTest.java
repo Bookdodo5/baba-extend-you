@@ -71,7 +71,7 @@ public class SyntaxValidatorTest {
         List<Entity> sentence = List.of(
                 new Entity(TypeRegistry.TEXT_JAVA),
                 new Entity(TypeRegistry.ON),
-                new Entity(TypeRegistry.TEXT_PAPER),
+                new Entity(TypeRegistry.TEXT_DOCUMENT),
                 new Entity(TypeRegistry.IS),
                 new Entity(TypeRegistry.YOU)
         );
@@ -87,7 +87,7 @@ public class SyntaxValidatorTest {
 
         Condition c = r.getConditions().get(0);
         assertEquals(TypeRegistry.ON, c.getCondition());
-        assertEquals(TypeRegistry.PAPER, c.getParameter());
+        assertEquals(TypeRegistry.DOCUMENT, c.getParameter());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class SyntaxValidatorTest {
                 new Entity(TypeRegistry.PUSH),
                 new Entity(TypeRegistry.AND),
                 new Entity(TypeRegistry.EXTEND),
-                new Entity(TypeRegistry.TEXT_PAPER)
+                new Entity(TypeRegistry.TEXT_DOCUMENT)
         );
 
         List<Rule> rules = validator.validate(List.of(sentence));
@@ -152,7 +152,7 @@ public class SyntaxValidatorTest {
         Rule r2 = rules.get(1);
         assertEquals(TypeRegistry.CHIP, r2.getSubject());
         assertEquals(TypeRegistry.EXTEND, r2.getVerb());
-        assertEquals(TypeRegistry.PAPER, r2.getEffect());
+        assertEquals(TypeRegistry.DOCUMENT, r2.getEffect());
         assertEquals(0, r2.getConditions().size());
     }
 
@@ -233,7 +233,7 @@ public class SyntaxValidatorTest {
                 new Entity(TypeRegistry.YOU),
                 new Entity(TypeRegistry.HAS),
                 new Entity(TypeRegistry.PUSH),
-                new Entity(TypeRegistry.TEXT_PAPER),
+                new Entity(TypeRegistry.TEXT_DOCUMENT),
                 new Entity(TypeRegistry.TEXT_JAVA)
         );
 

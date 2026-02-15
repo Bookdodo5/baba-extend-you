@@ -26,10 +26,10 @@ public class Rule {
         this.verbText = verbText;
         this.effectText = effectText;
         this.conditions = conditions;
-        this.subject = ((NounType)subjectText.getType()).getReferencedType();
-        this.verb = (VerbType)verbText.getType();
+        this.subject = ((NounType) subjectText.getType()).getReferencedType();
+        this.verb = (VerbType) verbText.getType();
 
-        EffectType effectType = (EffectType)effectText.getType();
+        EffectType effectType = (EffectType) effectText.getType();
         if (effectType instanceof NounType nounType) {
             this.effect = nounType.getReferencedType();
         } else {
@@ -83,19 +83,20 @@ public class Rule {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(subject.getTypeId());
-        sb.append(",");
-        sb.append(verb.getTypeId());
-        sb.append(",");
-        sb.append(effect.getTypeId());
-        sb.append(",");
-        conditions.forEach(c -> {
-            sb.append(c.getCondition().getTypeId());
-            sb.append(":");
-            sb.append(c.getParameter().getTypeId());
-            sb.append(";");
-        });
-        return sb.toString();
+        StringBuilder ruleText = new StringBuilder();
+
+        ruleText.append(getSubject().getTypeId());
+        ruleText.append(" ");
+        for (Condition condition : getConditions()) {
+            ruleText.append("(");
+            ruleText.append(condition.getCondition().getTypeId());
+            ruleText.append(" ");
+            ruleText.append(condition.getParameter().getTypeId());
+            ruleText.append(") ");
+        }
+        ruleText.append(getVerb().getTypeId());
+        ruleText.append(" ");
+        ruleText.append(getEffect().getTypeId());
+        return ruleText.toString();
     }
 }
