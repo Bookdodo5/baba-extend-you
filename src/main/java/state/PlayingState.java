@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import logic.input.InputCommand;
 import logic.level.LevelController;
 import logic.input.InputUtility;
+import model.entity.Direction;
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.map.LevelMap;
@@ -155,6 +156,17 @@ public class PlayingState implements GameState {
                             SPRITE_SIZE, SPRITE_SIZE
                     );
                 }
+                case DIRECTIONAL -> {
+                    int directionalNumber = getDirectionalNumber(entity);
+                    gc.drawImage(
+                            image,
+                            SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * directionalNumber,
+                            SPRITE_SIZE, SPRITE_SIZE,
+                            SPRITE_SIZE * xCoordinate,
+                            SPRITE_SIZE * yCoordinate,
+                            SPRITE_SIZE, SPRITE_SIZE
+                    );
+                }
                 case null, default -> gc.drawImage(
                         image,
                         SPRITE_SIZE * animationFrameNumber, 0,
@@ -166,6 +178,22 @@ public class PlayingState implements GameState {
             }
             gc.setEffect(null);
         }
+    }
+
+    private static int getDirectionalNumber(Entity entity) {
+        Direction direction = entity.getDirection();
+        // simplest way I could think of...
+        // -mistertfy64, 2026-02-16
+        if (direction == Direction.UP) {
+            return 0;
+        } else if (direction == Direction.RIGHT) {
+            return 1;
+        } else if (direction == Direction.LEFT) {
+            return 2;
+        } else if (direction == Direction.DOWN) {
+            return 3;
+        }
+        return 0;
     }
 
     private void renderParticles(GraphicsContext gc) {
