@@ -13,6 +13,7 @@ import model.entity.EntityType;
 import model.map.LevelMap;
 import model.particle.Particle;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -97,6 +98,8 @@ public class PlayingState implements GameState {
 
     private void renderEntities(GraphicsContext gc) {
 
+        Point[] surroundingDirections = {new Point(0,-1),new Point(1,0), new Point(0,1),new Point(-1,0)};
+
         long currentTime = System.currentTimeMillis();
         long totalCycleMs = MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT;
         int frameInCycle = (int) (currentTime % totalCycleMs);
@@ -133,6 +136,25 @@ public class PlayingState implements GameState {
                         SPRITE_SIZE * yCoordinate,
                         SPRITE_SIZE, SPRITE_SIZE
                 );
+                case TILED -> {
+                    int surroundingNumber = 0;
+                    for (int direction = 0; direction < 4; direction++){
+                        List<Entity> surroundingEnemies = levelMap.getEntitiesAt(xCoordinate + surroundingDirections[direction].x,yCoordinate + surroundingDirections[direction].y);
+                        boolean hasSurroundingInDirection = surroundingEnemies.stream().anyMatch(e -> e.getType() == entityType);
+                        if (hasSurroundingInDirection) {
+                            surroundingNumber += Math.powExact(2,direction);
+                        }
+                    }
+
+                    gc.drawImage(
+                            image,
+                            SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * surroundingNumber,
+                            SPRITE_SIZE, SPRITE_SIZE,
+                            SPRITE_SIZE * xCoordinate,
+                            SPRITE_SIZE * yCoordinate,
+                            SPRITE_SIZE, SPRITE_SIZE
+                    );
+                }
                 case null, default -> gc.drawImage(
                         image,
                         SPRITE_SIZE * animationFrameNumber, 0,
