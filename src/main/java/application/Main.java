@@ -40,7 +40,8 @@ public class Main extends Application {
 
         // REMOVE THIS LINE AFTER LEVEL SELECTOR IS DONE
         gameController.playLevel("map/23_TRIGGER.csv");
-
+        // This line(44) for testing music running
+        Music.play("sound/music/Pixel_Quest_MainTheme.wav");
         screen.updateScale(root);
         root.widthProperty().addListener((_, _, _) -> screen.updateScale(root));
         root.heightProperty().addListener((_, _, _) -> screen.updateScale(root));
