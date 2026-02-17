@@ -117,6 +117,7 @@ public class PauseState implements GameState {
                 rulesPane.getChildren().add(ruleNode);
             }
         }
+
         pauseOverlay.getChildren().addAll(
                 levelHeaderText,
                 resumeButton,

@@ -39,6 +39,7 @@ public class GameController {
         stateMap.put(GameStateEnum.MAP, new MapState());
         stateMap.put(GameStateEnum.TITLE, new TitleState());
         stateMap.put(GameStateEnum.PAUSED, new PauseState());
+        stateMap.put(GameStateEnum.CREDITS, new CreditsState());
     }
 
     public StackPane getRootPane() {

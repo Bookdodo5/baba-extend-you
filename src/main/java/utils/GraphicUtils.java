@@ -99,11 +99,15 @@ public class GraphicUtils {
         return createTextNode(text, TEXT_SCALE, Color.WHITE);
     }
 
-    public static Button createButton(String text, Runnable action, int prefWidth) {
+    public static Button createButton(String text, Runnable action, int prefWidth, int prefHeight) {
         Button button = createButton(text, action);
         button.setPrefWidth(prefWidth);
-        button.setPrefHeight(FONT_HEIGHT * TEXT_SCALE);
+        button.setPrefHeight(prefHeight);
         return button;
+    }
+
+    public static Button createButton(String text, Runnable action, int prefWidth) {
+        return createButton(text, action, prefWidth, (int) (FONT_HEIGHT * TEXT_SCALE));
     }
 
     public static Button createButton(String text, Runnable action) {
