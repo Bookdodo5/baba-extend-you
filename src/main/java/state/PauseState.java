@@ -73,7 +73,9 @@ public class PauseState implements GameState {
             playingState.render(gc);
         }
 
-        gc.setFill(Color.rgb(42, 163, 173, 0.3));
+        Color colorTheme = GameController.getInstance().getColorTheme();
+        Color translucentColor = colorTheme.interpolate(Color.TRANSPARENT, 0.4);
+        gc.setFill(translucentColor.darker());
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 

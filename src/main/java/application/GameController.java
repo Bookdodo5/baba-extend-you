@@ -2,6 +2,7 @@ package application;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import model.map.LevelLoader;
 import model.map.LevelMap;
 import model.particle.Particle;
@@ -20,18 +21,20 @@ import java.util.*;
  */
 public class GameController {
     private static GameController instance;
-    private StackPane rootPane = new StackPane();
+    private final StackPane rootPane = new StackPane();
     private final Map<GameStateEnum, GameState> stateMap;
     private final Set<String> completedLevels;
     private GameState currentState;
     private GameStateEnum currentStateEnum;
     private boolean isCurrentLevelWin;
     private String currentLevelFilePath;
+    private Color colorTheme;
 
     private GameController() {
         stateMap = new HashMap<>();
         completedLevels = new HashSet<>();
         currentLevelFilePath = null;
+        colorTheme = Color.DARKSLATEGRAY;
         stateMap.put(GameStateEnum.PLAYING, new PlayingState());
         stateMap.put(GameStateEnum.MAP, new MapState());
         stateMap.put(GameStateEnum.TITLE, new TitleState());
@@ -40,6 +43,14 @@ public class GameController {
 
     public StackPane getRootPane() {
         return rootPane;
+    }
+
+    public Color getColorTheme() {
+        return colorTheme;
+    }
+
+    public void setColorTheme(Color color) {
+        colorTheme = color;
     }
 
     public static GameController getInstance() {

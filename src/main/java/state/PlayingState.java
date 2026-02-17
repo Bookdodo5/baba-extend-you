@@ -87,12 +87,16 @@ public class PlayingState implements GameState {
     @Override
     public void render(GraphicsContext gc) {
 
-        //gc.setFill(Color.rgb(20, 25, 30));
-        gc.setFill(Color.rgb(40, 35, 49));
+        Color theme = GameController.getInstance().getColorTheme();
+        Color bgColor = theme.interpolate(Color.BLACK, 0.8).brighter();
+        gc.setFill(bgColor);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         renderEntities(gc);
         renderParticles(gc);
+
+        gc.setFill(theme.interpolate(Color.TRANSPARENT, 0.9));
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
     private void renderEntities(GraphicsContext gc) {
