@@ -33,7 +33,6 @@ public class Music {
 
     public static void playLoop(String fileLocation) {
         try {
-            // Load from classpath
             URL musicPath = Music.class.getClassLoader().getResource(fileLocation);
 
             if (musicPath == null) {
@@ -44,30 +43,7 @@ public class Music {
             AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
             loopClip = AudioSystem.getClip();
             loopClip.open(audioInput);
-
-            // Add listener to detect when music ends
-            loopClip.addLineListener(new LineListener() {
-                @Override
-                public void update(LineEvent event) {
-                    if (event.getType() == LineEvent.Type.STOP) {
-                        // Create a new thread to handle the delay and restart
-                        new Thread(() -> {
-                            try {
-                                // 3 second delay
-                                Thread.sleep(3000);
-
-                                // Restart from beginning
-                                loopClip.setFramePosition(0);
-                                loopClip.start();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }).start();
-                    }
-                }
-            });
-
-            loopClip.start();
+            loopClip.loop(Clip.LOOP_CONTINUOUSLY);
 
         } catch (Exception e) {
             System.out.println("Error playing music loop: " + e.getMessage());
