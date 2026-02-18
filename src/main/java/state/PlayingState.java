@@ -88,7 +88,7 @@ public class PlayingState implements GameState {
     public void render(GraphicsContext gc) {
 
         Color theme = GameController.getInstance().getColorTheme();
-        Color bgColor = theme.interpolate(Color.BLACK, 0.8).brighter();
+        Color bgColor = theme.interpolate(Color.BLACK, 0.8).darker();
         gc.setFill(bgColor);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 

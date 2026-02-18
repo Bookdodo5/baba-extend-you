@@ -1,5 +1,6 @@
 package application;
 
+import javafx.scene.effect.Bloom;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import logic.input.InputUtility;

@@ -3,6 +3,7 @@ package application;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.effect.*;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
@@ -11,10 +12,6 @@ import javafx.stage.Stage;
 import logic.input.InputUtility;
 import state.GameStateEnum;
 
-import java.awt.*;
-import java.util.ArrayList;
-
-import javafx.scene.paint.*;
 
 import static application.Constant.TARGET_SCREEN_WIDTH;
 import static application.Constant.TARGET_SCREEN_HEIGHT;
@@ -47,7 +44,7 @@ public class Main extends Application {
         Music.playLoop("sound/music/Pixel_Quest_MainTheme.wav");
 
         // CHANGE THE COLOR THEME DYNAMICALLY
-        gameController.setColorTheme(Color.SLATEGRAY);
+        gameController.setColorTheme(Color.MAROON);
 
         screen.updateScale(root);
         root.widthProperty().addListener((_, _, _) -> screen.updateScale(root));
@@ -55,6 +52,8 @@ public class Main extends Application {
 
         root.getChildren().add(screen);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+        root.setEffect(new Glow(0.5));
+
         screen.requestFocus();
 
         AnimationTimer animation = new AnimationTimer() {

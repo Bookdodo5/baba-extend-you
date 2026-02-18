@@ -5,26 +5,31 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.effect.Bloom;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import logic.input.InputCommand;
-import logic.input.InputUtility;
 import utils.GraphicUtils;
 
 import java.util.Objects;
 
-import static application.Constant.TARGET_SCREEN_HEIGHT;
-import static application.Constant.TARGET_SCREEN_WIDTH;
+import static application.Constant.*;
 
 public class TitleState implements GameState {
     private VBox titleBox;
     private static final Image TITLE_IMAGE = new Image(
             Objects.requireNonNull(
                     TitleState.class.getResourceAsStream("/title/title.gif")
+            )
+    );
+    private static final Image TITLE_BACKGROUND = new Image(
+            Objects.requireNonNull(
+                    TitleState.class.getResourceAsStream("/title/background.png")
             )
     );
 
@@ -61,8 +66,25 @@ public class TitleState implements GameState {
      */
     @Override
     public void render(GraphicsContext gc) {
+        long currentTime = System.currentTimeMillis();
+        double percentInCycle = (double) (currentTime % MILLISECONDS_PER_TITLE_CYCLE) / MILLISECONDS_PER_TITLE_CYCLE;
+        double hueShift = (double) ((currentTime * 5) % MILLISECONDS_PER_TITLE_CYCLE) / MILLISECONDS_PER_TITLE_CYCLE;
+
+        ColorAdjust hue = new ColorAdjust(hueShift * 2 - 1, 1, 0.3, 0.2);
+        gc.setEffect(hue);
+
+        gc.drawImage(
+                TITLE_BACKGROUND,
+                TITLE_BACKGROUND.getWidth() * percentInCycle / 2, TITLE_BACKGROUND.getHeight() * percentInCycle / 2,
+                TITLE_BACKGROUND.getWidth() / 2, TITLE_BACKGROUND.getHeight() / 2,
+                0, 0,
+                gc.getCanvas().getWidth(), gc.getCanvas().getHeight()
+        );
+        gc.setEffect(null);
+
         Color theme = GameController.getInstance().getColorTheme();
-        gc.setFill(theme.interpolate(Color.BLACK, 0.8));
+        Color bgColor = theme.interpolate(Color.BLACK, 0.8);
+        gc.setFill(bgColor.interpolate(Color.TRANSPARENT, 0.1));
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
