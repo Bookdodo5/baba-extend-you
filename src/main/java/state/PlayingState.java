@@ -196,19 +196,12 @@ public class PlayingState implements GameState {
     }
 
     private static int getDirectionalNumber(Entity entity) {
-        Direction direction = entity.getDirection();
-        // simplest way I could think of...
-        // -mistertfy64, 2026-02-16
-        if (direction == Direction.UP) {
-            return 0;
-        } else if (direction == Direction.RIGHT) {
-            return 1;
-        } else if (direction == Direction.LEFT) {
-            return 2;
-        } else if (direction == Direction.DOWN) {
-            return 3;
-        }
-        return 0;
+          return switch (entity.getDirection()) {
+              case UP -> 0;
+              case RIGHT -> 1;
+              case LEFT -> 2;
+              case DOWN -> 3;
+          };
     }
 
     private void renderParticles(GraphicsContext gc) {
