@@ -159,7 +159,7 @@ public class PlayingState implements GameState {
                         List<Entity> surroundingEnemies = levelMap.getEntitiesAt(xCoordinate + surroundingDirections[direction].x,yCoordinate + surroundingDirections[direction].y);
                         boolean hasSurroundingInDirection = surroundingEnemies.stream().anyMatch(e -> e.getType() == entityType);
                         if (hasSurroundingInDirection) {
-                            surroundingNumber += Math.powExact(2,direction);
+                            surroundingNumber += (1 << direction);
                         }
                     }
 
