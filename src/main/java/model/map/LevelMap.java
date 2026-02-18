@@ -153,4 +153,19 @@ public class LevelMap {
                 .findFirst()
                 .orElse(null);
     }
+
+    /** Gets the current map's dimensions (the bottom rightmost spot of the map).
+     * Note that this is derived based off the entities on the map.
+     *
+     * @return A Point representing the map's width and height from (0,0).
+     */
+    public Point getMapDimensions(){
+        int mapWidth = 0;
+        int mapHeight = 0;
+        for (Map.Entry<Entity,Point> entry : entityPositions.entrySet()) {
+            mapWidth = Math.max((int) entry.getValue().getX()+1,mapWidth);
+            mapHeight = Math.max((int) entry.getValue().getY()+1,mapHeight);
+        }
+        return new Point(mapWidth,mapHeight);
+    }
 }
