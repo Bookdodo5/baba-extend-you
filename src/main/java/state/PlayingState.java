@@ -89,15 +89,25 @@ public class PlayingState implements GameState {
     @Override
     public void render(GraphicsContext gc) {
 
+        // TODO: Handle window and canva size changes, if any.
+        Point mapDimensions = levelController.getLevelMap().getMapDimensions();
+        int xOffset = (int) gc.getCanvas().getWidth() / 2 - mapDimensions.x / 2 * SPRITE_SIZE;
+        int yOffset = (int) gc.getCanvas().getHeight() / 2 - mapDimensions.y / 2 * SPRITE_SIZE;
+        Point offset = new Point(xOffset,yOffset);
+
         //gc.setFill(Color.rgb(20, 25, 30));
         gc.setFill(Color.rgb(40, 35, 49));
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
-        renderEntities(gc);
-        renderParticles(gc);
+        renderEntities(gc,offset);
+        renderParticles(gc,offset);
     }
 
     private void renderEntities(GraphicsContext gc) {
+        renderEntities(gc,new Point(0,0));
+    }
+
+    private void renderEntities(GraphicsContext gc, Point offset) {
 
         Point[] surroundingDirections = {new Point(0,-1),new Point(1,0), new Point(0,1),new Point(-1,0)};
 
@@ -105,6 +115,8 @@ public class PlayingState implements GameState {
         long totalCycleMs = MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT;
         int frameInCycle = (int) (currentTime % totalCycleMs);
         int animationFrameNumber = frameInCycle / MILLISECONDS_PER_FRAME;
+        int mapWidth = 0;
+        int mapHeight = 0;
 
         LevelMap levelMap = levelController.getLevelMap();
         Set<Entity> activeEntities = levelController.getRuleset().getActiveEntities();
@@ -128,13 +140,16 @@ public class PlayingState implements GameState {
                 gc.setEffect(inactiveText);
             }
 
+            int xPositionToDraw = SPRITE_SIZE * xCoordinate + offset.x;
+            int yPositionToDraw = SPRITE_SIZE * yCoordinate + offset.y;
+
             switch (entityType.getAnimationStyle()) {
                 case WOBBLE -> gc.drawImage(
                         image,
                         SPRITE_SIZE * animationFrameNumber, 0,
                         SPRITE_SIZE, SPRITE_SIZE,
-                        SPRITE_SIZE * xCoordinate,
-                        SPRITE_SIZE * yCoordinate,
+                        xPositionToDraw,
+                        yPositionToDraw ,
                         SPRITE_SIZE, SPRITE_SIZE
                 );
                 case TILED -> {
@@ -151,8 +166,8 @@ public class PlayingState implements GameState {
                             image,
                             SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * surroundingNumber,
                             SPRITE_SIZE, SPRITE_SIZE,
-                            SPRITE_SIZE * xCoordinate,
-                            SPRITE_SIZE * yCoordinate,
+                            xPositionToDraw,
+                            yPositionToDraw ,
                             SPRITE_SIZE, SPRITE_SIZE
                     );
                 }
@@ -162,8 +177,8 @@ public class PlayingState implements GameState {
                             image,
                             SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * directionalNumber,
                             SPRITE_SIZE, SPRITE_SIZE,
-                            SPRITE_SIZE * xCoordinate,
-                            SPRITE_SIZE * yCoordinate,
+                            xPositionToDraw,
+                            yPositionToDraw ,
                             SPRITE_SIZE, SPRITE_SIZE
                     );
                 }
@@ -171,8 +186,8 @@ public class PlayingState implements GameState {
                         image,
                         SPRITE_SIZE * animationFrameNumber, 0,
                         SPRITE_SIZE, SPRITE_SIZE,
-                        SPRITE_SIZE * xCoordinate,
-                        SPRITE_SIZE * yCoordinate,
+                        xPositionToDraw,
+                        yPositionToDraw ,
                         SPRITE_SIZE, SPRITE_SIZE
                 );
             }
@@ -197,14 +212,20 @@ public class PlayingState implements GameState {
     }
 
     private void renderParticles(GraphicsContext gc) {
+        renderParticles(gc,new Point(0,0));
+    }
+
+    private void renderParticles(GraphicsContext gc, Point offset) {
+
         for (Particle particle : particles) {
+
             Image particleImage = particle.getImage();
             gc.drawImage(
                     particleImage,
                     SPRITE_SIZE * particle.getCurrentFrame(), 0,
                     SPRITE_SIZE, SPRITE_SIZE,
-                    SPRITE_SIZE * particle.getX(),
-                    SPRITE_SIZE * particle.getY(),
+                    SPRITE_SIZE * particle.getX() + offset.x,
+                    SPRITE_SIZE * particle.getY() + offset.y,
                     SPRITE_SIZE, SPRITE_SIZE
             );
         }
