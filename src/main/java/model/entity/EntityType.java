@@ -1,6 +1,7 @@
 package model.entity;
 
 import javafx.scene.image.Image;
+import utils.ImageUtils;
 
 import java.util.Objects;
 
@@ -18,9 +19,7 @@ public class EntityType {
         this.typeId = typeId;
         this.animationStyle = animationStyle;
         this.ZIndex = ZIndex;
-        this.spriteSheet = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream(getSpritePath(typeId)))
-        );
+        this.spriteSheet = ImageUtils.getImage(getSpritePath(typeId));
     }
 
     private static String getSpritePath(String typeId) {

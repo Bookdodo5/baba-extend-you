@@ -2,6 +2,7 @@ package utils;
 
 import application.GameController;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,6 +10,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
@@ -17,14 +19,9 @@ import static application.Constant.*;
 
 public class GraphicUtils {
 
-    private static final Image FONT_SHEET = new Image(
-            Objects.requireNonNull(GraphicUtils.class.getResourceAsStream("/font/baba.png")),
-            FONT_WIDTH * FONT_PER_ROW,
-            FONT_HEIGHT * FONT_ROW_COUNT,
-            false,
-            false
-    );
+    public static final double TEXT_SCALE = 1.25;
 
+    private static final Image FONT_SHEET = ImageUtils.getImage("/font/baba.png");
     private static final String CHARACTER_MAP = "ABCDEFGHIJKLMNOP" +
             "QRSTUVWXYZ012345" +
             "6789-.?!,':_><()" +
@@ -118,6 +115,7 @@ public class GraphicUtils {
 
         button.setOnAction((_) -> {
             // TODO (SOUND): play menu select sound
+            randomColorTheme();
             action.run();
         });
 
@@ -134,4 +132,31 @@ public class GraphicUtils {
         });
         return button;
     }
+
+    public static void randomColorTheme() {
+        Color randomColor = COLOR_LIST.get((int) Math.floor(Math.random() * COLOR_LIST.size()));
+        GameController.getInstance().setColorTheme(randomColor);
+    }
+
+    public static ImageView createButtonIndicator(Image image, int buttonWidth) {
+        ImageView selectIndicator = new ImageView(image);
+        selectIndicator.setViewport(new Rectangle2D(0, 0, SPRITE_SIZE, SPRITE_SIZE));
+        selectIndicator.setTranslateX(-(buttonWidth + SPRITE_SIZE) / 2.0 - 5);
+        StackPane.setAlignment(selectIndicator, Pos.TOP_CENTER);
+        return selectIndicator;
+    }
+
+    public static void updateIndicatorPosition(ImageView selectIndicator, int currentSelectedIndex, int titleButtonHeight, int spacing) {
+        if (selectIndicator != null) {
+            // Animate wobble frames
+            long currentTime = System.currentTimeMillis();
+            int animationFrame = (int) ((currentTime / MILLISECONDS_PER_FRAME) % WOBBLE_FRAME_COUNT);
+            selectIndicator.setViewport(new Rectangle2D(SPRITE_SIZE * animationFrame, 0, SPRITE_SIZE, SPRITE_SIZE));
+
+            int yOffset = currentSelectedIndex * (titleButtonHeight + spacing);
+            int buttonOffset = ((titleButtonHeight + spacing) - SPRITE_SIZE) / 2;
+            selectIndicator.setTranslateY(yOffset + buttonOffset);
+        }
+    }
 }
+

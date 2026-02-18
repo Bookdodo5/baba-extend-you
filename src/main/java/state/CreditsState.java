@@ -123,7 +123,7 @@ public class CreditsState implements GameState {
                         "Piskel",
                         "IntelliJ Ultimate",
                         "Github Copilot",
-                        "AI music generator"
+                        "MusicGPT"
                 }
         );
 

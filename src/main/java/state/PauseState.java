@@ -4,12 +4,15 @@ import application.GameController;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.Bloom;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -19,19 +22,31 @@ import logic.input.InputUtility;
 import model.rule.Condition;
 import model.rule.Rule;
 import utils.GraphicUtils;
+import utils.ImageUtils;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 
 import static application.Constant.*;
+import static utils.GraphicUtils.TEXT_SCALE;
 
 /**
  * Represents the paused game state with a UI overlay showing menu options and active rules.
  */
 public class PauseState implements GameState {
 
+    private static final int MENU_BUTTON_WIDTH = 400;
+    private static final int MENU_BUTTON_HEIGHT = (int) (FONT_HEIGHT * TEXT_SCALE);
+    private static final int TOTAL_BUTTON = 4;
+    private static final int SPACING = 4;
+
+    private static final Image JAVA_IMAGE = ImageUtils.getImage("/sprite/JAVA.png");
+
     private VBox pauseOverlay;
+    private ImageView selectIndicator;
+
+    private int currentSelectedIndex = 0;
 
     /**
      * Initializes the pause screen UI when entering the state.
@@ -61,6 +76,26 @@ public class PauseState implements GameState {
         if (playerInput == InputCommand.MENU) {
             resumeGame();
         }
+        if (playerInput == InputCommand.MOVE_UP) {
+            currentSelectedIndex = (currentSelectedIndex + TOTAL_BUTTON - 1) % TOTAL_BUTTON;
+        }
+        if (playerInput == InputCommand.MOVE_DOWN) {
+            currentSelectedIndex = (currentSelectedIndex + 1) % TOTAL_BUTTON;
+        }
+        if (playerInput == InputCommand.TRIGGER) {
+            switch (currentSelectedIndex) {
+                case 0 -> resumeGame();
+                case 1 -> restartLevel();
+                case 2 -> returnToMap();
+                case 3 -> returnToMenu();
+            }
+        }
+
+        GraphicUtils.updateIndicatorPosition(
+                selectIndicator,
+                currentSelectedIndex,
+                MENU_BUTTON_HEIGHT, SPACING
+        );
     }
 
     /**
@@ -86,7 +121,7 @@ public class PauseState implements GameState {
 
         pauseOverlay.setAlignment(Pos.TOP_CENTER);
         pauseOverlay.setPadding(new Insets(10, 50, 50, 10));
-        pauseOverlay.setSpacing(4);
+        pauseOverlay.setSpacing(SPACING);
         pauseOverlay.setPickOnBounds(true);
 
         // Pause header
@@ -97,11 +132,11 @@ public class PauseState implements GameState {
         VBox.setMargin(levelHeaderText, new Insets(0, 0, 50, 0));
 
         // Buttons
-        Button resumeButton = GraphicUtils.createButton("Resume", this::resumeGame, MENU_BUTTON_WIDTH);
-        Button restartButton = GraphicUtils.createButton("Restart", this::restartLevel, MENU_BUTTON_WIDTH);
-        Button returnToMapButton = GraphicUtils.createButton("Return to Map", this::returnToMap, MENU_BUTTON_WIDTH);
-        Button returnToMenuButton = GraphicUtils.createButton("Return to Menu", this::returnToMenu, MENU_BUTTON_WIDTH);
-        VBox.setMargin(returnToMenuButton, new Insets(20, 0, 20, 0));
+        Button resumeButton = GraphicUtils.createButton("Resume", this::resumeGame, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        Button restartButton = GraphicUtils.createButton("Restart", this::restartLevel, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        Button returnToMapButton = GraphicUtils.createButton("Return to Map", this::returnToMap, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        Button returnToTitleButton = GraphicUtils.createButton("Return to Menu", this::returnToMenu, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+        VBox.setMargin(returnToTitleButton, new Insets(0, 0, 20, 0));
 
         // Rules section
         HBox rulesHeaderText = GraphicUtils.createTextNode("Rules:");
@@ -119,12 +154,20 @@ public class PauseState implements GameState {
             }
         }
 
+        // Java sprite indicator
+        selectIndicator = GraphicUtils.createButtonIndicator(JAVA_IMAGE, MENU_BUTTON_WIDTH);
+
+        VBox buttonContainer = new VBox(SPACING);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.getChildren().addAll(resumeButton, restartButton, returnToMapButton, returnToTitleButton);
+
+        StackPane contentPane = new StackPane();
+        contentPane.setAlignment(Pos.CENTER);
+        contentPane.getChildren().addAll(buttonContainer, selectIndicator);
+
         pauseOverlay.getChildren().addAll(
                 levelHeaderText,
-                resumeButton,
-                restartButton,
-                returnToMapButton,
-                returnToMenuButton,
+                contentPane,
                 rulesHeaderText,
                 rulesPane
         );

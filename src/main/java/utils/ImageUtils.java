@@ -1,9 +1,15 @@
 package utils;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+
+import java.io.InputStream;
+import java.util.Objects;
+
+import static application.Constant.SPRITE_SIZE;
 
 public class ImageUtils {
     public static Color averageColor(Image image) {
@@ -65,5 +71,23 @@ public class ImageUtils {
         }
 
         return scaledImage;
+    }
+
+    public static Image getImage(String path) {
+        InputStream inputStream = Objects.requireNonNull(
+                ImageUtils.class.getResourceAsStream(path)
+        );
+        return new Image(inputStream);
+    }
+
+    public static void drawSprite(GraphicsContext gc, Image image, int spriteCol, int spriteRow, int drawX, int drawY) {
+        gc.drawImage(
+                image,
+                SPRITE_SIZE * spriteCol, SPRITE_SIZE * spriteRow,
+                SPRITE_SIZE, SPRITE_SIZE,
+                drawX,
+                drawY,
+                SPRITE_SIZE, SPRITE_SIZE
+        );
     }
 }

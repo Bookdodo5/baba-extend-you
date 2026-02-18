@@ -8,11 +8,11 @@ import javafx.scene.paint.Color;
 import logic.input.InputCommand;
 import logic.level.LevelController;
 import logic.input.InputUtility;
-import model.entity.Direction;
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.map.LevelMap;
 import model.particle.Particle;
+import utils.ImageUtils;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -26,6 +26,19 @@ public class PlayingState implements GameState {
 
     private final LevelController levelController;
     private final List<Particle> particles;
+
+    private static final Point[] SURROUNDING_DIRECTIONS = {
+            new Point(0, -1),
+            new Point(1, 0),
+            new Point(0, 1),
+            new Point(-1, 0)
+    };
+
+    private static final ColorAdjust INACTIVE_TEXT_EFFECT = new ColorAdjust();
+    static {
+        INACTIVE_TEXT_EFFECT.setSaturation(-0.5);
+        INACTIVE_TEXT_EFFECT.setBrightness(-0.33);
+    }
 
     public void loadLevel(LevelMap levelMap) {
         levelController.setLevelMap(levelMap);
@@ -88,124 +101,90 @@ public class PlayingState implements GameState {
      */
     @Override
     public void render(GraphicsContext gc) {
-        // TODO: Handle window and canvas size changes, if any.
         int xOffset = (int) (gc.getCanvas().getWidth() / 2) - (levelController.getLevelMap().getWidth() * SPRITE_SIZE) / 2;
         int yOffset = (int) (gc.getCanvas().getHeight() / 2) - (levelController.getLevelMap().getHeight() * SPRITE_SIZE) / 2;
-        Point offset = new Point(xOffset,yOffset);
+        Point offset = new Point(xOffset, yOffset);
 
         Color theme = GameController.getInstance().getColorTheme();
-        Color bgColor = theme.interpolate(Color.BLACK, 0.8).darker();
-        gc.setFill(bgColor);
-        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
-        renderEntities(gc,offset);
-        renderParticles(gc,offset);
+        renderBackground(gc, theme, offset);
+        renderEntities(gc, offset);
+        renderParticles(gc, offset);
 
         gc.setFill(theme.interpolate(Color.TRANSPARENT, 0.9));
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
-    private void renderEntities(GraphicsContext gc) {
-        renderEntities(gc,new Point(0,0));
+    private void renderBackground(GraphicsContext gc, Color theme, Point offset) {
+        Color outerBgColor = theme.interpolate(Color.BLACK, 0.8);
+        gc.setFill(outerBgColor);
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
+        Color innerBgColor = outerBgColor.darker().darker();
+        int innerWidth = SPRITE_SIZE * levelController.getLevelMap().getWidth();
+        int innerHeight = SPRITE_SIZE * levelController.getLevelMap().getHeight();
+        gc.setFill(innerBgColor);
+        gc.fillRect(offset.x, offset.y, innerWidth, innerHeight);
     }
 
     private void renderEntities(GraphicsContext gc, Point offset) {
 
-        Point[] surroundingDirections = {new Point(0,-1),new Point(1,0), new Point(0,1),new Point(-1,0)};
-
         long currentTime = System.currentTimeMillis();
-        long totalCycleMs = MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT;
-        int frameInCycle = (int) (currentTime % totalCycleMs);
-        int animationFrameNumber = frameInCycle / MILLISECONDS_PER_FRAME;
+        int animationFrame = (int) ((currentTime / MILLISECONDS_PER_FRAME) % WOBBLE_FRAME_COUNT);
 
         LevelMap levelMap = levelController.getLevelMap();
-        Set<Entity> activeEntities = levelController.getRuleset().getActiveEntities();
+        Set<Entity> activeTexts = levelController.getRuleset().getActiveTexts();
 
         List<Entity> entities = levelMap.getEntities().stream()
                 .sorted(Comparator.comparingInt(e -> e.getType().getZIndex()))
                 .toList();
 
-        for(Entity entity : entities) {
+        for (Entity entity : entities) {
             EntityType entityType = entity.getType();
             Image image = entityType.getSpriteSheet();
-            int xCoordinate = levelMap.getX(entity);
-            int yCoordinate = levelMap.getY(entity);
 
-            boolean isText = entityType.isText();
-            boolean isActiveText = activeEntities.contains(entity);
-            if(isText && !isActiveText) {
-                ColorAdjust inactiveText = new ColorAdjust();
-                inactiveText.setSaturation(-0.5);
-                inactiveText.setBrightness(-0.33);
-                gc.setEffect(inactiveText);
+            int gridX = levelMap.getX(entity);
+            int gridY = levelMap.getY(entity);
+            int drawX = SPRITE_SIZE * gridX + offset.x;
+            int drawY = SPRITE_SIZE * gridY + offset.y;
+
+            int spriteRow = switch (entityType.getAnimationStyle()) {
+                case WOBBLE -> 0;
+                case TILED -> getSurroundingNumber(entity, levelMap);
+                case DIRECTIONAL -> getDirectionalNumber(entity);
+            };
+
+            if (entityType.isText() && !activeTexts.contains(entity)) {
+                gc.setEffect(INACTIVE_TEXT_EFFECT);
             }
-
-            int xPositionToDraw = SPRITE_SIZE * xCoordinate + offset.x;
-            int yPositionToDraw = SPRITE_SIZE * yCoordinate + offset.y;
-
-            switch (entityType.getAnimationStyle()) {
-                case WOBBLE -> gc.drawImage(
-                        image,
-                        SPRITE_SIZE * animationFrameNumber, 0,
-                        SPRITE_SIZE, SPRITE_SIZE,
-                        xPositionToDraw,
-                        yPositionToDraw ,
-                        SPRITE_SIZE, SPRITE_SIZE
-                );
-                case TILED -> {
-                    int surroundingNumber = 0;
-                    for (int direction = 0; direction < 4; direction++){
-                        List<Entity> surroundingEnemies = levelMap.getEntitiesAt(xCoordinate + surroundingDirections[direction].x,yCoordinate + surroundingDirections[direction].y);
-                        boolean hasSurroundingInDirection = surroundingEnemies.stream().anyMatch(e -> e.getType().getTypeId().equals(entityType.getTypeId()));
-                        if (hasSurroundingInDirection) {
-                            surroundingNumber += (1 << direction);
-                        }
-                    }
-
-                    gc.drawImage(
-                            image,
-                            SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * surroundingNumber,
-                            SPRITE_SIZE, SPRITE_SIZE,
-                            xPositionToDraw,
-                            yPositionToDraw ,
-                            SPRITE_SIZE, SPRITE_SIZE
-                    );
-                }
-                case DIRECTIONAL -> {
-                    int directionalNumber = getDirectionalNumber(entity);
-                    gc.drawImage(
-                            image,
-                            SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * directionalNumber,
-                            SPRITE_SIZE, SPRITE_SIZE,
-                            xPositionToDraw,
-                            yPositionToDraw ,
-                            SPRITE_SIZE, SPRITE_SIZE
-                    );
-                }
-                case null, default -> gc.drawImage(
-                        image,
-                        SPRITE_SIZE * animationFrameNumber, 0,
-                        SPRITE_SIZE, SPRITE_SIZE,
-                        xPositionToDraw,
-                        yPositionToDraw ,
-                        SPRITE_SIZE, SPRITE_SIZE
-                );
-            }
+            ImageUtils.drawSprite(gc, image, animationFrame, spriteRow, drawX, drawY);
             gc.setEffect(null);
         }
     }
 
-    private static int getDirectionalNumber(Entity entity) {
-          return switch (entity.getDirection()) {
-              case UP -> 0;
-              case RIGHT -> 1;
-              case LEFT -> 2;
-              case DOWN -> 3;
-          };
+    private int getSurroundingNumber(Entity entity, LevelMap levelMap) {
+        int surroundingNumber = 0;
+        for (int direction = 0; direction < 4; direction++) {
+            List<Entity> surroundingEntities = levelMap.getEntitiesAt(
+                    levelMap.getX(entity) + SURROUNDING_DIRECTIONS[direction].x,
+                    levelMap.getY(entity) + SURROUNDING_DIRECTIONS[direction].y
+            );
+            boolean hasSurroundingInDirection = surroundingEntities.stream()
+                    .anyMatch(e -> e.getType() == entity.getType());
+            if (hasSurroundingInDirection) {
+                surroundingNumber += (1 << direction);
+            }
+        }
+        return surroundingNumber;
     }
 
-    private void renderParticles(GraphicsContext gc) {
-        renderParticles(gc,new Point(0,0));
+    private int getDirectionalNumber(Entity entity) {
+        return switch (entity.getDirection()) {
+            case UP -> 0;
+            case RIGHT -> 1;
+            case LEFT -> 2;
+            case DOWN -> 3;
+        };
     }
 
     private void renderParticles(GraphicsContext gc, Point offset) {

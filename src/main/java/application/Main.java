@@ -12,6 +12,9 @@ import javafx.stage.Stage;
 import logic.input.InputUtility;
 import state.GameStateEnum;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import static application.Constant.TARGET_SCREEN_WIDTH;
 import static application.Constant.TARGET_SCREEN_HEIGHT;
@@ -38,13 +41,13 @@ public class Main extends Application {
         stage.show();
 
         // REMOVE THIS LINE AFTER LEVEL SELECTOR IS DONE
-        gameController.playLevel("map/7_CROSSING_RIVER.csv");
+        gameController.playLevel("map/23_TRIGGER.csv");
 
         // This line(44) for testing music running
         Music.playLoop("sound/music/Pixel_Quest_MainTheme.wav");
 
         // CHANGE THE COLOR THEME DYNAMICALLY
-        gameController.setColorTheme(Color.MAROON);
+        gameController.setColorTheme(Color.DARKSLATEGRAY);
 
         screen.updateScale(root);
         root.widthProperty().addListener((_, _, _) -> screen.updateScale(root));
@@ -52,7 +55,7 @@ public class Main extends Application {
 
         root.getChildren().add(screen);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        root.setEffect(new Glow(0.5));
+        root.setEffect(new Glow(0.6));
 
         screen.requestFocus();
 

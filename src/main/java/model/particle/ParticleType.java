@@ -1,6 +1,8 @@
 package model.particle;
 
 import javafx.scene.image.Image;
+import utils.ImageUtils;
+
 import java.util.Objects;
 
 /**
@@ -18,9 +20,7 @@ public enum ParticleType {
     private final int frameDuration;
 
     ParticleType(String spritePath, int frameCount, int frameDuration) {
-        this.spriteSheet = new Image(Objects.requireNonNull(
-                getClass().getResourceAsStream(spritePath))
-        );
+        this.spriteSheet = ImageUtils.getImage(spritePath);
         this.frameCount = frameCount;
         this.frameDuration = frameDuration;
     }

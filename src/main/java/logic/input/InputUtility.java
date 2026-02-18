@@ -1,9 +1,14 @@
 package logic.input;
 
+import application.GameController;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import utils.GraphicUtils;
 
 import java.util.Set;
 import java.util.HashSet;
+
+import static application.Constant.COLOR_LIST;
 
 /**
  * Utility class for handling keyboard input.
@@ -26,9 +31,12 @@ public class InputUtility {
     }
 
     public static InputCommand getTriggered() {
-        if(isTriggered(KeyCode.ESCAPE)) return InputCommand.MENU;
+        if(isTriggered(KeyCode.ESCAPE)) {
+            GraphicUtils.randomColorTheme();
+            return InputCommand.MENU;
+        }
         if(isTriggered(KeyCode.R)) return InputCommand.RESET;
-        if(isTriggered(KeyCode.SPACE)) return InputCommand.TRIGGER;
+        if(isTriggered(KeyCode.SPACE) || isTriggered(KeyCode.ENTER)) return InputCommand.TRIGGER;
         if(isTriggered(KeyCode.Z)) return InputCommand.UNDO;
         if(isTriggered(KeyCode.Y)) return InputCommand.REDO;
         if(isTriggered(KeyCode.UP) || isTriggered(KeyCode.W)) return InputCommand.MOVE_UP;
@@ -41,7 +49,7 @@ public class InputUtility {
     public static InputCommand getPressed() {
         if(isPressed(KeyCode.ESCAPE)) return InputCommand.MENU;
         if(isPressed(KeyCode.R)) return InputCommand.RESET;
-        if(isPressed(KeyCode.SPACE)) return InputCommand.TRIGGER;
+        if(isPressed(KeyCode.SPACE) || isPressed(KeyCode.ENTER)) return InputCommand.TRIGGER;
         if(isPressed(KeyCode.Z)) return InputCommand.UNDO;
         if(isPressed(KeyCode.Y)) return InputCommand.REDO;
         if(isPressed(KeyCode.UP) || isPressed(KeyCode.W)) return InputCommand.MOVE_UP;

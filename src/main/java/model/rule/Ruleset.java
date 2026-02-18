@@ -39,7 +39,7 @@ public class Ruleset {
         return rules;
     }
 
-    public Set<Entity> getActiveEntities() {
+    public Set<Entity> getActiveTexts() {
         Set<Entity> activeEntities = new HashSet<>();
         for (Rule rule : rules) {
             activeEntities.add(rule.getEffectText());
