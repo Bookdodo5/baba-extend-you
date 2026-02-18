@@ -105,6 +105,8 @@ public class PlayingState implements GameState {
         long totalCycleMs = MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT;
         int frameInCycle = (int) (currentTime % totalCycleMs);
         int animationFrameNumber = frameInCycle / MILLISECONDS_PER_FRAME;
+        int mapWidth = 0;
+        int mapHeight = 0;
 
         LevelMap levelMap = levelController.getLevelMap();
         Set<Entity> activeEntities = levelController.getRuleset().getActiveEntities();
@@ -112,6 +114,13 @@ public class PlayingState implements GameState {
         List<Entity> entities = levelMap.getEntities().stream()
                 .sorted(Comparator.comparingInt(e -> e.getType().getZIndex()))
                 .toList();
+
+
+        // TODO: Maybe I should move this somewhere else -mistertfy64 2026-02-18
+        for (Entity entity : entities) {
+            mapWidth = Math.max(levelMap.getX(entity)+1,mapWidth);
+            mapHeight = Math.max(levelMap.getY(entity)+1,mapHeight);
+        }
 
         for(Entity entity : entities) {
             EntityType entityType = entity.getType();
