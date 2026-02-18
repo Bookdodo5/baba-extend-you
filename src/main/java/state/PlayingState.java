@@ -118,8 +118,6 @@ public class PlayingState implements GameState {
         long totalCycleMs = MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT;
         int frameInCycle = (int) (currentTime % totalCycleMs);
         int animationFrameNumber = frameInCycle / MILLISECONDS_PER_FRAME;
-        int mapWidth = 0;
-        int mapHeight = 0;
 
         LevelMap levelMap = levelController.getLevelMap();
         Set<Entity> activeEntities = levelController.getRuleset().getActiveEntities();
