@@ -14,7 +14,7 @@ import model.entity.EntityType;
 import model.map.LevelMap;
 import model.particle.Particle;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -88,10 +88,9 @@ public class PlayingState implements GameState {
      */
     @Override
     public void render(GraphicsContext gc) {
-        // TODO: Handle window and canva size changes, if any.
-        Point mapDimensions = levelController.getLevelMap().getMapDimensions();
-        int xOffset = (int) (gc.getCanvas().getWidth() / 2) - (mapDimensions.x * SPRITE_SIZE) / 2;
-        int yOffset = (int) (gc.getCanvas().getHeight() / 2) - (mapDimensions.y * SPRITE_SIZE) / 2;
+        // TODO: Handle window and canvas size changes, if any.
+        int xOffset = (int) (gc.getCanvas().getWidth() / 2) - (levelController.getLevelMap().getWidth() * SPRITE_SIZE) / 2;
+        int yOffset = (int) (gc.getCanvas().getHeight() / 2) - (levelController.getLevelMap().getHeight() * SPRITE_SIZE) / 2;
         Point offset = new Point(xOffset,yOffset);
 
         Color theme = GameController.getInstance().getColorTheme();
