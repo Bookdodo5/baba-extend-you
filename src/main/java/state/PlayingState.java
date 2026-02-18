@@ -8,11 +8,13 @@ import javafx.scene.paint.Color;
 import logic.input.InputCommand;
 import logic.level.LevelController;
 import logic.input.InputUtility;
+import model.entity.Direction;
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.map.LevelMap;
 import model.particle.Particle;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -86,20 +88,30 @@ public class PlayingState implements GameState {
      */
     @Override
     public void render(GraphicsContext gc) {
+        // TODO: Handle window and canvas size changes, if any.
+        int xOffset = (int) (gc.getCanvas().getWidth() / 2) - (levelController.getLevelMap().getWidth() * SPRITE_SIZE) / 2;
+        int yOffset = (int) (gc.getCanvas().getHeight() / 2) - (levelController.getLevelMap().getHeight() * SPRITE_SIZE) / 2;
+        Point offset = new Point(xOffset,yOffset);
 
         Color theme = GameController.getInstance().getColorTheme();
         Color bgColor = theme.interpolate(Color.BLACK, 0.8).darker();
         gc.setFill(bgColor);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
-        renderEntities(gc);
-        renderParticles(gc);
+        renderEntities(gc,offset);
+        renderParticles(gc,offset);
 
         gc.setFill(theme.interpolate(Color.TRANSPARENT, 0.9));
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
     private void renderEntities(GraphicsContext gc) {
+        renderEntities(gc,new Point(0,0));
+    }
+
+    private void renderEntities(GraphicsContext gc, Point offset) {
+
+        Point[] surroundingDirections = {new Point(0,-1),new Point(1,0), new Point(0,1),new Point(-1,0)};
 
         long currentTime = System.currentTimeMillis();
         long totalCycleMs = MILLISECONDS_PER_FRAME * WOBBLE_FRAME_COUNT;
@@ -128,21 +140,54 @@ public class PlayingState implements GameState {
                 gc.setEffect(inactiveText);
             }
 
+            int xPositionToDraw = SPRITE_SIZE * xCoordinate + offset.x;
+            int yPositionToDraw = SPRITE_SIZE * yCoordinate + offset.y;
+
             switch (entityType.getAnimationStyle()) {
                 case WOBBLE -> gc.drawImage(
                         image,
                         SPRITE_SIZE * animationFrameNumber, 0,
                         SPRITE_SIZE, SPRITE_SIZE,
-                        SPRITE_SIZE * xCoordinate,
-                        SPRITE_SIZE * yCoordinate,
+                        xPositionToDraw,
+                        yPositionToDraw ,
                         SPRITE_SIZE, SPRITE_SIZE
                 );
+                case TILED -> {
+                    int surroundingNumber = 0;
+                    for (int direction = 0; direction < 4; direction++){
+                        List<Entity> surroundingEnemies = levelMap.getEntitiesAt(xCoordinate + surroundingDirections[direction].x,yCoordinate + surroundingDirections[direction].y);
+                        boolean hasSurroundingInDirection = surroundingEnemies.stream().anyMatch(e -> e.getType().getTypeId().equals(entityType.getTypeId()));
+                        if (hasSurroundingInDirection) {
+                            surroundingNumber += (1 << direction);
+                        }
+                    }
+
+                    gc.drawImage(
+                            image,
+                            SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * surroundingNumber,
+                            SPRITE_SIZE, SPRITE_SIZE,
+                            xPositionToDraw,
+                            yPositionToDraw ,
+                            SPRITE_SIZE, SPRITE_SIZE
+                    );
+                }
+                case DIRECTIONAL -> {
+                    int directionalNumber = getDirectionalNumber(entity);
+                    gc.drawImage(
+                            image,
+                            SPRITE_SIZE * animationFrameNumber, SPRITE_SIZE * directionalNumber,
+                            SPRITE_SIZE, SPRITE_SIZE,
+                            xPositionToDraw,
+                            yPositionToDraw ,
+                            SPRITE_SIZE, SPRITE_SIZE
+                    );
+                }
                 case null, default -> gc.drawImage(
                         image,
                         SPRITE_SIZE * animationFrameNumber, 0,
                         SPRITE_SIZE, SPRITE_SIZE,
-                        SPRITE_SIZE * xCoordinate,
-                        SPRITE_SIZE * yCoordinate,
+                        xPositionToDraw,
+                        yPositionToDraw ,
                         SPRITE_SIZE, SPRITE_SIZE
                 );
             }
@@ -150,15 +195,30 @@ public class PlayingState implements GameState {
         }
     }
 
+    private static int getDirectionalNumber(Entity entity) {
+          return switch (entity.getDirection()) {
+              case UP -> 0;
+              case RIGHT -> 1;
+              case LEFT -> 2;
+              case DOWN -> 3;
+          };
+    }
+
     private void renderParticles(GraphicsContext gc) {
+        renderParticles(gc,new Point(0,0));
+    }
+
+    private void renderParticles(GraphicsContext gc, Point offset) {
+
         for (Particle particle : particles) {
+
             Image particleImage = particle.getImage();
             gc.drawImage(
                     particleImage,
                     SPRITE_SIZE * particle.getCurrentFrame(), 0,
                     SPRITE_SIZE, SPRITE_SIZE,
-                    SPRITE_SIZE * particle.getX(),
-                    SPRITE_SIZE * particle.getY(),
+                    SPRITE_SIZE * particle.getX() + offset.x,
+                    SPRITE_SIZE * particle.getY() + offset.y,
                     SPRITE_SIZE, SPRITE_SIZE
             );
         }
