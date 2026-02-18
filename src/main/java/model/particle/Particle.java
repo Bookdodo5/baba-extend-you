@@ -1,6 +1,5 @@
 package model.particle;
 
-import application.Constant;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import utils.ImageUtils;
@@ -14,7 +13,7 @@ public class Particle {
     private final double vy;
     private final ParticleType type;
     private final long createdTime;
-    private final Color color;
+    private final Image coloredImage;
 
     public Particle(double x, double y, double vx, double vy, ParticleType type, Color color) {
         this.originalX = x;
@@ -22,8 +21,8 @@ public class Particle {
         this.vx = vx;
         this.vy = vy;
         this.type = type;
-        this.color = color;
         this.createdTime = System.currentTimeMillis();
+        this.coloredImage = ImageUtils.applyColor(type.getSpriteSheet(), color);
     }
 
     public double getX() {
@@ -41,7 +40,7 @@ public class Particle {
     }
 
     public Image getImage() {
-        return ImageUtils.applyColor(type.getSpriteSheet(), color);
+        return coloredImage;
     }
 
     public boolean isDead() {

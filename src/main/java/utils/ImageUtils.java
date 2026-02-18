@@ -7,12 +7,23 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static application.Constant.SPRITE_SIZE;
 
 public class ImageUtils {
+    private static final Map<String, Image> COLOR_CACHE = new HashMap<>();
+    private static final Map<Integer, Color> AVERAGE_COLOR_CACHE = new HashMap<>();
+
     public static Color averageColor(Image image) {
+        int imageHash = System.identityHashCode(image);
+        Color cachedColor = AVERAGE_COLOR_CACHE.get(imageHash);
+        if (cachedColor != null) {
+            return cachedColor;
+        }
+
         double redSum = 0;
         double greenSum = 0;
         double blueSum = 0;
@@ -33,10 +44,18 @@ public class ImageUtils {
             }
         }
 
-        return Color.color(redSum / totalPixels, greenSum / totalPixels, blueSum / totalPixels);
+        Color averageColor = Color.color(redSum / totalPixels, greenSum / totalPixels, blueSum / totalPixels);
+        AVERAGE_COLOR_CACHE.put(imageHash, averageColor);
+        return averageColor;
     }
 
     public static Image applyColor(Image image, Color color) {
+        String cacheKey = System.identityHashCode(image) + "_" + color.toString();
+        Image cachedImage = COLOR_CACHE.get(cacheKey);
+        if (cachedImage != null) {
+            return cachedImage;
+        }
+
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
         WritableImage coloredImage = new WritableImage(width, height);
@@ -52,6 +71,7 @@ public class ImageUtils {
             }
         }
 
+        COLOR_CACHE.put(cacheKey, coloredImage);
         return coloredImage;
     }
 
