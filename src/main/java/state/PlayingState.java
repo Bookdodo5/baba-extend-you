@@ -88,19 +88,22 @@ public class PlayingState implements GameState {
      */
     @Override
     public void render(GraphicsContext gc) {
-
         // TODO: Handle window and canva size changes, if any.
         Point mapDimensions = levelController.getLevelMap().getMapDimensions();
         int xOffset = (int) gc.getCanvas().getWidth() / 2 - mapDimensions.x / 2 * SPRITE_SIZE;
         int yOffset = (int) gc.getCanvas().getHeight() / 2 - mapDimensions.y / 2 * SPRITE_SIZE;
         Point offset = new Point(xOffset,yOffset);
 
-        //gc.setFill(Color.rgb(20, 25, 30));
-        gc.setFill(Color.rgb(40, 35, 49));
+        Color theme = GameController.getInstance().getColorTheme();
+        Color bgColor = theme.interpolate(Color.BLACK, 0.8).darker();
+        gc.setFill(bgColor);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         renderEntities(gc,offset);
         renderParticles(gc,offset);
+
+        gc.setFill(theme.interpolate(Color.TRANSPARENT, 0.9));
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
     private void renderEntities(GraphicsContext gc) {

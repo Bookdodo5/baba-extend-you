@@ -20,4 +20,6 @@ public class Constant {
 
     public static final double TEXT_SCALE = 1.25;
     public static final int MENU_BUTTON_WIDTH = 400;
+
+    public static final int MILLISECONDS_PER_TITLE_CYCLE = 12000;
 }

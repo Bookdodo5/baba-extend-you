@@ -3,6 +3,7 @@ package application;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.effect.*;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
@@ -11,8 +12,6 @@ import javafx.stage.Stage;
 import logic.input.InputUtility;
 import state.GameStateEnum;
 
-import java.awt.*;
-import javafx.scene.paint.*;
 
 import static application.Constant.TARGET_SCREEN_WIDTH;
 import static application.Constant.TARGET_SCREEN_HEIGHT;
@@ -39,15 +38,22 @@ public class Main extends Application {
         stage.show();
 
         // REMOVE THIS LINE AFTER LEVEL SELECTOR IS DONE
-        gameController.playLevel("map/23_TRIGGER.csv");
+        gameController.playLevel("map/7_CROSSING_RIVER.csv");
+
         // This line(44) for testing music running
-        Music.play("sound/music/Pixel_Quest_MainTheme.wav");
+        Music.playLoop("sound/music/Pixel_Quest_MainTheme.wav");
+
+        // CHANGE THE COLOR THEME DYNAMICALLY
+        gameController.setColorTheme(Color.MAROON);
+
         screen.updateScale(root);
         root.widthProperty().addListener((_, _, _) -> screen.updateScale(root));
         root.heightProperty().addListener((_, _, _) -> screen.updateScale(root));
 
         root.getChildren().add(screen);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+        root.setEffect(new Glow(0.5));
+
         screen.requestFocus();
 
         AnimationTimer animation = new AnimationTimer() {

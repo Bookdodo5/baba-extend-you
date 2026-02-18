@@ -9,6 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.Bloom;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -73,7 +74,9 @@ public class PauseState implements GameState {
             playingState.render(gc);
         }
 
-        gc.setFill(Color.rgb(42, 163, 173, 0.3));
+        Color colorTheme = GameController.getInstance().getColorTheme();
+        Color translucentColor = colorTheme.interpolate(Color.TRANSPARENT, 0.4);
+        gc.setFill(translucentColor.darker());
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
@@ -115,6 +118,7 @@ public class PauseState implements GameState {
                 rulesPane.getChildren().add(ruleNode);
             }
         }
+
         pauseOverlay.getChildren().addAll(
                 levelHeaderText,
                 resumeButton,

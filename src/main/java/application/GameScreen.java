@@ -1,5 +1,6 @@
 package application;
 
+import javafx.scene.effect.Bloom;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import logic.input.InputUtility;
@@ -25,6 +26,7 @@ public class GameScreen extends Canvas {
 
     public void render() {
         GraphicsContext gc = getGraphicsContext2D();
+        gc.setImageSmoothing(false);
         gc.clearRect(0, 0, getWidth(), getHeight());
 
         GameController.getInstance().render(gc);

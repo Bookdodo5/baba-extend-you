@@ -1,9 +1,7 @@
 package utils;
 
-import javafx.geometry.Insets;
+import application.GameController;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,8 +9,8 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
-import java.net.URL;
 import java.util.Objects;
 
 import static application.Constant.*;
@@ -32,24 +30,43 @@ public class GraphicUtils {
             "6789-.?!,':_><()" +
             "&+/^\"%";
 
+    private static String getBaseButtonStyle() {
+        Color theme = GameController.getInstance().getColorTheme();
+        Color bgColor = theme.darker().darker();
 
-    private static final String baseButtonStyle =
-            "-fx-background-color: rgb(23,72,87);" +
-                    "-fx-text-fill: white;" +
-                    "-fx-border-color: rgb(42,163,173);" +
-                    "-fx-border-width: 3px;" +
-                    "-fx-padding: 0px 20px;"
-            ;
+        return String.format(
+                "-fx-background-color: rgb(%d,%d,%d);" +
+                        "-fx-border-color: rgb(%d,%d,%d);" +
+                        "-fx-border-width: 3px;" +
+                        "-fx-padding: 0px 20px;",
+                (int) (bgColor.getRed() * 255),
+                (int) (bgColor.getGreen() * 255),
+                (int) (bgColor.getBlue() * 255),
+                (int) (theme.getRed() * 255),
+                (int) (theme.getGreen() * 255),
+                (int) (theme.getBlue() * 255)
+        );
+    }
 
-    private static final String hoverButtonStyle =
-            "-fx-background-color: rgb(42,163,173);" +
-                    "-fx-text-fill: white;" +
-                    "-fx-border-color: rgb(42,163,173);" +
-                    "-fx-border-width: 3px;" +
-                    "-fx-padding: 0px 20px;" +
-                    "-fx-cursor: hand;";
+    private static String getHoverButtonStyle() {
+        Color theme = GameController.getInstance().getColorTheme();
 
-    public static HBox createTextNode(String text, double scale) {
+        return String.format(
+                "-fx-background-color: rgb(%d,%d,%d);" +
+                        "-fx-border-color: rgb(%d,%d,%d);" +
+                        "-fx-border-width: 3px;" +
+                        "-fx-padding: 0px 20px;" +
+                        "-fx-cursor: hand;",
+                (int) (theme.getRed() * 255),
+                (int) (theme.getGreen() * 255),
+                (int) (theme.getBlue() * 255),
+                (int) (theme.getRed() * 255),
+                (int) (theme.getGreen() * 255),
+                (int) (theme.getBlue() * 255)
+        );
+    }
+
+    public static HBox createTextNode(String text, double scale, Color color) {
         HBox container = new HBox();
         container.setAlignment(Pos.CENTER);
 
@@ -68,7 +85,8 @@ public class GraphicUtils {
             PixelReader reader = FONT_SHEET.getPixelReader();
             WritableImage charImage = new WritableImage(reader, srcX, srcY, FONT_WIDTH, FONT_HEIGHT - 4);
             Image scaledImage = ImageUtils.scaleNearestNeighbor(charImage, scale);
-            ImageView view = new ImageView(scaledImage);
+            Image coloredImage = ImageUtils.applyColor(scaledImage, color);
+            ImageView view = new ImageView(coloredImage);
             view.setSmooth(false);
 
             container.getChildren().add(view);
@@ -76,22 +94,27 @@ public class GraphicUtils {
         return container;
     }
 
+
     public static HBox createTextNode(String text) {
-        return createTextNode(text, TEXT_SCALE);
+        return createTextNode(text, TEXT_SCALE, Color.WHITE);
+    }
+
+    public static Button createButton(String text, Runnable action, int prefWidth, int prefHeight) {
+        Button button = createButton(text, action);
+        button.setPrefWidth(prefWidth);
+        button.setPrefHeight(prefHeight);
+        return button;
     }
 
     public static Button createButton(String text, Runnable action, int prefWidth) {
-        Button button = createButton(text, action);
-        button.setPrefWidth(prefWidth);
-        button.setPrefHeight(FONT_HEIGHT * TEXT_SCALE);
-        return button;
+        return createButton(text, action, prefWidth, (int) (FONT_HEIGHT * TEXT_SCALE));
     }
 
     public static Button createButton(String text, Runnable action) {
         Button button = new Button();
-        button.setGraphic(createTextNode(text, TEXT_SCALE));
+        button.setGraphic(createTextNode(text));
         button.setText("");
-        button.setStyle(baseButtonStyle);
+        button.setStyle(getBaseButtonStyle());
 
         button.setOnAction((_) -> {
             // TODO (SOUND): play menu select sound
@@ -100,12 +123,14 @@ public class GraphicUtils {
 
         button.setOnMouseEntered((_) -> {
             // TODO (SOUND): play menu hover sound
-            button.setStyle(hoverButtonStyle);
+            button.setStyle(getHoverButtonStyle());
+            button.setGraphic(createTextNode(text));
         });
 
         button.setOnMouseExited((_) -> {
             // TODO (SOUND): play menu hover sound
-            button.setStyle(baseButtonStyle);
+            button.setStyle(getBaseButtonStyle());
+            button.setGraphic(createTextNode(text));
         });
         return button;
     }
