@@ -62,7 +62,7 @@ class InteractionHandlerTest {
 
         CompositeAction result = executeInteractions();
 
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         result.execute();
 
         assertFalse(levelMap.getEntities().contains(java));
@@ -78,7 +78,7 @@ class InteractionHandlerTest {
 
         CompositeAction result = executeInteractions();
 
-        assertEquals(4, result.size());
+        assertEquals(2, result.size());
         result.execute();
 
         assertFalse(levelMap.getEntities().contains(java));

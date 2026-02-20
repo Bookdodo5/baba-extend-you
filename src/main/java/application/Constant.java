@@ -13,6 +13,7 @@ public class Constant {
     public static final int TARGET_SCREEN_HEIGHT = 720;
 
     public static final int INPUT_COOLDOWN_MILLIS = 150;
+    public static final int MAX_ENTITY_LIMIT = 1024;
 
     public static final int SPRITE_SIZE = 32;
     public static final int MILLISECONDS_PER_FRAME = 150;
@@ -21,7 +22,6 @@ public class Constant {
     public static final int FONT_WIDTH = 9;
     public static final int FONT_HEIGHT = 24;
     public static final int FONT_PER_ROW = 16;
-    public static final int FONT_ROW_COUNT = 10;
 
     public static final int MILLISECONDS_PER_TITLE_CYCLE = 12000;
 

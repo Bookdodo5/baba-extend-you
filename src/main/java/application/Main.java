@@ -41,7 +41,7 @@ public class Main extends Application {
         stage.show();
 
         // REMOVE THIS LINE AFTER LEVEL SELECTOR IS DONE
-        gameController.playLevel("map/5_SUMMER_IN_THAILAND.csv");
+        gameController.playLevel("map/30_JAVA_IS_WIN.csv");
 
         // This line(44) for testing music running
         Music.playLoop("sound/music/Pixel_Quest_MainTheme.wav");

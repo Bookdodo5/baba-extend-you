@@ -92,6 +92,12 @@ public class PlayingState implements GameState {
         if (playerInput == InputCommand.MENU) {
             GameController.getInstance().setState(GameStateEnum.PAUSED);
         }
+
+        if(levelController.getLevelMap().getEntities().size() >= MAX_ENTITY_LIMIT) {
+            System.err.println("Entity limit reached: " + levelController.getLevelMap().getEntities().size());
+            System.err.println("The level is too complex. Return to map...");
+            GameController.getInstance().setState(GameStateEnum.MAP);
+        }
     }
 
     /**

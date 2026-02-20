@@ -1,0 +1,14 @@
+17,13
+.           , .           , .           , .           , .           , .           , .           , text_wire   , is          , stop        , .           , .           , .           , .           , .           , .           , .
+.           , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , .           , lava        , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , .           , lava        , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , .           , text_check  , .           , is          , push        , .           , lava        , .           , .           , .           , .           , text_xorgate, wire        , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , .           , lava        , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , .           , extend      , .           , .           , text_chip   , .           , lava        , .           , .           , .           , .           , .           , wire        , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , .           , lava        , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , .           , xorgate     , check-DOWN  , .           , chip        , .           , lava        , .           , .           , .           , .           , win         , wire        , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , .           , lava        , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , .           , lava        , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , .
+.           , text_xorgate, is          , you         , and         , melt        , .           , text_lava   , is          , hot         , .           , text_check  , is          , move        , and         , defeat      , .

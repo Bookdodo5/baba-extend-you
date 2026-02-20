@@ -1,10 +1,7 @@
 package logic.level.turn;
 
 import logic.rule.evaluator.RuleEvaluator;
-import model.action.Action;
-import model.action.CompositeAction;
-import model.action.CreateAction;
-import model.action.DestroyAction;
+import model.action.*;
 import model.entity.Direction;
 import model.entity.Entity;
 import model.entity.EntityType;
@@ -37,11 +34,8 @@ public class InteractionHandler {
     private void processTransformation(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         ruleEvaluator.getTransformations(levelMap, ruleset).forEach(transformation -> {
             Entity source = transformation.getSource();
-            Direction sourceDirection = source.getDirection();
             EntityType targetType = transformation.getTargetType();
-            Point position = levelMap.getPosition(source);
-            action.add(new CreateAction(levelMap, targetType, sourceDirection, position.x, position.y));
-            action.add(new DestroyAction(levelMap, source));
+            action.add(new TransformAction(levelMap, source, targetType));
         });
     }
 

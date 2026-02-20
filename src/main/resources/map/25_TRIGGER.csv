@@ -1,0 +1,13 @@
+16,12
+.           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .           , .
+.           , text_wire   , is          , stop        , .           , .           , text_flag   , on          , text_water  , is          , win         , .           , .           , .           , .           , .
+.           , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , .           , .           , .           , .
+.           , wire        , .           , .           , .           , .           , .           , lava        , .           , .           , .           , wire        , text_flag   , is          , melt        , .
+.           , wire        , .           , text_water  , .           , push        , .           , lava        , .           , .           , .           , wire        , wire        , wire        , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , lava        , .           , .           , .           , is          , .           , flag        , wire        , .
+.           , wire        , .           , .           , .           , water       , .           , lava        , .           , .           , .           , .           , .           , .           , wire        , .
+.           , wire        , .           , .           , .           , .           , .           , wire        , wire        , wire        , wire        , wire        , wire        , wire        , wire        , .
+.           , wire        , .           , .           , .           , database    , .           , wire        , text_lava   , on          , text_database, is          , more        , and         , melt        , .
+.           , wire        , .           , .           , .           , .           , .           , wire        , is          , .           , is          , .           , .           , .           , .           , .
+.           , wire        , wire        , wire        , wire        , wire        , wire        , wire        , hot         , .           , you         , .           , .           , .           , .           , .
+.           , .           , text_lava   , has         , text_error  , is          , defeat      , .           , .           , .           , .           , .           , .           , .           , .           , .
