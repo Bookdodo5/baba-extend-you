@@ -1,6 +1,7 @@
 package state;
 
 import application.GameController;
+import application.Music;
 import javafx.scene.canvas.GraphicsContext;
 import logic.input.InputCommand;
 import logic.input.InputUtility;
@@ -12,8 +13,8 @@ public class MapState implements GameState {
     @Override
     public void onEnter(GameStateEnum previousState) {
         // Code here happens when entering the level selector (world map)
-        // TODO (SOUND) : play state transition sound
-        // TODO (SOUND) : play map music
+        Music.play("sound/SFX/startStage.wav");
+        Music.play("sound/music/Pixel_Quest_MainTheme.wav");
     }
 
     /**
@@ -42,32 +43,32 @@ public class MapState implements GameState {
     private void handleTrigger() {
         // TODO (MAP) : handle level selection with GameController.getInstance().playLevel(....); RETURN IF NOT POSSIBLE.
         GameController.getInstance().playLevel("map/1_JAVA_IS_YOU.csv");
-        // TODO (SOUND) : play level music
-        // TODO (SOUND) : play level enter sfx
+        Music.play("sound/music/Pixel_Quest_MainTheme.wav");
+        Music.play("sound/SFX/startStage.wav");
     }
 
     private void handleMoveRight() {
         // TODO (MAP) : move cursor right if possible. RETURN IF NOT POSSIBLE.
 
-        // TODO (SOUND) : play cursor move sound
+        Music.play("sound/SFX/select.wav");
     }
 
     private void handleMoveLeft() {
         // TODO (MAP) : move cursor left if possible. RETURN IF NOT POSSIBLE.
 
-        // TODO (SOUND) : play cursor move sound
+        Music.play("sound/SFX/select.wav");
     }
 
     private void handleMoveDown() {
         // TODO (MAP) : move cursor down if possible. RETURN IF NOT POSSIBLE.
 
-        // TODO (SOUND) : play cursor move sound
+        Music.play("sound/SFX/select.wav");
     }
 
     private void handleMoveUp() {
         // TODO (MAP) : move cursor up if possible. RETURN IF NOT POSSIBLE.
 
-        // TODO (SOUND) : play cursor move sound
+        Music.play("sound/SFX/select.wav");
     }
 
     /**

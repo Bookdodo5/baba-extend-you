@@ -1,6 +1,7 @@
 package state;
 
 import application.GameController;
+import application.Music;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -42,7 +43,7 @@ public class TitleState implements GameState {
     @Override
     public void onEnter(GameStateEnum previousState) {
         // TODO (SOUND) : play state transition sound
-        // TODO (SOUND) : play title music=
+        Music.play("sound/music/Pixel_Quest_MainTheme.wav");
         createTitleBox();
         putTitleBox();
     }
@@ -52,7 +53,7 @@ public class TitleState implements GameState {
      */
     @Override
     public void onExit() {
-        // TODO (SOUND) : stop title music
+        Music.stop();
         removeTitleBox();
     }
 

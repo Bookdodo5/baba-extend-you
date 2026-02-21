@@ -5,9 +5,9 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
 
 public class Music {
+    private static Clip currentClip;
     private static Clip loopClip; // Store reference for loop control
 
     public static void play(String fileLocation) {
@@ -23,6 +23,15 @@ public class Music {
             AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
             Clip clip = AudioSystem.getClip();
             clip.open(audioInput);
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    clip.close();
+                    if (currentClip == clip) {
+                        currentClip = null;
+                    }
+                }
+            });
+            currentClip = clip;
             clip.start();
 
         } catch (Exception e) {
@@ -56,6 +65,23 @@ public class Music {
         if (loopClip != null && loopClip.isRunning()) {
             loopClip.stop();
             loopClip.close();
+        }
+    }
+
+    public static void stop() {
+        if (currentClip != null) {
+            if (currentClip.isRunning()) {
+                currentClip.stop();
+            }
+            currentClip.close();
+            currentClip = null;
+        }
+        if (loopClip != null) {
+            if (loopClip.isRunning()) {
+                loopClip.stop();
+            }
+            loopClip.close();
+            loopClip = null;
         }
     }
 }

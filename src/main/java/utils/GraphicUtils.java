@@ -1,6 +1,7 @@
 package utils;
 
 import application.GameController;
+import application.Music;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
@@ -114,19 +115,20 @@ public class GraphicUtils {
         button.setStyle(getBaseButtonStyle());
 
         button.setOnAction((_) -> {
-            // TODO (SOUND): play menu select sound
+            Music.play("sound/SFX/comfirm.wav");
             randomColorTheme();
             action.run();
         });
 
         button.setOnMouseEntered((_) -> {
-            // TODO (SOUND): play menu hover sound
+            Music.play("sound/SFX/select.wav");
             button.setStyle(getHoverButtonStyle());
             button.setGraphic(createTextNode(text));
         });
 
         button.setOnMouseExited((_) -> {
             // TODO (SOUND): play menu hover sound
+            // No Idea
             button.setStyle(getBaseButtonStyle());
             button.setGraphic(createTextNode(text));
         });

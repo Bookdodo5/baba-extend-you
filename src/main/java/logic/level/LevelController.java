@@ -1,5 +1,6 @@
 package logic.level;
 
+import application.Music;
 import javafx.scene.paint.Color;
 import logic.input.InputCommand;
 import logic.level.turn.TurnOrchestrator;
@@ -106,14 +107,14 @@ public class LevelController {
         System.out.println("Undo action triggered");
         actionStack.undo();
 
-        // TODO (SOUND) : play undo sound
+        Music.play("sound/SFX/esc.wav");
     }
 
     private void handleRedo() {
         System.out.println("Redo action triggered");
         actionStack.redo();
 
-        // TODO (SOUND) : play undo sound
+        Music.play("sound/SFX/esc.wav");
     }
 
     public void handleReset() {
@@ -121,7 +122,7 @@ public class LevelController {
         levelMap = new LevelMap(levelMapPrototype);
         actionStack.clear();
 
-        // TODO (SOUND) : play reset sound
+        Music.play("sound/SFX/reset.wav");
     }
 
     private void processTurn(Direction direction, PlayingState playingState) {

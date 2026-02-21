@@ -1,5 +1,6 @@
 package model.rule;
 
+import application.Music;
 import model.entity.Entity;
 
 import java.util.ArrayList;
@@ -22,10 +23,10 @@ public class Ruleset {
             return;
         }
         if(ruleList.size() >= rules.size()) {
-            // TODO (SOUND) : play rule formation sound
+            Music.play("sound/SFX/comfirm.wav");
         }
         if(ruleList.size() <= rules.size()) {
-            // TODO (SOUND) : play rule breaking sound
+            Music.play("sound/SFX/negative.wav");
         }
         reset();
         rules.addAll(ruleList);

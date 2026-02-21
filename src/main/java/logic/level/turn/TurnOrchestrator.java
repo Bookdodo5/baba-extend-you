@@ -1,6 +1,7 @@
 package logic.level.turn;
 
 import application.GameController;
+import application.Music;
 import logic.rule.evaluator.RuleEvaluator;
 import logic.rule.parser.RuleParser;
 import model.action.CompositeAction;
@@ -23,11 +24,13 @@ public class TurnOrchestrator {
     private final RuleEvaluator ruleEvaluator;
     private final CollisionResolver collisionResolver;
     private final InteractionHandler interactionHandler;
+    private boolean winMusicPlaying;
 
     public TurnOrchestrator() {
         this.ruleEvaluator = new RuleEvaluator();
         this.collisionResolver = new CollisionResolver();
         this.interactionHandler = new InteractionHandler();
+        this.winMusicPlaying = false;
     }
 
     public CompositeAction runTurn(Direction direction, LevelMap levelMap, Ruleset ruleset, RuleParser ruleParser) {
@@ -61,20 +64,28 @@ public class TurnOrchestrator {
         // Play appropriate sounds
         if(youAction.getActions().stream()
                 .anyMatch(action -> action instanceof MoveAction)) {
-            // TODO (SOUND) : play move sound
+            Music.play("sound/SFX/moveElement.wav");
         }
         if(youAction.getActions().stream()
                 .anyMatch(action -> action instanceof DestroyAction)
         ) {
-            // TODO (SOUND) : play destroy sound
+            Music.play("sound/SFX/reset.wav");
         }
         if(levelMap.getEntities().stream()
                 .noneMatch(entity -> ruleEvaluator.hasProperty(entity, TypeRegistry.YOU, levelMap, ruleset))
         ) {
-            // TODO (SOUND) : IF LEVEL MUSIC IS PLAYING, play lose music
+            if (!winMusicPlaying) {
+                Music.stopLoop();
+                Music.playLoop("sound/SFX/win.wav");
+                winMusicPlaying = true;
+            }
         }
         else {
-            // TODO (SOUND) : IF LOSE MUSIC IS PLAYING, play level music
+            if (winMusicPlaying) {
+                Music.stopLoop();
+                Music.playLoop("sound/music/Pixel_Quest_MainTheme.wav");
+                winMusicPlaying = false;
+            }
         }
 
         return youAction;

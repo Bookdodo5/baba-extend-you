@@ -1,6 +1,7 @@
 package state;
 
 import application.GameController;
+import application.Music;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -55,7 +56,7 @@ public class PauseState implements GameState {
     public void onEnter(GameStateEnum previousState) {
         createOverlay();
         putOverlay();
-        // TODO (SOUND): play menu enter sound
+        Music.play("sound/SFX/select.wav");
     }
 
     /**
@@ -64,7 +65,7 @@ public class PauseState implements GameState {
     @Override
     public void onExit() {
         removeOverlay();
-        // TODO (SOUND): play menu exit sound
+        Music.play("sound/SFX/select.wav");
     }
 
     /**
