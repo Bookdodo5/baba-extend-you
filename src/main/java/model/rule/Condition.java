@@ -5,7 +5,6 @@ import model.entity.EntityType;
 import model.entity.word.ConditionType;
 import model.entity.word.NounType;
 
-import java.util.UUID;
 
 /**
  * Represents a condition in a rule, consisting of a condition type and a parameter type.

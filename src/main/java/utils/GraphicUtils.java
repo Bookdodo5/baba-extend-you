@@ -1,7 +1,7 @@
 package utils;
 
 import application.GameController;
-import application.Music;
+import application.Audio;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
@@ -13,8 +13,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-
-import java.util.Objects;
 
 import static application.Constant.*;
 
@@ -115,20 +113,18 @@ public class GraphicUtils {
         button.setStyle(getBaseButtonStyle());
 
         button.setOnAction((_) -> {
-            Music.play("sound/SFX/comfirm.wav");
+            Audio.playSfx("sound/SFX/confirm.wav");
             randomColorTheme();
             action.run();
         });
 
         button.setOnMouseEntered((_) -> {
-            Music.play("sound/SFX/select.wav");
+            Audio.playSfx("sound/SFX/select.wav");
             button.setStyle(getHoverButtonStyle());
             button.setGraphic(createTextNode(text));
         });
 
         button.setOnMouseExited((_) -> {
-            // TODO (SOUND): play menu hover sound
-            // No Idea
             button.setStyle(getBaseButtonStyle());
             button.setGraphic(createTextNode(text));
         });

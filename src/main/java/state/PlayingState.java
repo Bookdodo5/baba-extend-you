@@ -1,6 +1,6 @@
 package state;
 
-import application.Music;
+import application.Audio;
 import javafx.scene.canvas.GraphicsContext;
 import application.GameController;
 import javafx.scene.effect.ColorAdjust;
@@ -63,7 +63,7 @@ public class PlayingState implements GameState {
      */
     @Override
     public void onEnter(GameStateEnum previousState) {
-
+        Audio.playSfx("sound/SFX/startStage.wav");
     }
 
     /**
@@ -91,7 +91,7 @@ public class PlayingState implements GameState {
 
         InputCommand playerInput = InputUtility.getTriggered();
         if (playerInput == InputCommand.MENU) {
-            Music.play("sound/SFX/esc.wav");
+            Audio.playSfx("sound/SFX/esc.wav");
             GameController.getInstance().setState(GameStateEnum.PAUSED);
         }
 

@@ -1,6 +1,6 @@
 package model.rule;
 
-import application.Music;
+import application.Audio;
 import model.entity.Entity;
 
 import java.util.ArrayList;
@@ -22,18 +22,14 @@ public class Ruleset {
         if(ruleList.equals(rules)) {
             return;
         }
-        if(ruleList.size() >= rules.size()) {
-            Music.play("sound/SFX/comfirm.wav");
+        else if(ruleList.size() >= rules.size()) {
+            Audio.playSfx("sound/SFX/confirm.wav");
         }
-        if(ruleList.size() <= rules.size()) {
-            Music.play("sound/SFX/negative.wav");
+        else {
+            Audio.playSfx("sound/SFX/negative.wav");
         }
-        reset();
-        rules.addAll(ruleList);
-    }
-
-    public void reset() {
         rules.clear();
+        rules.addAll(ruleList);
     }
 
     public ArrayList<Rule> getRules() {

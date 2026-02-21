@@ -1,32 +1,23 @@
 package state;
 
 import application.GameController;
-import application.Music;
+import application.Audio;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.Bloom;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import logic.input.InputCommand;
 import logic.input.InputUtility;
-import model.rule.Condition;
 import model.rule.Rule;
 import utils.GraphicUtils;
 import utils.ImageUtils;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static application.Constant.*;
@@ -56,7 +47,7 @@ public class PauseState implements GameState {
     public void onEnter(GameStateEnum previousState) {
         createOverlay();
         putOverlay();
-        Music.play("sound/SFX/select.wav");
+        Audio.playSfx("sound/SFX/select.wav");
     }
 
     /**
@@ -65,7 +56,7 @@ public class PauseState implements GameState {
     @Override
     public void onExit() {
         removeOverlay();
-        Music.play("sound/SFX/select.wav");
+        Audio.playSfx("sound/SFX/select.wav");
     }
 
     /**
@@ -75,15 +66,19 @@ public class PauseState implements GameState {
     public void update() {
         InputCommand playerInput = InputUtility.getTriggered();
         if (playerInput == InputCommand.MENU) {
+            Audio.playSfx("sound/SFX/esc.wav");
             resumeGame();
         }
         if (playerInput == InputCommand.MOVE_UP) {
+            Audio.playSfx("sound/SFX/select.wav");
             currentSelectedIndex = (currentSelectedIndex + TOTAL_BUTTON - 1) % TOTAL_BUTTON;
         }
         if (playerInput == InputCommand.MOVE_DOWN) {
+            Audio.playSfx("sound/SFX/select.wav");
             currentSelectedIndex = (currentSelectedIndex + 1) % TOTAL_BUTTON;
         }
         if (playerInput == InputCommand.TRIGGER) {
+            Audio.playSfx("sound/SFX/confirm.wav");
             switch (currentSelectedIndex) {
                 case 0 -> resumeGame();
                 case 1 -> restartLevel();

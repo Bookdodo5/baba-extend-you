@@ -5,9 +5,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import model.map.LevelLoader;
 import model.map.LevelMap;
-import model.particle.Particle;
 import state.*;
-import application.Music;
+
 import java.util.*;
 
 /**
@@ -120,7 +119,7 @@ public class GameController {
             completedLevels.add(currentLevelFilePath);
             setState(GameStateEnum.MAP);
             resetCurrentLevel();
-            Music.play("sound/SFX/win.wav");
+            Audio.playSfx("sound/SFX/win.wav");
 
             return true;
         }

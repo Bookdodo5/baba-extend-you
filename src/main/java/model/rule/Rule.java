@@ -4,7 +4,6 @@ import model.entity.Entity;
 import model.entity.EntityType;
 import model.entity.word.EffectType;
 import model.entity.word.NounType;
-import model.entity.word.PropertyType;
 import model.entity.word.VerbType;
 
 import java.util.List;
@@ -98,5 +97,21 @@ public class Rule {
         ruleText.append(" ");
         ruleText.append(getEffect().getTypeId());
         return ruleText.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Rule other)) {
+            return false;
+        }
+        return getEntitySignature().equals(other.getEntitySignature());
+    }
+
+    @Override
+    public int hashCode() {
+        return getEntitySignature().hashCode();
     }
 }

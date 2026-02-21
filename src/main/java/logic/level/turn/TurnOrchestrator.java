@@ -1,7 +1,7 @@
 package logic.level.turn;
 
 import application.GameController;
-import application.Music;
+import application.Audio;
 import logic.rule.evaluator.RuleEvaluator;
 import logic.rule.parser.RuleParser;
 import model.action.CompositeAction;
@@ -24,13 +24,11 @@ public class TurnOrchestrator {
     private final RuleEvaluator ruleEvaluator;
     private final CollisionResolver collisionResolver;
     private final InteractionHandler interactionHandler;
-    private boolean winMusicPlaying;
 
     public TurnOrchestrator() {
         this.ruleEvaluator = new RuleEvaluator();
         this.collisionResolver = new CollisionResolver();
         this.interactionHandler = new InteractionHandler();
-        this.winMusicPlaying = false;
     }
 
     public CompositeAction runTurn(Direction direction, LevelMap levelMap, Ruleset ruleset, RuleParser ruleParser) {
@@ -62,30 +60,12 @@ public class TurnOrchestrator {
         youAction.combine(interactAction);
 
         // Play appropriate sounds
-        if(youAction.getActions().stream()
-                .anyMatch(action -> action instanceof MoveAction)) {
-            Music.play("sound/SFX/moveElement.wav");
+        if(youAction.getActions().stream().anyMatch(action -> action instanceof MoveAction)) {
+            Audio.playSfx("sound/SFX/moveElement.wav");
         }
-        if(youAction.getActions().stream()
-                .anyMatch(action -> action instanceof DestroyAction)
+        if(youAction.getActions().stream().anyMatch(action -> action instanceof DestroyAction)
         ) {
-            Music.play("sound/SFX/reset.wav");
-        }
-        if(levelMap.getEntities().stream()
-                .noneMatch(entity -> ruleEvaluator.hasProperty(entity, TypeRegistry.YOU, levelMap, ruleset))
-        ) {
-            if (!winMusicPlaying) {
-                Music.stopLoop();
-                Music.playLoop("sound/SFX/win.wav");
-                winMusicPlaying = true;
-            }
-        }
-        else {
-            if (winMusicPlaying) {
-                Music.stopLoop();
-                Music.playLoop("sound/music/Pixel_Quest_MainTheme.wav");
-                winMusicPlaying = false;
-            }
+            Audio.playSfx("sound/SFX/destroy.wav");
         }
 
         return youAction;

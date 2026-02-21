@@ -40,15 +40,6 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // REMOVE THIS LINE AFTER LEVEL SELECTOR IS DONE
-        gameController.playLevel("map/30_JAVA_IS_WIN.csv");
-
-        // This line(44) for testing music running
-        Music.playLoop("sound/music/Pixel_Quest_MainTheme.wav");
-
-        // CHANGE THE COLOR THEME DYNAMICALLY
-        gameController.setColorTheme(Color.DARKSLATEGRAY);
-
         screen.updateScale(root);
         root.widthProperty().addListener((_, _, _) -> screen.updateScale(root));
         root.heightProperty().addListener((_, _, _) -> screen.updateScale(root));
@@ -58,6 +49,9 @@ public class Main extends Application {
         root.setEffect(new Glow(0.6));
 
         screen.requestFocus();
+
+        gameController.setColorTheme(Color.DARKSLATEGRAY);
+        gameController.setState(GameStateEnum.TITLE);
 
         AnimationTimer animation = new AnimationTimer() {
             @Override

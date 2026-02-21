@@ -1,5 +1,6 @@
 package state;
 
+import application.Audio;
 import application.GameController;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
@@ -50,6 +51,7 @@ public class CreditsState implements GameState {
     public void update() {
         InputCommand playerInput = InputUtility.getTriggered();
         if (playerInput == InputCommand.MENU) {
+            Audio.playSfx("sound/SFX/esc.wav");
             GameController.getInstance().setState(GameStateEnum.TITLE);
         }
     }

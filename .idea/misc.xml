@@ -8,7 +8,7 @@
     <option name="OUTPUT_DIRECTORY" value="$USER_HOME$/OneDrive/เดสก์ท็อป" />
     <option name="OPTION_SCOPE" value="public" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_24" project-jdk-name="24" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_24" default="true" project-jdk-name="24" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

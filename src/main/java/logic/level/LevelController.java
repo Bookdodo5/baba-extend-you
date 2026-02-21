@@ -1,6 +1,6 @@
 package logic.level;
 
-import application.Music;
+import application.Audio;
 import javafx.scene.paint.Color;
 import logic.input.InputCommand;
 import logic.level.turn.TurnOrchestrator;
@@ -40,6 +40,8 @@ public class LevelController {
 
     private long lastInputTime = 0L;
 
+    private boolean isLose = false;
+
     public LevelController() {
         this.ruleset = new Ruleset();
         this.ruleEvaluator = new RuleEvaluator();
@@ -75,12 +77,10 @@ public class LevelController {
         if (triggered != InputCommand.NONE) {
             processInput(triggered, playingState);
             lastInputTime = currentTime;
-            parseRules();
         }
         else if(currentTime - lastInputTime >= INPUT_COOLDOWN_MILLIS && pressed != InputCommand.NONE) {
             processInput(pressed, playingState);
             lastInputTime = currentTime;
-            parseRules();
         }
     }
 
@@ -95,42 +95,40 @@ public class LevelController {
             case MOVE_LEFT -> processTurn(Direction.LEFT, playingState);
             case MOVE_RIGHT -> processTurn(Direction.RIGHT, playingState);
         }
+        parseRules();
+        handleLose();
     }
 
     private void parseRules() {
-        ruleset.reset();
         List<Rule> parsedRules = ruleParser.parseRules(levelMap);
         ruleset.setRules(parsedRules);
     }
 
     private void handleUndo() {
-        System.out.println("Undo action triggered");
         actionStack.undo();
 
-        Music.play("sound/SFX/esc.wav");
+        Audio.playSfx("sound/SFX/esc.wav");
     }
 
     private void handleRedo() {
-        System.out.println("Redo action triggered");
         actionStack.redo();
 
-        Music.play("sound/SFX/esc.wav");
+        Audio.playSfx("sound/SFX/esc.wav");
     }
 
     public void handleReset() {
-        System.out.println("Reset action triggered");
         levelMap = new LevelMap(levelMapPrototype);
         actionStack.clear();
 
-        Music.play("sound/SFX/reset.wav");
+        Audio.playSfx("sound/SFX/reset.wav");
     }
 
     private void processTurn(Direction direction, PlayingState playingState) {
-        System.out.println("Processing turn with direction: " + direction);
         CompositeAction actions = turnOrchestrator.runTurn(direction, levelMap, ruleset, ruleParser);
         if(actions.getActions().isEmpty()) {
             return;
         }
+
         addTurnParticles(actions, playingState);
         actionStack.newAction(actions);
     }
@@ -171,5 +169,20 @@ public class LevelController {
                 ));
             }
         }
+    }
+
+    private void handleLose() {
+        boolean updatedIsLose = levelMap.getEntities().stream()
+                .noneMatch(entity -> ruleEvaluator.hasProperty(entity, TypeRegistry.YOU, levelMap, ruleset));
+
+        if(!updatedIsLose) {
+            Audio.resumeMusic();
+        }
+        else if(!isLose) {
+            Audio.pauseMusic();
+            Audio.playSfx("sound/SFX/lose.wav");
+        }
+
+        isLose = updatedIsLose;
     }
 }

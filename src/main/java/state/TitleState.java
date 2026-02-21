@@ -1,10 +1,9 @@
 package state;
 
 import application.GameController;
-import application.Music;
+import application.Audio;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
@@ -42,8 +41,7 @@ public class TitleState implements GameState {
      */
     @Override
     public void onEnter(GameStateEnum previousState) {
-        // TODO (SOUND) : play state transition sound
-        Music.play("sound/music/Pixel_Quest_MainTheme.wav");
+        Audio.playMusic("sound/music/Pixel_Quest_MainTheme.wav");
         createTitleBox();
         putTitleBox();
     }
@@ -53,7 +51,6 @@ public class TitleState implements GameState {
      */
     @Override
     public void onExit() {
-        Music.stop();
         removeTitleBox();
     }
 
@@ -65,17 +62,26 @@ public class TitleState implements GameState {
         InputCommand playerInput = InputUtility.getTriggered();
 
         if (playerInput == InputCommand.MOVE_UP) {
+            Audio.playSfx("sound/SFX/select.wav");
             currentSelectedIndex = (currentSelectedIndex + TOTAL_BUTTON - 1) % TOTAL_BUTTON;
         }
         if (playerInput == InputCommand.MOVE_DOWN) {
+            Audio.playSfx("sound/SFX/select.wav");
             currentSelectedIndex = (currentSelectedIndex + 1) % TOTAL_BUTTON;
         }
         if (playerInput == InputCommand.TRIGGER) {
+            Audio.playSfx("sound/SFX/confirm.wav");
             switch (currentSelectedIndex) {
                 case 0 -> startGame();
                 case 1 -> credits();
                 case 2 -> exitGame();
             }
+        }
+        if (playerInput == InputCommand.MENU) {
+            Audio.playSfx("sound/SFX/esc.wav");
+            removeTitleBox();
+            createTitleBox();
+            putTitleBox();
         }
 
         GraphicUtils.updateIndicatorPosition(
