@@ -10,6 +10,7 @@ import model.entity.TypeRegistry;
 import model.map.LevelMap;
 import model.rule.Ruleset;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -100,18 +101,21 @@ public class CollisionResolver {
     private boolean tryPush(MoveIntent intent, CompositeAction action, LevelMap workingMap, LevelMap levelMap, RuleEvaluator ruleEvaluator, Ruleset ruleset) {
         Entity entity = intent.getEntity();
         Direction direction = intent.getDirection();
+
         if(intent.isFromMove()) {
             direction = workingMap.getEntityById(entity.getEntityId()).getDirection();
         }
+
         int targetX = workingMap.getX(entity) + direction.dx;
         int targetY = workingMap.getY(entity) + direction.dy;
+        Point target = new Point(targetX, targetY);
 
         if (!levelMap.isInside(targetX, targetY)) {
             return false;
         }
 
-        List<Entity> pushEntities = ruleEvaluator.getEntitiesWithPropertyAt(TypeRegistry.PUSH, workingMap, ruleset, targetX, targetY);
-        List<Entity> stopEntities = ruleEvaluator.getEntitiesWithPropertyAt(TypeRegistry.STOP, workingMap, ruleset, targetX, targetY);
+        List<Entity> pushEntities = ruleEvaluator.getEntitiesWithPropertyAt(TypeRegistry.PUSH, workingMap, ruleset, target);
+        List<Entity> stopEntities = ruleEvaluator.getEntitiesWithPropertyAt(TypeRegistry.STOP, workingMap, ruleset, target);
 
         // If there's any STOP entity that's not also PUSH, we cannot push
         boolean isBlocked = stopEntities.stream().anyMatch(stop -> !pushEntities.contains(stop));

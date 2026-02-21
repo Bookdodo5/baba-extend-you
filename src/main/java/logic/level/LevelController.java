@@ -22,6 +22,7 @@ import model.rule.Rule;
 import model.rule.Ruleset;
 import state.PlayingState;
 
+import java.awt.*;
 import java.util.List;
 
 import static application.Constant.INPUT_COOLDOWN_MILLIS;
@@ -77,8 +78,7 @@ public class LevelController {
         if (triggered != InputCommand.NONE) {
             processInput(triggered, playingState);
             lastInputTime = currentTime;
-        }
-        else if(currentTime - lastInputTime >= INPUT_COOLDOWN_MILLIS && pressed != InputCommand.NONE) {
+        } else if (currentTime - lastInputTime >= INPUT_COOLDOWN_MILLIS && pressed != InputCommand.NONE) {
             processInput(pressed, playingState);
             lastInputTime = currentTime;
         }
@@ -125,7 +125,7 @@ public class LevelController {
 
     private void processTurn(Direction direction, PlayingState playingState) {
         CompositeAction actions = turnOrchestrator.runTurn(direction, levelMap, ruleset, ruleParser);
-        if(actions.getActions().isEmpty()) {
+        if (actions.getActions().isEmpty()) {
             return;
         }
 
@@ -134,19 +134,18 @@ public class LevelController {
     }
 
     private void addTurnParticles(CompositeAction actions, PlayingState playingState) {
-        for(Action action : actions.getActions()) {
-            if(action instanceof MoveAction moveAction) {
+        for (Action action : actions.getActions()) {
+            if (action instanceof MoveAction moveAction) {
                 moveAction.addParticle(playingState);
-            } else if(action instanceof DestroyAction destroyAction) {
+            } else if (action instanceof DestroyAction destroyAction) {
                 destroyAction.addParticle(playingState);
             }
         }
     }
 
     private void addPassiveParticles(PlayingState playingState) {
-
-        for(Entity entity : ruleEvaluator.getEntitiesWithProperty(TypeRegistry.HOT, levelMap, ruleset)) {
-            if(Math.random() < 0.002) {
+        for (Entity entity : ruleEvaluator.getEntitiesWithProperty(TypeRegistry.HOT, levelMap, ruleset)) {
+            if (Math.random() < 0.002) {
                 playingState.addParticle(new Particle(
                         levelMap.getX(entity) + (Math.random() - 0.5) / 2.0,
                         levelMap.getY(entity) + (Math.random() - 0.5) / 2.0,
@@ -157,8 +156,8 @@ public class LevelController {
                 ));
             }
         }
-        for(Entity entity : ruleEvaluator.getEntitiesWithProperty(TypeRegistry.WIN, levelMap, ruleset)) {
-            if(Math.random() < 0.02) {
+        for (Entity entity : ruleEvaluator.getEntitiesWithProperty(TypeRegistry.WIN, levelMap, ruleset)) {
+            if (Math.random() < 0.02) {
                 playingState.addParticle(new Particle(
                         levelMap.getX(entity) + (Math.random() - 0.5) / 2.0,
                         levelMap.getY(entity) + (Math.random() - 0.5) / 2.0,
@@ -171,14 +170,28 @@ public class LevelController {
         }
     }
 
+    public void addWinParticle(PlayingState playingState) {
+        for (Point point : ruleEvaluator.getWinConditionMetPositions(levelMap, ruleset)) {
+            for (int i = 0; i < 20; i++) {
+                playingState.addParticle(new Particle(
+                        point.x + (Math.random() - 0.5) / 2.0,
+                        point.y + (Math.random() - 0.5) / 2.0,
+                        (Math.random() - 0.5) / 300.0,
+                        (Math.random() - 0.5) / 300.0,
+                        ParticleType.WIN,
+                        Color.GOLD
+                ));
+            }
+        }
+    }
+
     private void handleLose() {
         boolean updatedIsLose = levelMap.getEntities().stream()
                 .noneMatch(entity -> ruleEvaluator.hasProperty(entity, TypeRegistry.YOU, levelMap, ruleset));
 
-        if(!updatedIsLose) {
+        if (!updatedIsLose) {
             Audio.resumeMusic();
-        }
-        else if(!isLose) {
+        } else if (!isLose) {
             Audio.pauseMusic();
             Audio.playSfx("sound/SFX/lose.wav");
         }

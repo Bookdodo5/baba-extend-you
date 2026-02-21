@@ -8,6 +8,7 @@ import model.map.LevelMap;
 import model.rule.Rule;
 import model.rule.Ruleset;
 
+import java.awt.*;
 import java.util.List;
 
 import model.rule.Transformation;
@@ -47,14 +48,14 @@ public class RuleEvaluator {
                 .toList();
     }
 
-    public List<Entity> getEntitiesWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, int x, int y) {
+    public List<Entity> getEntitiesWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, Point position) {
         return getEntitiesWithProperty(property, levelMap, ruleset).stream()
-                .filter(entity -> levelMap.getX(entity) == x && levelMap.getY(entity) == y)
+                .filter(entity -> position.equals(levelMap.getPosition(entity)))
                 .toList();
     }
 
-    public boolean hasEntityWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, int x, int y) {
-        return levelMap.getEntitiesAt(x, y).stream()
+    public boolean hasEntityWithPropertyAt(PropertyType property, LevelMap levelMap, Ruleset ruleset, Point position) {
+        return levelMap.getEntitiesAt(position).stream()
                 .anyMatch(entity -> hasProperty(entity, property, levelMap, ruleset));
     }
 
@@ -95,15 +96,15 @@ public class RuleEvaluator {
                 .toList();
     }
 
-    public boolean isWinConditionMet(LevelMap levelMap, Ruleset ruleset) {
+    public List<Point> getWinConditionMetPositions(LevelMap levelMap, Ruleset ruleset) {
         return levelMap.getEntities().stream()
                 .filter(entity -> hasProperty(entity, TypeRegistry.WIN, levelMap, ruleset))
-                .anyMatch(entity -> hasEntityWithPropertyAt(
+                .filter(entity -> hasEntityWithPropertyAt(
                         TypeRegistry.YOU,
-                        levelMap,
-                        ruleset,
-                        levelMap.getX(entity),
-                        levelMap.getY(entity))
-                );
+                        levelMap, ruleset,
+                        levelMap.getPosition(entity))
+                )
+                .map(levelMap::getPosition)
+                .toList();
     }
 }

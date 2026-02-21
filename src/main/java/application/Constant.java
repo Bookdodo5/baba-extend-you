@@ -24,6 +24,7 @@ public class Constant {
     public static final int FONT_PER_ROW = 16;
 
     public static final int MILLISECONDS_PER_TITLE_CYCLE = 12000;
+    public static final int WIN_DELAY_MILLIS = 3000;
 
     public static final List<Color> COLOR_LIST = List.of(
             Color.BLUEVIOLET,

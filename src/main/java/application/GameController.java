@@ -9,6 +9,8 @@ import state.*;
 
 import java.util.*;
 
+import static application.Constant.WIN_DELAY_MILLIS;
+
 /**
  * A singleton class that manages the overall state of the game.
  * <ul>
@@ -22,12 +24,16 @@ public class GameController {
     private static GameController instance;
     private final StackPane rootPane = new StackPane();
     private final Map<GameStateEnum, GameState> stateMap;
-    private final Set<String> completedLevels;
     private GameState currentState;
     private GameStateEnum currentStateEnum;
-    private boolean isCurrentLevelWin;
-    private String currentLevelFilePath;
+
     private Color colorTheme;
+
+    private String currentLevelFilePath;
+    private final Set<String> completedLevels;
+    private boolean hasPlayerWon;
+    private boolean isWinSequenceActive;
+    private long winSequenceStartTime;
 
     private GameController() {
         stateMap = new HashMap<>();
@@ -81,7 +87,7 @@ public class GameController {
 
     private void resetCurrentLevel() {
         currentLevelFilePath = null;
-        isCurrentLevelWin = false;
+        hasPlayerWon = false;
     }
 
     public void playLevel(String levelFilePath) {
@@ -110,20 +116,36 @@ public class GameController {
         }
     }
 
-    public void setCurrentLevelWin(boolean isWin) {
-        this.isCurrentLevelWin = isWin;
+    public void setHasPlayerWon(boolean isWin) {
+        this.hasPlayerWon = isWin;
     }
 
     public boolean processWin() {
-        if(isCurrentLevelWin) {
+        if (!hasPlayerWon) {
+            return false;
+        }
+
+        if (!isWinSequenceActive) {
+            winSequenceStartTime = System.currentTimeMillis();
+            isWinSequenceActive = true;
+            Audio.playSfx("sound/SFX/win.wav");
+
+            PlayingState playingState = (PlayingState) getGameState(GameStateEnum.PLAYING);
+            if (playingState != null) {
+                playingState.getLevelController().addWinParticle(playingState);
+            }
+            return true;
+        }
+
+        if (System.currentTimeMillis() - winSequenceStartTime >= WIN_DELAY_MILLIS) {
             completedLevels.add(currentLevelFilePath);
             setState(GameStateEnum.MAP);
             resetCurrentLevel();
-            Audio.playSfx("sound/SFX/win.wav");
-
-            return true;
+            Audio.playSfx("sound/SFX/confirm.wav");
+            isWinSequenceActive = false;
         }
-        return false;
+
+        return true;
     }
 
     public void render(GraphicsContext gc) {

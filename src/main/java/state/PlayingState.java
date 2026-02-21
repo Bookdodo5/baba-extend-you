@@ -79,15 +79,14 @@ public class PlayingState implements GameState {
      */
     @Override
     public void update() {
-        boolean success = GameController.getInstance().processWin();
-        if (success) {
-            return;
+        particles.removeIf(Particle::isDead);
+        particles.forEach(Particle::update);
+
+        if (GameController.getInstance().processWin()) {
+            return; // Controls disabled during win animation
         }
 
         levelController.update(this);
-
-        particles.removeIf(Particle::isDead);
-        particles.forEach(Particle::update);
 
         InputCommand playerInput = InputUtility.getTriggered();
         if (playerInput == InputCommand.MENU) {

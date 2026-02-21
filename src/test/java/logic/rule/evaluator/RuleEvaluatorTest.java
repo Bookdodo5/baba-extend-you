@@ -12,6 +12,7 @@ import model.rule.Transformation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -213,11 +214,11 @@ class RuleEvaluatorTest {
         Rule rule = createSimpleRule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         ruleset.setRules(List.of(rule));
 
-        List<Entity> entities = evaluator.getEntitiesWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset, 5, 5);
+        List<Entity> entities = evaluator.getEntitiesWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset,  new Point(5, 5));
         assertEquals(1, entities.size());
         assertTrue(entities.contains(javaEntity));
 
-        entities = evaluator.getEntitiesWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset, 6, 5);
+        entities = evaluator.getEntitiesWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset,  new Point(6, 5));
         assertTrue(entities.isEmpty());
     }
 
@@ -227,13 +228,13 @@ class RuleEvaluatorTest {
         Rule rule = createSimpleRule(TypeRegistry.TEXT_JAVA, TypeRegistry.YOU);
         ruleset.setRules(List.of(rule));
 
-        boolean result1 = evaluator.hasEntityWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset, 5, 5);
+        boolean result1 = evaluator.hasEntityWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset, new Point(5, 5));
         assertTrue(result1);
 
-        boolean result2 = evaluator.hasEntityWithPropertyAt(TypeRegistry.PUSH, levelMap, ruleset, 5, 5);
+        boolean result2 = evaluator.hasEntityWithPropertyAt(TypeRegistry.PUSH, levelMap, ruleset,  new Point(5, 5));
         assertFalse(result2);
 
-        boolean result3 = evaluator.hasEntityWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset, 6, 5);
+        boolean result3 = evaluator.hasEntityWithPropertyAt(TypeRegistry.YOU, levelMap, ruleset,  new Point(6, 5));
         assertFalse(result3);
     }
 }

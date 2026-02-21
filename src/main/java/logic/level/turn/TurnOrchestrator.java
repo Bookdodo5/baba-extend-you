@@ -51,8 +51,8 @@ public class TurnOrchestrator {
         interactAction.execute();
 
         // Check win
-        if(ruleEvaluator.isWinConditionMet(levelMap, ruleset)) {
-            GameController.getInstance().setCurrentLevelWin(true);
+        if(!ruleEvaluator.getWinConditionMetPositions(levelMap, ruleset).isEmpty()) {
+            GameController.getInstance().setHasPlayerWon(true);
         }
 
         // Combine all actions
