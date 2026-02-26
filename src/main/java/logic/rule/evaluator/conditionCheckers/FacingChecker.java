@@ -12,6 +12,7 @@ import java.util.List;
 
 /** Checks for "A FACING B IS X" conditions. */
 public class FacingChecker implements ConditionChecker {
+    /** {@inheritDoc} Satisfied when the entity is facing a cell occupied by the condition's parameter type. */
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
         InheritanceResolver inheritanceResolver = new InheritanceResolver();

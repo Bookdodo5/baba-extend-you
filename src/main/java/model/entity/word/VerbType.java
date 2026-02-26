@@ -15,10 +15,20 @@ public class VerbType extends WordType{
         this.acceptsProperty = acceptsProperty;
     }
 
+    /**
+     * Returns whether this verb can take a noun as its effect.
+     *
+     * @return {@code true} if the verb accepts a noun effect
+     */
     public boolean acceptsNoun() {
         return acceptsNoun;
     }
 
+    /**
+     * Returns whether this verb can take a property as its effect.
+     *
+     * @return {@code true} if the verb accepts a property effect
+     */
     public boolean acceptsProperty() {
         return acceptsProperty;
     }

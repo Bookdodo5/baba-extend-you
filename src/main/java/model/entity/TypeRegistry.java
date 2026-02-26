@@ -64,6 +64,12 @@ public class TypeRegistry {
         return newType;
     }
 
+    /**
+     * Returns the registered {@link EntityType} for the given type ID, or {@code null} if not found.
+     *
+     * @param typeId the string identifier of the type
+     * @return the corresponding entity type, or {@code null}
+     */
     public static EntityType getType(String typeId) {
         return REGISTRY.get(typeId);
     }

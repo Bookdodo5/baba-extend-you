@@ -21,6 +21,16 @@ public class InheritanceResolver {
         this.conditionEvaluator = new ConditionEvaluator();
     }
 
+    /**
+     * Returns {@code true} if the given entity is an instance of the target type,
+     * taking "X EXTEND Y" rules into account.
+     *
+     * @param entity     the entity to check
+     * @param targetType the type to check against
+     * @param levelMap   the current level map
+     * @param ruleset    the active ruleset
+     * @return {@code true} if the entity is a (direct or inherited) instance of targetType
+     */
     public boolean isInstanceOf(Entity entity, EntityType targetType, LevelMap levelMap, Ruleset ruleset) {
         List<Rule> extendRules = ruleset.getRules().stream()
                 .filter(rule -> rule.getVerb() == TypeRegistry.EXTEND)
@@ -29,6 +39,18 @@ public class InheritanceResolver {
         return isInstanceOfRecursive(entity, entity.getType(), targetType, extendRules, visitedTypes, levelMap, ruleset);
     }
 
+    /**
+     * Recursive helper that traverses the inheritance chain to find a match.
+     *
+     * @param entity        the entity being checked
+     * @param currentType   the type currently being tested in the chain
+     * @param targetType    the type to find
+     * @param extendRules   all EXTEND rules from the ruleset
+     * @param visitedTypes  set of already-visited types (cycle guard)
+     * @param levelMap      the current level map
+     * @param ruleset       the active ruleset
+     * @return {@code true} if a path from currentType to targetType was found
+     */
     private boolean isInstanceOfRecursive(Entity entity, EntityType currentType, EntityType targetType,
                                          List<Rule> extendRules, Set<EntityType> visitedTypes,
                                          LevelMap levelMap, Ruleset ruleset) {

@@ -22,6 +22,14 @@ public class MoveAction implements Action {
     private final Direction endDirection;
     private Direction startDirection;
 
+    /**
+     * Creates a move action from a specified starting position.
+     *
+     * @param levelMap  the level map
+     * @param entity    the entity to move
+     * @param fromPos   the starting position
+     * @param direction the direction to move in
+     */
     public MoveAction(LevelMap levelMap, Entity entity, Point fromPos, Direction direction) {
         this.levelMap = levelMap;
         this.entity = entity;
@@ -33,6 +41,13 @@ public class MoveAction implements Action {
         startY = fromPos.y;
     }
 
+    /**
+     * Creates a move action using the entity's current position on the map as the starting position.
+     *
+     * @param levelMap  the level map
+     * @param entity    the entity to move
+     * @param direction the direction to move in
+     */
     public MoveAction(LevelMap levelMap, Entity entity, Direction direction) {
         this(levelMap, entity, levelMap.getPosition(entity), direction);
     }
@@ -52,6 +67,11 @@ public class MoveAction implements Action {
         entity.setDirection(startDirection);
     }
 
+    /**
+     * Spawns a puff particle effect at the entity's starting position.
+     *
+     * @param playingState the playing state to add particles to
+     */
     public void addParticle(PlayingState playingState) {
         playingState.addParticle(new Particle(
                 startX + (Math.random() - 0.5) / 2.0,

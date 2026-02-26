@@ -11,6 +11,7 @@ import java.util.List;
 
 /** Checks for "A NEAR B IS X" conditions. */
 public class NearChecker implements ConditionChecker {
+    /** {@inheritDoc} Satisfied when the entity is within 1 cell (including diagonals) of the condition's parameter type. */
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
         InheritanceResolver inheritanceResolver = new InheritanceResolver();

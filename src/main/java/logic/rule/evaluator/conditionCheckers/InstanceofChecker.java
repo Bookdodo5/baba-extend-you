@@ -10,6 +10,7 @@ import model.rule.Ruleset;
 /** Checks for "A INSTANCEOF B IS X" conditions. */
 public class InstanceofChecker implements ConditionChecker {
 
+    /** {@inheritDoc} Satisfied when the entity is an instance of the condition's parameter type. */
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
         InheritanceResolver inheritanceResolver = new InheritanceResolver();

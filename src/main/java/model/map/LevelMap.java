@@ -15,6 +15,12 @@ public class LevelMap {
     private final Map<Point, List<Entity>> grid;
     private final Map<Entity, Point> entityPositions;
 
+    /**
+     * Creates an empty level map with the given dimensions.
+     *
+     * @param width  the number of columns
+     * @param height the number of rows
+     */
     public LevelMap(int width, int height) {
         this.width = width;
         this.height = height;
@@ -22,6 +28,11 @@ public class LevelMap {
         this.entityPositions = new HashMap<>();
     }
 
+    /**
+     * Creates a deep copy of the given level map, cloning all entities and their positions.
+     *
+     * @param other the level map to copy
+     */
     public LevelMap(LevelMap other) {
         this.width = other.width;
         this.height = other.height;
@@ -34,14 +45,31 @@ public class LevelMap {
         }
     }
 
+    /**
+     * Returns the number of columns in this map.
+     *
+     * @return the width
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Returns the number of rows in this map.
+     *
+     * @return the height
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Returns whether the given grid coordinate is within the map bounds.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return {@code true} if the coordinate is inside the map
+     */
     public boolean isInside(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
@@ -135,6 +163,12 @@ public class LevelMap {
         return grid.getOrDefault(new Point(x, y), List.of());
     }
 
+    /**
+     * Returns all entities at the given {@link java.awt.Point} position on the map.
+     *
+     * @param position the position to query
+     * @return a list of entities at that position
+     */
     public List<Entity> getEntitiesAt(Point position) {
         return getEntitiesAt(position.x, position.y);
     }
@@ -147,6 +181,12 @@ public class LevelMap {
         return new ArrayList<>(entityPositions.keySet());
     }
 
+    /**
+     * Finds an entity on the map by its UUID.
+     *
+     * @param entityId the UUID to search for
+     * @return the entity with the given UUID, or {@code null} if not found
+     */
     public Entity getEntityById(UUID entityId) {
         return entityPositions.keySet().stream()
                 .filter(e -> e.getEntityId().equals(entityId))

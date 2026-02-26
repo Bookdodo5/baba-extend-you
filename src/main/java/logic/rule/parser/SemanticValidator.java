@@ -12,6 +12,12 @@ import java.util.List;
  */
 public class SemanticValidator {
 
+    /**
+     * Filters out rules that are semantically invalid (e.g. a HAS verb paired with a property effect).
+     *
+     * @param rules the list of syntactically valid rules to check
+     * @return a list containing only semantically valid rules
+     */
     public List<Rule> validate(List<Rule> rules) {
         return rules.stream()
                 .filter(this::isSemanticallyValid)

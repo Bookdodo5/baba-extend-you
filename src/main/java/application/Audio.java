@@ -10,17 +10,31 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 
+/**
+ * Utility class for playing background music and sound effects.
+ */
 public class Audio {
     private static Clip musicClip;
     private static String currentMusicFile;
     private static final List<Clip> sfxClips = new ArrayList<>();
     private static final Map<String, URL> resourceCache = new HashMap<>();
 
+    /**
+     * Returns the cached URL for the given resource location, loading it if necessary.
+     *
+     * @param fileLocation the classpath-relative path to the audio resource
+     * @return the URL of the resource, or {@code null} if not found
+     */
     private static URL getResourceUrl(String fileLocation) {
         return resourceCache.computeIfAbsent(fileLocation,
             location -> Audio.class.getClassLoader().getResource(location));
     }
 
+    /**
+     * Plays a one-shot sound effect from the given resource path.
+     *
+     * @param fileLocation the classpath-relative path to the SFX audio file
+     */
     public static void playSfx(String fileLocation) {
         boolean isSilent = Boolean.getBoolean("app.silent.mode");
         if(isSilent) {
@@ -51,6 +65,12 @@ public class Audio {
         }
     }
 
+    /**
+     * Starts looping the background music from the given resource path.
+     * If the same file is already playing, this method does nothing.
+     *
+     * @param fileLocation the classpath-relative path to the music audio file
+     */
     public static void playMusic(String fileLocation) {
         try {
             if (fileLocation.equals(currentMusicFile)) {
@@ -81,12 +101,14 @@ public class Audio {
         }
     }
 
+    /** Pauses the currently playing background music, if any. */
     public static void pauseMusic() {
         if (musicClip != null && musicClip.isRunning()) {
             musicClip.stop();
         }
     }
 
+    /** Resumes the background music from where it was paused, looping continuously. */
     public static void resumeMusic() {
         if (musicClip != null && !musicClip.isRunning()) {
             musicClip.start();

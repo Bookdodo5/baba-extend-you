@@ -17,6 +17,11 @@ public class DestroyAction implements Action {
     private final int posX;
     private final int posY;
 
+    /**
+     * Destroy the given entity, removing it from the levelMap.
+     * @param levelMap
+     * @param entity
+     */
     public DestroyAction(LevelMap levelMap, Entity entity) {
         this.levelMap = levelMap;
         this.entity = entity;
@@ -24,6 +29,11 @@ public class DestroyAction implements Action {
         this.posY = levelMap.getY(entity);
     }
 
+    /**
+     * Returns the entity that this action will destroy.
+     *
+     * @return the entity targeted for destruction
+     */
     public Entity getEntity() {
         return entity;
     }
@@ -38,6 +48,11 @@ public class DestroyAction implements Action {
         levelMap.setPosition(entity, posX, posY);
     }
 
+    /**
+     * Spawns destruction particle effects at the entity's last position.
+     *
+     * @param playingState the playing state to add particles to
+     */
     public void addParticle(PlayingState playingState) {
         for (int i = 0; i < 4; i++) {
             playingState.addParticle(new Particle(

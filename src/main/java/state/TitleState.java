@@ -19,6 +19,9 @@ import utils.ImageUtils;
 
 import static application.Constant.*;
 
+/**
+ * Represents the title screen state with the main menu buttons.
+ */
 public class TitleState implements GameState {
 
     private static final int SPACING = 5;
@@ -37,7 +40,7 @@ public class TitleState implements GameState {
     private int currentSelectedIndex = 0;
 
     /**
-     *
+     * {@inheritDoc} Starts the background music and creates the title UI.
      */
     @Override
     public void onEnter(GameStateEnum previousState) {
@@ -47,7 +50,7 @@ public class TitleState implements GameState {
     }
 
     /**
-     *
+     * {@inheritDoc} Removes the title UI overlay.
      */
     @Override
     public void onExit() {
@@ -55,7 +58,7 @@ public class TitleState implements GameState {
     }
 
     /**
-     *
+     * {@inheritDoc} Handles menu navigation and button selection for the title screen.
      */
     @Override
     public void update() {
@@ -92,7 +95,7 @@ public class TitleState implements GameState {
     }
 
     /**
-     *
+     * {@inheritDoc} Renders the animated background and color-shifted overlay.
      */
     @Override
     public void render(GraphicsContext gc) {
@@ -119,6 +122,7 @@ public class TitleState implements GameState {
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
+    /** Creates and populates the title screen VBox with the title image and buttons. */
     private void createTitleBox() {
         titleBox = new VBox();
         titleBox.setPrefSize(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
@@ -155,6 +159,7 @@ public class TitleState implements GameState {
         titleBox.getChildren().addAll(titleImageView, contentPane);
     }
 
+    /** Adds the title box overlay to the root pane. */
     private void putTitleBox() {
         StackPane rootPane = GameController.getInstance().getRootPane();
         if (rootPane != null && titleBox != null) {
@@ -162,6 +167,7 @@ public class TitleState implements GameState {
         }
     }
 
+    /** Removes the title box overlay from the root pane. */
     private void removeTitleBox() {
         StackPane rootPane = GameController.getInstance().getRootPane();
         if (rootPane != null && titleBox != null) {
@@ -169,14 +175,17 @@ public class TitleState implements GameState {
         }
     }
 
+    /** Transitions to the map selection state. */
     private void startGame() {
         GameController.getInstance().setState(GameStateEnum.MAP);
     }
 
+    /** Transitions to the credits state. */
     private void credits() {
         GameController.getInstance().setState(GameStateEnum.CREDITS);
     }
 
+    /** Exits the application. */
     private void exitGame() {
         System.exit(0);
     }

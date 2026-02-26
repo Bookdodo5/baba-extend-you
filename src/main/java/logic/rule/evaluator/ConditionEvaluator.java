@@ -29,6 +29,15 @@ public class ConditionEvaluator {
         conditionCheckers.put(TypeRegistry.INSTANCEOF, new InstanceofChecker());
     }
 
+    /**
+     * Returns {@code true} if all conditions in the list are satisfied for the given entity.
+     *
+     * @param entity     the entity to evaluate conditions against
+     * @param conditions the list of conditions to check
+     * @param levelMap   the current level map
+     * @param ruleset    the active ruleset
+     * @return {@code true} if every condition is satisfied
+     */
     public boolean evaluate(Entity entity, List<Condition> conditions, LevelMap levelMap, Ruleset ruleset) {
         for (Condition condition : conditions) {
             ConditionChecker checker = conditionCheckers.get(condition.getCondition());

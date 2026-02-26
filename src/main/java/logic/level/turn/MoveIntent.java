@@ -27,14 +27,29 @@ public class MoveIntent {
         this.isFromMove = isFromMove;
     }
 
+    /**
+     * Returns the entity that intends to move.
+     *
+     * @return the entity
+     */
     public Entity getEntity() {
         return entity;
     }
 
+    /**
+     * Returns the direction in which the entity intends to move.
+     *
+     * @return the direction
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     * Returns whether this intent originates from the "X IS MOVE" rule (autonomous movement).
+     *
+     * @return {@code true} if the intent is from the MOVE property rule
+     */
     public boolean isFromMove() {
         return isFromMove;
     }

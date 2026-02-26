@@ -103,6 +103,12 @@ public class SyntaxValidator {
         }
     }
 
+    /**
+     * Validates all candidate entity sequences and returns the rules that pass syntax checks.
+     *
+     * @param ruleCandidates list of entity sequences to validate
+     * @return list of syntactically valid {@link Rule} objects
+     */
     public List<Rule> validate(List<List<Entity>> ruleCandidates) {
         List<Rule> allRules = new ArrayList<>();
         for (List<Entity> sentence : ruleCandidates) {

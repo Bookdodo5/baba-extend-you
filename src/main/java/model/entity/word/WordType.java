@@ -14,11 +14,21 @@ public abstract class WordType extends EntityType {
         this.partOfSpeech = partOfSpeech;
     }
 
+    /**
+     * Returns {@code true} because all word types represent text tiles.
+     *
+     * @return {@code true}
+     */
     @Override
     public boolean isText() {
         return true;
     }
 
+    /**
+     * Returns the part of speech for this word type (NOUN, VERB, PROPERTY, etc.).
+     *
+     * @return the part of speech
+     */
     public PartOfSpeech getPartOfSpeech() {
         return partOfSpeech;
     }

@@ -25,10 +25,20 @@ import static application.Constant.TARGET_SCREEN_HEIGHT;
  */
 public class Main extends Application {
 
+    /**
+     * Entry point of the application.
+     *
+     * @param args command-line arguments passed to JavaFX
+     */
     public static void main(String[] args) {
         Application.launch(args);
     }
 
+    /**
+     * Sets up the JavaFX stage, wires up the game loop, and starts the application.
+     *
+     * @param stage the primary stage provided by the JavaFX runtime
+     */
     @Override
     public void start(Stage stage) {
         GameController gameController = GameController.getInstance();

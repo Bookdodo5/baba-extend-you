@@ -34,6 +34,12 @@ public class RuleParser {
         this.ruleDeduplicator = new RuleDeduplicator();
     }
 
+    /**
+     * Runs the full parsing pipeline on the given level map and returns the resulting rules.
+     *
+     * @param levelMap the level map to parse rules from
+     * @return a deduplicated, semantically valid list of {@link Rule} objects
+     */
     public List<Rule> parseRules(LevelMap levelMap) {
         List<List<List<Entity>>> textTiles = textScanner.scanText(levelMap);
         List<List<Entity>> ruleCandidates = permutationGenerator.generate(textTiles);
@@ -42,4 +48,3 @@ public class RuleParser {
         return ruleDeduplicator.deduplicate(validRules);
     }
 }
-

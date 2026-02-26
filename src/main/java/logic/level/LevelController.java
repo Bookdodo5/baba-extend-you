@@ -51,6 +51,11 @@ public class LevelController {
         this.turnOrchestrator = new TurnOrchestrator();
     }
 
+    /**
+     * Sets the level map to play and resets the action stack.
+     *
+     * @param levelMap the new level map
+     */
     public void setLevelMap(LevelMap levelMap) {
         this.levelMap = levelMap;
         this.levelMapPrototype = new LevelMap(levelMap);
@@ -58,14 +63,29 @@ public class LevelController {
         parseRules();
     }
 
+    /**
+     * Returns the current level map.
+     *
+     * @return the active {@link LevelMap}
+     */
     public LevelMap getLevelMap() {
         return levelMap;
     }
 
+    /**
+     * Returns the current ruleset parsed from the level map.
+     *
+     * @return the active {@link Ruleset}
+     */
     public Ruleset getRuleset() {
         return ruleset;
     }
 
+    /**
+     * Processes input, updates particles, and advances the game state for one frame.
+     *
+     * @param playingState the current playing state (used for particle effects)
+     */
     public void update(PlayingState playingState) {
 
         addPassiveParticles(playingState);
@@ -84,6 +104,12 @@ public class LevelController {
         }
     }
 
+    /**
+     *  Map each InputCommand to its corresponding function.
+     * @param inputCommand
+     * @param playingState
+     */
+
     private void processInput(InputCommand inputCommand, PlayingState playingState) {
         switch (inputCommand) {
             case UNDO -> handleUndo();
@@ -99,23 +125,27 @@ public class LevelController {
         handleLose();
     }
 
+    /** Parses the current level map and updates the ruleset. */
     private void parseRules() {
         List<Rule> parsedRules = ruleParser.parseRules(levelMap);
         ruleset.setRules(parsedRules);
     }
 
+    /** Undoes the last action and plays the undo sound. */
     private void handleUndo() {
         actionStack.undo();
 
         Audio.playSfx("sound/SFX/esc.wav");
     }
 
+    /** Redoes the last undone action and plays the redo sound. */
     private void handleRedo() {
         actionStack.redo();
 
         Audio.playSfx("sound/SFX/esc.wav");
     }
 
+    /** Resets the level to its initial state and plays the reset sound. */
     public void handleReset() {
         levelMap = new LevelMap(levelMapPrototype);
         actionStack.clear();
@@ -123,6 +153,12 @@ public class LevelController {
         Audio.playSfx("sound/SFX/reset.wav");
     }
 
+    /**
+     * Executes a game turn in the given direction and records the resulting composite action.
+     *
+     * @param direction    the direction of movement, or {@code null} for a stationary turn
+     * @param playingState the current playing state (used for particle effects)
+     */
     private void processTurn(Direction direction, PlayingState playingState) {
         CompositeAction actions = turnOrchestrator.runTurn(direction, levelMap, ruleset, ruleParser);
         if (actions.getActions().isEmpty()) {
@@ -140,6 +176,12 @@ public class LevelController {
         actionStack.newAction(actions);
     }
 
+    /**
+     * Emits move and destroy particles for the actions in the given composite action.
+     *
+     * @param actions      the composite action containing individual actions
+     * @param playingState the playing state to add particles to
+     */
     private void addTurnParticles(CompositeAction actions, PlayingState playingState) {
         for (Action action : actions.getActions()) {
             if (action instanceof MoveAction moveAction) {
@@ -150,6 +192,11 @@ public class LevelController {
         }
     }
 
+    /**
+     * Adds ambient particles to HOT and WIN entities each frame.
+     *
+     * @param playingState the playing state to add particles to
+     */
     private void addPassiveParticles(PlayingState playingState) {
         for (Entity entity : ruleEvaluator.getEntitiesWithProperty(TypeRegistry.HOT, levelMap, ruleset)) {
             if (Math.random() < 0.002) {
@@ -177,6 +224,11 @@ public class LevelController {
         }
     }
 
+    /**
+     * Spawns win particles at all positions where the win condition is currently met.
+     *
+     * @param playingState the playing state to add particles to
+     */
     public void addWinParticle(PlayingState playingState) {
         for (Point point : ruleEvaluator.getWinConditionMetPositions(levelMap, ruleset)) {
             for (int i = 0; i < 20; i++) {
@@ -192,6 +244,7 @@ public class LevelController {
         }
     }
 
+    /** Checks for a lose condition and pauses or resumes music accordingly. */
     private void handleLose() {
         boolean updatedIsLose = levelMap.getEntities().stream()
                 .noneMatch(entity -> ruleEvaluator.hasProperty(entity, TypeRegistry.YOU, levelMap, ruleset));

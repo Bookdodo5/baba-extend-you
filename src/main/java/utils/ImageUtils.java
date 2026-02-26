@@ -13,10 +13,20 @@ import java.util.Objects;
 
 import static application.Constant.SPRITE_SIZE;
 
+/**
+ * Utility class for image loading, color manipulation, scaling, and sprite drawing.
+ */
 public class ImageUtils {
     private static final Map<String, Image> COLOR_CACHE = new HashMap<>();
     private static final Map<Integer, Color> AVERAGE_COLOR_CACHE = new HashMap<>();
 
+    /**
+     * Computes the average color (excluding fully transparent pixels) of an image.
+     * Results are cached by identity hash code.
+     *
+     * @param image the source image
+     * @return the average color of the non-transparent pixels
+     */
     public static Color averageColor(Image image) {
         int imageHash = System.identityHashCode(image);
         Color cachedColor = AVERAGE_COLOR_CACHE.get(imageHash);
@@ -49,6 +59,14 @@ public class ImageUtils {
         return averageColor;
     }
 
+    /**
+     * Returns a copy of the image with all non-transparent pixels replaced by the given color.
+     * Results are cached by image identity and color.
+     *
+     * @param image the source image
+     * @param color the replacement color
+     * @return the tinted image
+     */
     public static Image applyColor(Image image, Color color) {
         String cacheKey = System.identityHashCode(image) + "_" + color.toString();
         Image cachedImage = COLOR_CACHE.get(cacheKey);
@@ -75,6 +93,13 @@ public class ImageUtils {
         return coloredImage;
     }
 
+    /**
+     * Scales an image using nearest-neighbor interpolation (no blurring).
+     *
+     * @param source the source image
+     * @param scale  the scale factor
+     * @return the scaled image
+     */
     public static Image scaleNearestNeighbor(Image source, double scale) {
         int scaledWidth = (int) (source.getWidth() * scale);
         int scaledHeight = (int) (source.getHeight() * scale);
@@ -93,6 +118,13 @@ public class ImageUtils {
         return scaledImage;
     }
 
+    /**
+     * Loads an image from the given classpath resource path.
+     *
+     * @param path the classpath-relative path to the image resource
+     * @return the loaded image
+     * @throws NullPointerException if the resource is not found
+     */
     public static Image getImage(String path) {
         InputStream inputStream = Objects.requireNonNull(
                 ImageUtils.class.getResourceAsStream(path)
@@ -100,6 +132,16 @@ public class ImageUtils {
         return new Image(inputStream);
     }
 
+    /**
+     * Draws a single sprite frame from a sprite sheet onto the graphics context.
+     *
+     * @param gc        the graphics context to draw on
+     * @param image     the sprite sheet image
+     * @param spriteCol the column index (animation frame) in the sprite sheet
+     * @param spriteRow the row index in the sprite sheet
+     * @param drawX     the x pixel coordinate to draw at
+     * @param drawY     the y pixel coordinate to draw at
+     */
     public static void drawSprite(GraphicsContext gc, Image image, int spriteCol, int spriteRow, int drawX, int drawY) {
         gc.drawImage(
                 image,

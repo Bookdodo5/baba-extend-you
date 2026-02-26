@@ -23,6 +23,9 @@ import java.util.Set;
 
 import static application.Constant.*;
 
+/**
+ * Represents the playing state where the player interacts with the level.
+ */
 public class PlayingState implements GameState {
 
     private final LevelController levelController;
@@ -41,14 +44,29 @@ public class PlayingState implements GameState {
         INACTIVE_TEXT_EFFECT.setBrightness(-0.33);
     }
 
+    /**
+     * Loads a level map into the level controller, replacing any previously loaded level.
+     *
+     * @param levelMap the level map to load
+     */
     public void loadLevel(LevelMap levelMap) {
         levelController.setLevelMap(levelMap);
     }
 
+    /**
+     * Adds a particle effect to be rendered this frame.
+     *
+     * @param particle the particle to add
+     */
     public void addParticle(Particle particle) {
         particles.add(particle);
     }
 
+    /**
+     * Returns the level controller managing the current level.
+     *
+     * @return the level controller
+     */
     public LevelController getLevelController() {
         return levelController;
     }
@@ -58,24 +76,18 @@ public class PlayingState implements GameState {
         particles = new ArrayList<>();
     }
 
-    /**
-     *
-     */
+    /** {@inheritDoc} No setup is needed when entering the playing state. */
     @Override
     public void onEnter(GameStateEnum previousState) {
     }
 
-    /**
-     *
-     */
+    /** {@inheritDoc} No cleanup is needed when exiting the playing state. */
     @Override
     public void onExit() {
 
     }
 
-    /**
-     *
-     */
+    /** {@inheritDoc} Updates particles, processes win, runs level logic, and handles menu input. */
     @Override
     public void update() {
         particles.removeIf(Particle::isDead);
@@ -121,6 +133,13 @@ public class PlayingState implements GameState {
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
+    /**
+     * Renders the background for the level area.
+     *
+     * @param gc     the graphics context
+     * @param theme  the current color theme
+     * @param offset the pixel offset to center the level on the canvas
+     */
     private void renderBackground(GraphicsContext gc, Color theme, Point offset) {
         Color outerBgColor = theme.interpolate(Color.BLACK, 0.8);
         gc.setFill(outerBgColor);
@@ -133,6 +152,12 @@ public class PlayingState implements GameState {
         gc.fillRect(offset.x, offset.y, innerWidth, innerHeight);
     }
 
+    /**
+     * Renders all entities on the level map in z-index order.
+     *
+     * @param gc     the graphics context
+     * @param offset the pixel offset to center the level on the canvas
+     */
     private void renderEntities(GraphicsContext gc, Point offset) {
 
         long currentTime = System.currentTimeMillis();
@@ -168,6 +193,14 @@ public class PlayingState implements GameState {
         }
     }
 
+    /**
+     * Returns the tiling row index for an entity based on which of its four cardinal neighbors
+     * share the same type (used for TILED animation style).
+     *
+     * @param entity   the entity to compute the surrounding number for
+     * @param levelMap the current level map
+     * @return a bitmask (0–15) representing which cardinal neighbors match
+     */
     private int getSurroundingNumber(Entity entity, LevelMap levelMap) {
         int surroundingNumber = 0;
         for (int direction = 0; direction < 4; direction++) {
@@ -184,6 +217,13 @@ public class PlayingState implements GameState {
         return surroundingNumber;
     }
 
+    /**
+     * Returns the sprite row index for an entity based on its current facing direction
+     * (used for DIRECTIONAL animation style).
+     *
+     * @param entity the entity whose direction determines the row
+     * @return the sprite row index
+     */
     private int getDirectionalNumber(Entity entity) {
         return switch (entity.getDirection()) {
             case UP -> 0;
@@ -193,6 +233,12 @@ public class PlayingState implements GameState {
         };
     }
 
+    /**
+     * Renders all active particles on the canvas.
+     *
+     * @param gc     the graphics context
+     * @param offset the pixel offset to center the level on the canvas
+     */
     private void renderParticles(GraphicsContext gc, Point offset) {
         for (Particle particle : particles) {
 

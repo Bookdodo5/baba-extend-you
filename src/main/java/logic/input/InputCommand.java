@@ -1,5 +1,8 @@
 package logic.input;
 
+/**
+ * Represents all possible player input commands mapped from keyboard keys.
+ */
 public enum InputCommand {
     NONE,
     UNDO,

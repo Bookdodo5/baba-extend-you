@@ -15,10 +15,20 @@ public class Transformation {
         this.targetType = targetType;
     }
 
+    /**
+     * Returns the entity that will be transformed.
+     *
+     * @return the source entity
+     */
     public Entity getSource() {
         return source;
     }
 
+    /**
+     * Returns the entity type that the source entity will be transformed into.
+     *
+     * @return the target entity type
+     */
     public EntityType getTargetType() {
         return targetType;
     }
