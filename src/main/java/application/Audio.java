@@ -22,6 +22,10 @@ public class Audio {
     }
 
     public static void playSfx(String fileLocation) {
+        boolean isSilent = Boolean.getBoolean("app.silent.mode");
+        if(isSilent) {
+            return;
+        }
         try {
             URL sfxPath = getResourceUrl(fileLocation);
 

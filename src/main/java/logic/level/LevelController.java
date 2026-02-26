@@ -129,6 +129,13 @@ public class LevelController {
             return;
         }
 
+        if (actions.getActions().stream().anyMatch(action -> action instanceof MoveAction)) {
+            Audio.playSfx("sound/SFX/moveElement.wav");
+        }
+        if (actions.getActions().stream().anyMatch(action -> action instanceof DestroyAction)) {
+            Audio.playSfx("sound/SFX/destroy.wav");
+        }
+
         addTurnParticles(actions, playingState);
         actionStack.newAction(actions);
     }

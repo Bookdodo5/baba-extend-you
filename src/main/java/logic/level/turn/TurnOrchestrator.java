@@ -1,12 +1,9 @@
 package logic.level.turn;
 
 import application.GameController;
-import application.Audio;
 import logic.rule.evaluator.RuleEvaluator;
 import logic.rule.parser.RuleParser;
 import model.action.CompositeAction;
-import model.action.DestroyAction;
-import model.action.MoveAction;
 import model.entity.Direction;
 import model.entity.TypeRegistry;
 import model.map.LevelMap;
@@ -59,14 +56,6 @@ public class TurnOrchestrator {
         youAction.combine(moveAction);
         youAction.combine(interactAction);
 
-        // Play appropriate sounds
-        if(youAction.getActions().stream().anyMatch(action -> action instanceof MoveAction)) {
-            Audio.playSfx("sound/SFX/moveElement.wav");
-        }
-        if(youAction.getActions().stream().anyMatch(action -> action instanceof DestroyAction)
-        ) {
-            Audio.playSfx("sound/SFX/destroy.wav");
-        }
 
         return youAction;
     }
