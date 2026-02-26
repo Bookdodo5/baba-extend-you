@@ -1,9 +1,8 @@
-package model;
+package model.map;
 
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.entity.AnimationStyle;
-import model.map.LevelMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

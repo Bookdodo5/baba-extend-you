@@ -40,7 +40,8 @@ public class MapState implements GameState {
 
     private void handleTrigger() {
         // TODO (MAP) : handle level selection with GameController.getInstance().playLevel(....); RETURN IF NOT POSSIBLE.
-        GameController.getInstance().playLevel("map/1_JAVA_IS_YOU.csv");
+        GameController.getInstance().playLevel("map/12_STATIC_HAZARD.csv");
+        Audio.playSfx("sound/SFX/startStage.wav");
     }
 
     private void handleMoveRight() {

@@ -18,6 +18,8 @@ public class Particle {
     public Particle(double x, double y, double vx, double vy, ParticleType type, Color color) {
         this.originalX = x;
         this.originalY = y;
+        this.x = x;
+        this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.type = type;

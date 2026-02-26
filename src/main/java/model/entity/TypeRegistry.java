@@ -70,13 +70,13 @@ public class TypeRegistry {
 
     public static final EntityType LAVA = registerEntity("lava", AnimationStyle.TILED);
     public static final EntityType WATER = registerEntity("water", AnimationStyle.TILED);
+    public static final EntityType WIRE = registerEntity("wire", AnimationStyle.TILED);
     public static final EntityType TILE = registerEntity("tile", AnimationStyle.WOBBLE);
     public static final EntityType DOCUMENT = registerEntity("document", AnimationStyle.WOBBLE);
     public static final EntityType ERROR = registerEntity("error", AnimationStyle.WOBBLE);
     public static final EntityType CHECK = registerEntity("check", AnimationStyle.WOBBLE);
     public static final EntityType WARNING = registerEntity("warning", AnimationStyle.WOBBLE);
     public static final EntityType RECORD = registerEntity("record", AnimationStyle.WOBBLE);
-    public static final EntityType WIRE = registerEntity("wire", AnimationStyle.TILED);
     public static final EntityType GIT = registerEntity("git", AnimationStyle.WOBBLE);
     public static final EntityType DATABASE = registerEntity("database", AnimationStyle.WOBBLE);
     public static final EntityType CHIP = registerEntity("chip", AnimationStyle.WOBBLE);

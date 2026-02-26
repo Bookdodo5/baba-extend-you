@@ -63,7 +63,6 @@ public class PlayingState implements GameState {
      */
     @Override
     public void onEnter(GameStateEnum previousState) {
-        Audio.playSfx("sound/SFX/startStage.wav");
     }
 
     /**
@@ -195,7 +194,6 @@ public class PlayingState implements GameState {
     }
 
     private void renderParticles(GraphicsContext gc, Point offset) {
-
         for (Particle particle : particles) {
 
             Image particleImage = particle.getImage();

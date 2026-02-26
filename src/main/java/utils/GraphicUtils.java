@@ -5,6 +5,7 @@ import application.Audio;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
@@ -12,7 +13,8 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.*;
+import javafx.scene.shape.Rectangle;
 
 import static application.Constant.*;
 
@@ -155,6 +157,11 @@ public class GraphicUtils {
             int buttonOffset = ((titleButtonHeight + spacing) - SPRITE_SIZE) / 2;
             selectIndicator.setTranslateY(yOffset + buttonOffset);
         }
+    }
+
+    public static void applyPostProcessing(StackPane root) {
+        Glow glow = new Glow(0.7);
+        root.setEffect(glow);
     }
 }
 

@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logic.input.InputUtility;
 import state.GameStateEnum;
+import utils.GraphicUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -46,11 +47,9 @@ public class Main extends Application {
 
         root.getChildren().add(screen);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        root.setEffect(new Glow(0.6));
 
-        screen.requestFocus();
+        GraphicUtils.applyPostProcessing(root);
 
-        gameController.setColorTheme(Color.DARKSLATEGRAY);
         gameController.setState(GameStateEnum.TITLE);
 
         AnimationTimer animation = new AnimationTimer() {

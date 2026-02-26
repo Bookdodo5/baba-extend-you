@@ -23,7 +23,6 @@ public class Audio {
 
     public static void playSfx(String fileLocation) {
         try {
-            System.out.println("Playing " + fileLocation);
             URL sfxPath = getResourceUrl(fileLocation);
 
             if (sfxPath == null) {
@@ -87,6 +86,7 @@ public class Audio {
     public static void resumeMusic() {
         if (musicClip != null && !musicClip.isRunning()) {
             musicClip.start();
+            musicClip.loop(Clip.LOOP_CONTINUOUSLY);
         }
     }
 }
