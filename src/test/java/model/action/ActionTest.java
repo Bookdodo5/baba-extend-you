@@ -1,6 +1,5 @@
-package model;
+package model.action;
 
-import model.action.*;
 import model.entity.*;
 import model.map.LevelMap;
 import org.junit.jupiter.api.BeforeEach;

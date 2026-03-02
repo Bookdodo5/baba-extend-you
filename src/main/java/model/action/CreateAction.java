@@ -15,10 +15,27 @@ public class CreateAction implements Action {
     private final int posX;
     private final int posY;
 
+    /**
+     * Creates a new entity of the given type at the specified position, facing DOWN.
+     *
+     * @param levelMap   the level map to create the entity on
+     * @param entityType the type of entity to create
+     * @param posX       the x-coordinate
+     * @param posY       the y-coordinate
+     */
     public CreateAction(LevelMap levelMap, EntityType entityType, int posX, int posY) {
         this(levelMap, entityType, Direction.DOWN, posX, posY);
     }
 
+    /**
+     * Creates a new entity of the given type at the specified position with a custom facing direction.
+     *
+     * @param levelMap   the level map to create the entity on
+     * @param entityType the type of entity to create
+     * @param direction  the initial facing direction of the entity
+     * @param posX       the x-coordinate
+     * @param posY       the y-coordinate
+     */
     public CreateAction(LevelMap levelMap, EntityType entityType, Direction direction, int posX, int posY) {
         this.levelMap = levelMap;
         this.posX = posX;

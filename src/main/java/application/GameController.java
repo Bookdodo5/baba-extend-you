@@ -102,14 +102,6 @@ public class GameController {
         currentLevelFilePath = levelFilePath;
     }
 
-//    public void selectLevel() {
-//        MapState mapState = (MapState) getGameState(GameStateEnum.MAP);
-//        LevelMap levelMap = LevelLoader.loadLevel("MAP.csv");
-//        mapState.loadLevel(levelMap);
-//        setState(GameStateEnum.MAP);
-//        currentLevelFilePath = levelFilePath;
-//    }
-
     public boolean isLevelCompleted(String levelFilePath) {
         return completedLevels.contains(levelFilePath);
     }

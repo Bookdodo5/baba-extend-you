@@ -19,6 +19,15 @@ import java.util.List;
  */
 public class CollisionResolver {
 
+    /**
+     * Resolves all movement intents against PUSH and STOP rules and returns the resulting actions.
+     *
+     * @param intents       the list of move intents to resolve
+     * @param levelMap      the real level map
+     * @param ruleset       the active ruleset
+     * @param ruleEvaluator used to query entity properties
+     * @return a {@link CompositeAction} of all resolved moves
+     */
     public CompositeAction resolveCollisions(List<MoveIntent> intents, LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator) {
         CompositeAction action = new CompositeAction();
 
@@ -34,7 +43,14 @@ public class CollisionResolver {
         return action;
     }
 
-    /** Get MoveIntents in a specific direction, sorted by their position to ensure correct processing order. */
+    /**
+     * Returns intents moving in the specified direction, sorted so entities are processed in the correct order.
+     *
+     * @param intents   all move intents
+     * @param direction the direction to filter by
+     * @param levelMap  used to read entity positions
+     * @return sorted list of intents in the given direction
+     */
     private List<MoveIntent> getIntentsInDirection(List<MoveIntent> intents, Direction direction, LevelMap levelMap) {
         return intents.stream()
                 .filter(intent -> intent.getDirection() == direction)
@@ -50,7 +66,16 @@ public class CollisionResolver {
                 .toList();
     }
 
-    /** Process a single MoveIntent */
+    /**
+     *  Process a single move intent
+     *
+     * @param intent        the intent to process
+     * @param action        the composite action to append to
+     * @param workingMap    the map to track entity positions during processing
+     * @param levelMap      the real level map
+     * @param ruleEvaluator used to query entity properties
+     * @param ruleset       the active ruleset
+     */
     private void processIntent(MoveIntent intent, CompositeAction action, LevelMap workingMap, LevelMap levelMap, RuleEvaluator ruleEvaluator, Ruleset ruleset) {
         Entity entity = intent.getEntity();
         Direction direction = intent.getDirection();
@@ -74,7 +99,17 @@ public class CollisionResolver {
         }
     }
 
-    /** Handle the STOP property by rotating and bouncing back if the intent comes from "X IS MOVE" rule */
+    /**
+     * Handles the case where an entity is stopped: rotates autonomous MOVE entities and
+     * attempts a bounce in the opposite direction.
+     *
+     * @param intent        the intent that was stopped
+     * @param action        the composite action to append to
+     * @param workingMap    the simulation map
+     * @param levelMap      the real level map
+     * @param ruleEvaluator used to query entity properties
+     * @param ruleset       the active ruleset
+     */
     private void handleStop(MoveIntent intent, CompositeAction action, LevelMap workingMap, LevelMap levelMap, RuleEvaluator ruleEvaluator, Ruleset ruleset) {
         Entity entity = intent.getEntity();
         Direction direction = intent.getDirection();
@@ -97,7 +132,17 @@ public class CollisionResolver {
         }
     }
 
-    /** Recursive method to attempt pushing entities in the direction of the intent */
+    /**
+     * Recursively attempts to push the entities blocking the path of the given intent.
+     *
+     * @param intent        the intent requesting a push
+     * @param action        the composite action to append push moves to
+     * @param workingMap    the simulation map
+     * @param levelMap      the real level map
+     * @param ruleEvaluator used to query entity properties
+     * @param ruleset       the active ruleset
+     * @return {@code true} if the push succeeded (path is clear), {@code false} if blocked
+     */
     private boolean tryPush(MoveIntent intent, CompositeAction action, LevelMap workingMap, LevelMap levelMap, RuleEvaluator ruleEvaluator, Ruleset ruleset) {
         Entity entity = intent.getEntity();
         Direction direction = intent.getDirection();

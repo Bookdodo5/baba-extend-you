@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logic.input.InputUtility;
 import state.GameStateEnum;
+import utils.GraphicUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -24,10 +25,20 @@ import static application.Constant.TARGET_SCREEN_HEIGHT;
  */
 public class Main extends Application {
 
+    /**
+     * Entry point of the application.
+     *
+     * @param args command-line arguments passed to JavaFX
+     */
     public static void main(String[] args) {
         Application.launch(args);
     }
 
+    /**
+     * Sets up the JavaFX stage, wires up the game loop, and starts the application.
+     *
+     * @param stage the primary stage provided by the JavaFX runtime
+     */
     @Override
     public void start(Stage stage) {
         GameController gameController = GameController.getInstance();
@@ -46,11 +57,9 @@ public class Main extends Application {
 
         root.getChildren().add(screen);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        root.setEffect(new Glow(0.6));
 
-        screen.requestFocus();
+        GraphicUtils.applyPostProcessing(root);
 
-        gameController.setColorTheme(Color.DARKSLATEGRAY);
         gameController.setState(GameStateEnum.TITLE);
 
         AnimationTimer animation = new AnimationTimer() {

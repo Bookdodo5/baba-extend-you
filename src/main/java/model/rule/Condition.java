@@ -25,15 +25,38 @@ public class Condition {
         this.parameter = ((NounType) parameterText.getType()).getReferencedType();
     }
 
+    /**
+     * Returns the condition type (e.g. ON, NEAR, FACING, INSTANCEOF).
+     *
+     * @return the condition type
+     */
     public ConditionType getCondition() {
         return condition;
     }
+
+    /**
+     * Returns the entity type that serves as the parameter for this condition.
+     *
+     * @return the parameter entity type
+     */
     public EntityType getParameter() {
         return parameter;
     }
+
+    /**
+     * Returns the text entity representing the condition word on the map.
+     *
+     * @return the condition text entity
+     */
     public Entity getConditionText() {
         return conditionText;
     }
+
+    /**
+     * Returns the text entity representing the parameter noun on the map.
+     *
+     * @return the parameter text entity
+     */
     public Entity getParameterText() {
         return parameterText;
     }

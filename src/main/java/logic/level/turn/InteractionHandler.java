@@ -20,6 +20,15 @@ import java.util.Set;
  */
 public class InteractionHandler {
 
+    /**
+     * Runs all interaction passes (transformation, MORE, SINK, DEFEAT, HOT/MELT, HAS)
+     * and returns a composite action containing all resulting changes.
+     *
+     * @param levelMap      the current level map
+     * @param ruleset       the active ruleset
+     * @param ruleEvaluator the rule evaluator used for property queries
+     * @return a {@link CompositeAction} containing all interaction actions
+     */
     public CompositeAction handleInteractions(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator) {
         CompositeAction action = new CompositeAction();
         processTransformation(levelMap, ruleset, ruleEvaluator, action);
@@ -31,6 +40,7 @@ public class InteractionHandler {
         return action;
     }
 
+    /** Applies all "X IS Y" transformation rules (where Y is not a property). */
     private void processTransformation(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         ruleEvaluator.getTransformations(levelMap, ruleset).forEach(transformation -> {
             Entity source = transformation.getSource();
@@ -39,6 +49,7 @@ public class InteractionHandler {
         });
     }
 
+    /** Creates copies of entities with the MORE property in each adjacent free cell. */
     private void processMore(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         List<Entity> entities = ruleEvaluator.getEntitiesWithProperty(TypeRegistry.MORE, levelMap, ruleset);
         Set<Point> occupiedPositions = new HashSet<>();
@@ -71,6 +82,7 @@ public class InteractionHandler {
         }
     }
 
+    /** Destroys YOU entities that occupy the same cell as a DEFEAT entity. */
     private void processYouDefeat(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         List<Entity> youEntities = ruleEvaluator.getEntitiesWithProperty(TypeRegistry.YOU, levelMap, ruleset);
         for (Entity youEntity : youEntities) {
@@ -81,6 +93,7 @@ public class InteractionHandler {
         }
     }
 
+    /** Destroys MELT entities that occupy the same cell as a HOT entity. */
     private void processHotMelt(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         List<Entity> meltEntities = ruleEvaluator.getEntitiesWithProperty(TypeRegistry.MELT, levelMap, ruleset);
         for (Entity meltEntity : meltEntities) {
@@ -91,29 +104,31 @@ public class InteractionHandler {
         }
     }
 
+    /** Destroys all entities (including the SINK entity itself) that share a cell with a SINK entity. */
     private void processSink(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         List<Entity> sinkEntities = ruleEvaluator.getEntitiesWithProperty(TypeRegistry.SINK, levelMap, ruleset);
-        Set<String> processedPositions = new HashSet<>();
+        Set<Point> processedPositions = new HashSet<>();
 
         for (Entity sinkEntity : sinkEntities) {
-            int x = levelMap.getX(sinkEntity);
-            int y = levelMap.getY(sinkEntity);
-            String positionKey = x + "," + y;
-
-            if (processedPositions.contains(positionKey)) {
+            Point position = levelMap.getPosition(sinkEntity);
+            if (processedPositions.contains(position)) {
                 continue;
             }
 
-            List<Entity> entitiesAtPosition = levelMap.getEntitiesAt(x, y);
+            List<Entity> entitiesAtPosition = levelMap.getEntitiesAt(position);
             if (entitiesAtPosition.size() > 1) {
                 for (Entity entity : entitiesAtPosition) {
                     action.add(new DestroyAction(levelMap, entity));
                 }
-                processedPositions.add(positionKey);
+                processedPositions.add(position);
             }
         }
     }
 
+    /**
+     * Applies "X HAS Y" rules: when an entity matching X is destroyed, a new entity of type Y
+     * is created at the same position.
+     */
     private void processHas(LevelMap levelMap, Ruleset ruleset, RuleEvaluator ruleEvaluator, CompositeAction action) {
         List<Action> destroyActions = action.getActions().stream()
                 .filter(a -> a instanceof DestroyAction)

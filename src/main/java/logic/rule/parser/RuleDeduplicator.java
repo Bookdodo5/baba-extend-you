@@ -12,6 +12,12 @@ import java.util.Set;
  */
 public class RuleDeduplicator {
 
+    /**
+     * Removes duplicate rules from the list, keeping the first occurrence of each unique rule.
+     *
+     * @param rules the list of rules to deduplicate
+     * @return a list with duplicate rules removed
+     */
     public List<Rule> deduplicate(List<Rule> rules) {
         Set<String> seen = new HashSet<>();
         return rules.stream()
@@ -29,14 +35,3 @@ public class RuleDeduplicator {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-

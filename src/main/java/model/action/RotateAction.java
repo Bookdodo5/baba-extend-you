@@ -12,6 +12,12 @@ public class RotateAction implements Action{
     private final Direction endDirection;
     private final Entity entity;
 
+    /**
+     * Creates a rotate action for the given entity.
+     *
+     * @param entity       the entity to rotate
+     * @param endDirection the target direction after rotation
+     */
     public RotateAction(Entity entity, Direction endDirection) {
         this.startDirection = entity.getDirection();
         this.endDirection = endDirection;

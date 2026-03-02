@@ -14,18 +14,38 @@ public class CompositeAction implements Action {
         this.actions = new ArrayList<>();
     }
 
+    /**
+     * Appends an action to this composite.
+     *
+     * @param action the action to add
+     */
     public void add(Action action) {
         actions.add(action);
     }
 
+    /**
+     * Appends all actions from another composite action into this one.
+     *
+     * @param other the composite action to merge from
+     */
     public void combine(CompositeAction other) {
         actions.addAll(other.actions);
     }
 
+    /**
+     * Returns the number of actions in this composite.
+     *
+     * @return the action count
+     */
     public int size() {
         return actions.size();
     }
 
+    /**
+     * Returns the list of actions contained in this composite.
+     *
+     * @return the list of actions
+     */
     public List<Action> getActions() {
         return actions;
     }

@@ -1,10 +1,8 @@
-package model;
+package model.map;
 
 import model.entity.Direction;
 import model.entity.Entity;
 import model.entity.TypeRegistry;
-import model.map.LevelLoader;
-import model.map.LevelMap;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -36,34 +36,75 @@ public class Rule {
         }
     }
 
+    /**
+     * Returns the entity type that this rule applies to (the subject).
+     *
+     * @return the subject entity type
+     */
     public EntityType getSubject() {
         return subject;
     }
 
+    /**
+     * Returns the verb of this rule (IS, HAS, EXTEND).
+     *
+     * @return the verb type
+     */
     public VerbType getVerb() {
         return verb;
     }
 
+    /**
+     * Returns the effect of this rule (a property type or an entity type).
+     *
+     * @return the effect entity type
+     */
     public EntityType getEffect() {
         return effect;
     }
 
+    /**
+     * Returns the text entity representing the subject noun on the map.
+     *
+     * @return the subject text entity
+     */
     public Entity getSubjectText() {
         return subjectText;
     }
 
+    /**
+     * Returns the text entity representing the verb on the map.
+     *
+     * @return the verb text entity
+     */
     public Entity getVerbText() {
         return verbText;
     }
 
+    /**
+     * Returns the text entity representing the effect on the map.
+     *
+     * @return the effect text entity
+     */
     public Entity getEffectText() {
         return effectText;
     }
 
+    /**
+     * Returns the list of conditions attached to this rule.
+     *
+     * @return the list of conditions
+     */
     public List<Condition> getConditions() {
         return conditions;
     }
 
+    /**
+     * Returns a unique string signature based on the entity IDs of the subject, verb, effect, and conditions.
+     * Used for deduplication and equality checks.
+     *
+     * @return the entity-based signature string
+     */
     public String getEntitySignature() {
         StringBuilder sb = new StringBuilder();
         sb.append(subjectText.getEntityId());

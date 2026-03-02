@@ -1,6 +1,5 @@
 package application;
 
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.paint.Color;
 
 import java.util.List;

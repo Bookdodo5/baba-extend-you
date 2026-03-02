@@ -14,6 +14,11 @@ public class NounType extends EffectType {
         this.referencedType = referencedType;
     }
 
+    /**
+     * Returns the entity type that this noun refers to.
+     *
+     * @return the referenced entity type
+     */
     public EntityType getReferencedType() {
         return referencedType;
     }
