@@ -8,8 +8,9 @@ import logic.input.InputCommand;
 import logic.input.InputUtility;
 import model.entity.Entity;
 import model.entity.EntityType;
-import model.map.LevelSelectorLoader;
-import model.map.LevelSelectorMap;
+import model.entity.TypeRegistry;
+import model.map.LevelLoader;
+import model.map.LevelMap;
 import utils.ImageUtils;
 
 import java.awt.*;
@@ -20,7 +21,7 @@ import static application.Constant.*;
 
 public class MapState implements GameState {
 
-    private LevelSelectorMap levelSelectorMap;
+    private LevelMap levelSelectorMap;
 
     private final Map<Integer, String> FILE_NAME;
 
@@ -34,7 +35,7 @@ public class MapState implements GameState {
     private Point cursorPos;
 
     public MapState(){
-        levelSelectorMap = LevelSelectorLoader.loadLevelSelector();
+        levelSelectorMap = LevelLoader.loadLevel("map/MAP.csv");
         FILE_NAME = new HashMap<>();
         FILE_NAME.put(1, "JAVA_IS_YOU");
         FILE_NAME.put(2, "WHERE_DO_I_GO");
@@ -111,7 +112,7 @@ public class MapState implements GameState {
     private void handleMoveRight() {
         if(cursorPos.x >= levelSelectorMap.getWidth() - 1) return;
         for(Entity e: levelSelectorMap.getEntitiesAt(cursorPos.x+1, cursorPos.y)){
-            if(e.getType().getTypeId().equals("wire")){
+            if(e.getType() == TypeRegistry.WIRE){
                 cursorPos.x++;
                 Audio.playSfx("sound/SFX/select.wav");
             }
@@ -121,7 +122,7 @@ public class MapState implements GameState {
     private void handleMoveLeft() {
         if(cursorPos.x <= 0) return;
         for(Entity e: levelSelectorMap.getEntitiesAt(cursorPos.x-1, cursorPos.y)){
-            if(e.getType().getTypeId().equals("wire")){
+            if(e.getType() == TypeRegistry.WIRE){
                 cursorPos.x--;
                 Audio.playSfx("sound/SFX/select.wav");
             }
@@ -131,7 +132,7 @@ public class MapState implements GameState {
     private void handleMoveDown() {
         if(cursorPos.y >= levelSelectorMap.getHeight() - 1) return;
         for(Entity e: levelSelectorMap.getEntitiesAt(cursorPos.x, cursorPos.y+1)){
-            if(e.getType().getTypeId().equals("wire")){
+            if(e.getType() == TypeRegistry.WIRE){
                 cursorPos.y++;
                 Audio.playSfx("sound/SFX/select.wav");
             }
@@ -141,7 +142,7 @@ public class MapState implements GameState {
     private void handleMoveUp() {
         if(cursorPos.y <= 0) return;
         for(Entity e: levelSelectorMap.getEntitiesAt(cursorPos.x, cursorPos.y-1)){
-            if(e.getType().getTypeId().equals("wire")){
+            if(e.getType() == TypeRegistry.WIRE){
                 cursorPos.y--;
                 Audio.playSfx("sound/SFX/select.wav");
             }
@@ -197,7 +198,7 @@ public class MapState implements GameState {
         ImageUtils.drawSprite(gc, new Image("sprite/JAVA.png"), animationFrame, 0, SPRITE_SIZE * cursorPos.x + offset.x, SPRITE_SIZE * cursorPos.y + offset.y);
     }
 
-    private int getSurroundingNumber(Entity entity, LevelSelectorMap levelMap) {
+    private int getSurroundingNumber(Entity entity, LevelMap levelMap) {
         int surroundingNumber = 0;
         for (int direction = 0; direction < 4; direction++) {
             List<Entity> surroundingEntities = levelMap.getEntitiesAt(
