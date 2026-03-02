@@ -164,4 +164,5 @@ public class TypeRegistry {
     public static final EntityType NUM_28 = registerEntity("28", AnimationStyle.WOBBLE);
     public static final EntityType NUM_29 = registerEntity("29", AnimationStyle.WOBBLE);
     public static final EntityType NUM_30 = registerEntity("30", AnimationStyle.WOBBLE);
+    public static final EntityType NUM_31 = registerEntity("31", AnimationStyle.WOBBLE);
 }

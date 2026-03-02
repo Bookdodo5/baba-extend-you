@@ -46,26 +46,27 @@ public class MapState implements GameState {
         FILE_NAME.put(8, "INHERITANCE");
         FILE_NAME.put(9, "LOGIC_GATE");
         FILE_NAME.put(10, "FETCH_DECODE_EXECUTE");
-        FILE_NAME.put(11, "STATIC_HAZARD");
-        FILE_NAME.put(12, "PROPAGATION_DELAY");
-        FILE_NAME.put(13, "SPEED_UP");
-        FILE_NAME.put(14, "TUNNEL_SPAGHETTI");
-        FILE_NAME.put(15, "CONDITIONALS");
-        FILE_NAME.put(16, "LOOP");
-        FILE_NAME.put(17, "NESTED_LOOP");
-        FILE_NAME.put(18, "DONT_TOUCH_IF_IT_WORKS");
-        FILE_NAME.put(19, "TRAVELLING_SALESMAN");
-        FILE_NAME.put(20, "LINKED_LIST");
-        FILE_NAME.put(21, "DURABILITY");
-        FILE_NAME.put(22, "HORIZONTAL_SCALING");
-        FILE_NAME.put(23, "TERNARY_RELATIONSHIP");
-        FILE_NAME.put(24, "REDUNDANCY");
-        FILE_NAME.put(25, "TRIGGER");
-        FILE_NAME.put(26, "STORED_PROCEDURE");
-        FILE_NAME.put(27, "JAR");
-        FILE_NAME.put(28, "GIT_REBASE");
-        FILE_NAME.put(29, "STACK_PANE");
-        FILE_NAME.put(30, "JAVA_IS_WIN");
+        FILE_NAME.put(11, "SHIFT_REGISTER");
+        FILE_NAME.put(12, "STATIC_HAZARD");
+        FILE_NAME.put(13, "PROPAGATION_DELAY");
+        FILE_NAME.put(14, "SPEED_UP");
+        FILE_NAME.put(15, "TUNNEL_SPAGHETTI");
+        FILE_NAME.put(16, "CONDITIONALS");
+        FILE_NAME.put(17, "LOOP");
+        FILE_NAME.put(18, "NESTED_LOOP");
+        FILE_NAME.put(19, "DONT_TOUCH_IF_IT_WORKS");
+        FILE_NAME.put(20, "TRAVELLING_SALESMAN");
+        FILE_NAME.put(21, "LINKED_LIST");
+        FILE_NAME.put(22, "DURABILITY");
+        FILE_NAME.put(23, "HORIZONTAL_SCALING");
+        FILE_NAME.put(24, "TERNARY_RELATIONSHIP");
+        FILE_NAME.put(25, "REDUNDANCY");
+        FILE_NAME.put(26, "TRIGGER");
+        FILE_NAME.put(27, "STORED_PROCEDURE");
+        FILE_NAME.put(28, "JAR");
+        FILE_NAME.put(29, "GIT_REBASE");
+        FILE_NAME.put(30, "STACK_PANE");
+        FILE_NAME.put(31, "JAVA_IS_WIN");
         cursorPos = new Point(1, 1);
     }
 
@@ -99,7 +100,7 @@ public class MapState implements GameState {
         // TODO (MAP) : handle level selection with GameController.getInstance().playLevel(....); RETURN IF NOT POSSIBLE.
         //GameController.getInstance().playLevel("map/" + 1 + "_" + FILE_NAME.get(1) + ".csv");
         for(Entity e: levelSelectorMap.getEntitiesAt(cursorPos)){
-            for(int i=1; i<=30; i++){
+            for(int i=1; i<=31; i++){
                 if(e.getType().getTypeId().equals(Integer.toString(i))){
                     GameController.getInstance().playLevel("map/" + i + "_" + FILE_NAME.get(i) + ".csv");
                 }
