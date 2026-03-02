@@ -131,38 +131,4 @@ public class TypeRegistry {
     public static final ConditionType INSTANCEOF = registerCondition("instanceof");
 
     public static final ConjunctionType AND = registerConjunction("and");
-
-
-//    for LevelSelector
-    public static final EntityType NUM_1 = registerEntity("1", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_2 = registerEntity("2", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_3 = registerEntity("3", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_4 = registerEntity("4", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_5 = registerEntity("5", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_6 = registerEntity("6", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_7 = registerEntity("7", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_8 = registerEntity("8", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_9 = registerEntity("9", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_10 = registerEntity("10", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_11 = registerEntity("11", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_12 = registerEntity("12", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_13 = registerEntity("13", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_14 = registerEntity("14", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_15 = registerEntity("15", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_16 = registerEntity("16", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_17 = registerEntity("17", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_18 = registerEntity("18", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_19 = registerEntity("19", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_20 = registerEntity("20", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_21 = registerEntity("21", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_22 = registerEntity("22", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_23 = registerEntity("23", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_24 = registerEntity("24", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_25 = registerEntity("25", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_26 = registerEntity("26", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_27 = registerEntity("27", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_28 = registerEntity("28", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_29 = registerEntity("29", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_30 = registerEntity("30", AnimationStyle.WOBBLE);
-    public static final EntityType NUM_31 = registerEntity("31", AnimationStyle.WOBBLE);
 }

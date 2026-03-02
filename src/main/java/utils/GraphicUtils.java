@@ -4,6 +4,7 @@ import application.GameController;
 import application.Audio;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
@@ -14,7 +15,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.*;
-import javafx.scene.shape.Rectangle;
+import model.entity.Direction;
+import model.entity.Entity;
+import model.entity.EntityType;
+import model.map.LevelMap;
+
+import java.awt.Point;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 import static application.Constant.*;
 
@@ -226,6 +235,85 @@ public class GraphicUtils {
     public static void applyPostProcessing(StackPane root) {
         Glow glow = new Glow(0.7);
         root.setEffect(glow);
+    }
+
+    /**
+     * Renders all entities of a level map onto the graphics context in z-index order.
+     * If {@code activeTexts} and {@code inactiveEffect} are non-null, the effect is applied
+     * to text entities that are not in the active set.
+     *
+     * @param gc             the graphics context to draw on
+     * @param levelMap       the level map whose entities to render
+     * @param offset         the pixel offset used to center the map on the canvas
+     * @param effectEntities the set of entites to apply effect to
+     * @param effect         the effect to apply to entities
+     */
+    public static void renderEntities(GraphicsContext gc, LevelMap levelMap, Point offset,
+                                      Set<Entity> effectEntities, ColorAdjust effect) {
+        long currentTime = System.currentTimeMillis();
+        int animationFrame = (int) ((currentTime / MILLISECONDS_PER_FRAME) % WOBBLE_FRAME_COUNT);
+
+        List<Entity> entities = levelMap.getEntities().stream()
+                .sorted(Comparator.comparingInt(e -> e.getType().getZIndex()))
+                .toList();
+
+        for (Entity entity : entities) {
+            EntityType entityType = entity.getType();
+            Image image = entityType.getSpriteSheet();
+
+            int gridX = levelMap.getX(entity);
+            int gridY = levelMap.getY(entity);
+            int drawX = SPRITE_SIZE * gridX + offset.x;
+            int drawY = SPRITE_SIZE * gridY + offset.y;
+
+            int spriteRow = switch (entityType.getAnimationStyle()) {
+                case WOBBLE -> 0;
+                case TILED -> getSurroundingNumber(entity, levelMap);
+                case DIRECTIONAL -> entity.getDirection().directionIdx;
+            };
+
+            if(effect != null && effectEntities.contains(entity)) {
+                gc.setEffect(effect);
+            }
+            ImageUtils.drawSprite(gc, image, animationFrame, spriteRow, drawX, drawY);
+            gc.setEffect(null);
+        }
+    }
+
+    /**
+     * Returns the tiling row index for an entity based on which of its four cardinal neighbors
+     * share the same type (used for the TILED animation style).
+     *
+     * @param entity   the entity to compute the surrounding number for
+     * @param levelMap the current level map
+     * @return a bitmask (0–15) representing which cardinal neighbors match the entity's type
+     */
+    public static int getSurroundingNumber(Entity entity, LevelMap levelMap) {
+        int surroundingNumber = 0;
+        for (Direction direction : Direction.values()) {
+            List<Entity> surroundingEntities = levelMap.getEntitiesAt(
+                    levelMap.getX(entity) + direction.dx,
+                    levelMap.getY(entity) + direction.dy
+            );
+            boolean hasSurroundingInDirection = surroundingEntities.stream()
+                    .anyMatch(e -> e.getType() == entity.getType());
+            if (hasSurroundingInDirection) {
+                surroundingNumber += (1 << direction.directionIdx);
+            }
+        }
+        return surroundingNumber;
+    }
+
+    public static void renderBackground(GraphicsContext gc, Point offset, int innerWidth, int innerHeight) {
+        Color theme = GameController.getInstance().getColorTheme();
+
+        Color outerBgColor = theme.interpolate(Color.BLACK, 0.8);
+        gc.setFill(outerBgColor);
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
+        Color innerBgColor = outerBgColor.darker().darker();
+        gc.setFill(innerBgColor);
+        gc.fillRect(offset.x, offset.y, innerWidth, innerHeight);
     }
 }
 

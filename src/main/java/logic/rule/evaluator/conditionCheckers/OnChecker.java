@@ -1,6 +1,5 @@
 package logic.rule.evaluator.conditionCheckers;
 
-import logic.rule.evaluator.InheritanceResolver;
 import model.entity.Entity;
 import model.entity.EntityType;
 import model.map.LevelMap;
@@ -14,13 +13,11 @@ public class OnChecker implements ConditionChecker {
     /** {@inheritDoc} Satisfied when the entity shares its cell with the condition's parameter type. */
     @Override
     public boolean isSatisfied(Entity entity, Condition condition, LevelMap levelMap, Ruleset ruleset) {
-        InheritanceResolver inheritanceResolver = new InheritanceResolver();
-
         int checkX = levelMap.getX(entity);
         int checkY = levelMap.getY(entity);
         EntityType targetOn = condition.getParameter();
         List<Entity> entitiesToCheck = levelMap.getEntitiesAt(checkX, checkY);
         return entitiesToCheck.stream()
-                .anyMatch(e -> inheritanceResolver.isInstanceOf(e, targetOn, levelMap, ruleset) && e != entity);
+                .anyMatch(e -> e.getType() == targetOn && e != entity);
     }
 }

@@ -41,6 +41,11 @@ public class GameScreen extends Canvas {
         gc.clearRect(0, 0, getWidth(), getHeight());
 
         GameController.getInstance().render(gc);
+
+        // Tint the whole screen to color theme
+        Color theme = GameController.getInstance().getColorTheme();
+        gc.setFill(theme.interpolate(Color.TRANSPARENT, 0.9));
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
     /**
