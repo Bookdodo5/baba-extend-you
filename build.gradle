@@ -7,6 +7,11 @@ plugins {
 group = 'Progmeth_project'
 version = '1'
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_24
+    targetCompatibility = JavaVersion.VERSION_24
+}
+
 repositories {
     mavenCentral()
 }
@@ -60,7 +65,7 @@ test {
     systemProperty "app.silent.mode", "true"
 }
 
-// Configure the JAR task to include source code
+// Configure the JAR task to include source code and all runtime dependencies (fat JAR)
 jar {
     // Set duplicate handling strategy
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -71,14 +76,18 @@ jar {
     // Include source code
     from sourceSets.main.allSource
 
+    // Include all runtime dependencies (JavaFX JARs, etc.)
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
     // Make it executable by setting the main class
     manifest {
         attributes(
                 'Main-Class': application.mainClass.get()
-                //'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' ')
         )
     }
 
     // Set archive name
-    archiveFileName = "${project.name}-${project.version}-with-sources.jar"
+    archiveFileName = "java_is_you.jar"
 }

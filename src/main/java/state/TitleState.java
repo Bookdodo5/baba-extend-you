@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import logic.input.InputCommand;
 import logic.input.InputUtility;
 import utils.GraphicUtils;
@@ -127,6 +128,7 @@ public class TitleState implements GameState {
     private void createTitleBox() {
         titleBox = new VBox();
         titleBox.setPrefSize(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
+        titleBox.setMinWidth(Screen.getPrimary().getBounds().getWidth());
 
         titleBox.setAlignment(Pos.CENTER);
         titleBox.setPadding(new Insets(10, 50, 50, 10));

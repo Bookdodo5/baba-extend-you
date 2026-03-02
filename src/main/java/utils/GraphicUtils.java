@@ -292,6 +292,13 @@ public class GraphicUtils {
         return surroundingNumber;
     }
 
+    /**
+     * Render the background for level map rendering
+     * @param gc
+     * @param offset
+     * @param innerWidth
+     * @param innerHeight
+     */
     public static void renderBackground(GraphicsContext gc, Point offset, int innerWidth, int innerHeight) {
         Color theme = GameController.getInstance().getColorTheme();
 

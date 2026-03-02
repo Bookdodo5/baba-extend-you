@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 
 import static application.Constant.*;
 
+/**
+ * Represents the level-selection map screen of the game.
+ */
 public class MapState implements GameState {
 
     private final double LEVEL_NAME_SCALE = 1.5;
@@ -40,6 +43,11 @@ public class MapState implements GameState {
     private final LevelMap levelSelectorMap;
     private final Point cursorPos;
 
+    /**
+     * Constructs a new {@code MapState} by loading the level-selector map
+     * and the level-position-to-filename mapping from resources, then
+     * placing the cursor at the top-left position (1, 1).
+     */
     public MapState() {
         levelSelectorMap = LevelLoader.loadLevel("levelSelector/MAP.csv");
         LEVEL_POSITION_FILENAME = new HashMap<>();
@@ -47,6 +55,11 @@ public class MapState implements GameState {
         cursorPos = new Point(1, 1);
     }
 
+    /**
+     * Loads the mapping between grid positions on the selector map and
+     * their corresponding level filenames from the {@code LEVEL_POSITION.csv}
+     * resource file. Lines that cannot be parsed are silently skipped.
+     */
     private void loadLevelPositionFilename() {
         InputStream inputStream = MapState.class.getClassLoader().getResourceAsStream("levelSelector/LEVEL_POSITION.csv");
         if (inputStream == null) {
@@ -69,17 +82,29 @@ public class MapState implements GameState {
         }
     }
 
+    /**
+     * Called when the game transitions into this state.
+     *
+     * @param previousState the state that was active before this one
+     */
     @Override
     public void onEnter(GameStateEnum previousState) {
         Audio.resumeMusic();
     }
 
+    /**
+     * Called when the game transitions out of this state.
+     */
     @Override
     public void onExit() {
     }
 
     /**
+     * Processes player input for the current frame.
      *
+     * <p>Handles directional movement of the cursor across {@code WIRE}-typed
+     * tiles, level entry via the trigger action, and returning to the title
+     * screen via the menu action.
      */
     @Override
     public void update() {
@@ -95,11 +120,19 @@ public class MapState implements GameState {
         }
     }
 
+    /**
+     * Handles returning to the title screen when the menu button is pressed.
+     * Plays the escape sound effect and transitions to {@link GameStateEnum#TITLE}.
+     */
     private void handleMenu() {
         GameController.getInstance().setState(GameStateEnum.TITLE);
         Audio.playSfx("sound/SFX/esc.wav");
     }
 
+    /**
+     * Handles the trigger (confirm) action.
+     * If the cursor is positioned on a mapped level entry, that level is loaded and started.
+     */
     private void handleTrigger() {
         String levelFile = LEVEL_POSITION_FILENAME.get(cursorPos);
         if (levelFile != null) {
@@ -107,6 +140,10 @@ public class MapState implements GameState {
         }
     }
 
+    /**
+     * Moves the cursor one cell to the right if the adjacent cell contains a {@code WIRE} tile.
+     * Plays the selection sound effect on a successful move.
+     */
     private void handleMoveRight() {
         if (cursorPos.x >= levelSelectorMap.getWidth() - 1) {
             return;
@@ -120,6 +157,10 @@ public class MapState implements GameState {
         }
     }
 
+    /**
+     * Moves the cursor one cell to the left if the adjacent cell contains a {@code WIRE} tile.
+     * Plays the selection sound effect on a successful move.
+     */
     private void handleMoveLeft() {
         if (cursorPos.x <= 0) {
             return;
@@ -133,6 +174,10 @@ public class MapState implements GameState {
         }
     }
 
+    /**
+     * Moves the cursor one cell downward if the adjacent cell contains a {@code WIRE} tile.
+     * Plays the selection sound effect on a successful move.
+     */
     private void handleMoveDown() {
         if (cursorPos.y >= levelSelectorMap.getHeight() - 1) {
             return;
@@ -146,6 +191,10 @@ public class MapState implements GameState {
         }
     }
 
+    /**
+     * Moves the cursor one cell upward if the adjacent cell contains a {@code WIRE} tile.
+     * Plays the selection sound effect on a successful move.
+     */
     private void handleMoveUp() {
         if (cursorPos.y <= 0) {
             return;
@@ -160,7 +209,12 @@ public class MapState implements GameState {
     }
 
     /**
+     * Renders the level-selection map for the current frame.
      *
+     * <p>Draws the background, all map entities (with effects for incomplete levels),
+     * the level name and number overlays, and the animated cursor sprite.
+     *
+     * @param gc the {@link javafx.scene.canvas.GraphicsContext} used for drawing
      */
     @Override
     public void render(GraphicsContext gc) {
@@ -180,6 +234,14 @@ public class MapState implements GameState {
         renderCursor(gc, offset);
     }
 
+    /**
+     * Renders all entities on the selector map, applying
+     * {@link #INCOMPLETE_LEVEL_EFFECT} to entities whose associated level has
+     * not yet been completed.
+     *
+     * @param gc     the graphics context used for drawing
+     * @param offset the pixel offset used to center the map on screen
+     */
     private void renderEntities(GraphicsContext gc, Point offset) {
         Set<Entity> incompleteLevels = levelSelectorMap.getEntities().stream()
                 .filter(e -> e.getType() == TypeRegistry.TILE)
@@ -196,6 +258,13 @@ public class MapState implements GameState {
         );
     }
 
+    /**
+     * Renders the animated cursor sprite at the current cursor grid position.
+     * The animation frame is derived from the system clock to produce a wobble effect.
+     *
+     * @param gc     the graphics context used for drawing
+     * @param offset the pixel offset used to center the map on screen
+     */
     private void renderCursor(GraphicsContext gc, Point offset) {
         long currentTime = System.currentTimeMillis();
         int animationFrame = (int) ((currentTime / MILLISECONDS_PER_FRAME) % WOBBLE_FRAME_COUNT);
@@ -207,6 +276,14 @@ public class MapState implements GameState {
         );
     }
 
+    /**
+     * Renders the human-readable name of the level currently under the cursor
+     * near the top of the screen. The level filename is transformed by removing
+     * the numeric prefix and replacing underscores with spaces.
+     *
+     * @param gc     the graphics context used for drawing
+     * @param offset the pixel offset used to center the map on screen
+     */
     private void renderLevelName(GraphicsContext gc, Point offset) {
         String levelFileName = LEVEL_POSITION_FILENAME.get(cursorPos);
 
@@ -228,6 +305,13 @@ public class MapState implements GameState {
         }
     }
 
+    /**
+     * Renders the numeric level identifier on top of each level tile on the map.
+     * The number is extracted from the level filename and centred within its tile.
+     *
+     * @param gc     the graphics context used for drawing
+     * @param offset the pixel offset used to center the map on screen
+     */
     private void renderLevelNumber(GraphicsContext gc, Point offset) {
         for(Map.Entry<Point, String> entry : LEVEL_POSITION_FILENAME.entrySet()) {
             Point position = entry.getKey();

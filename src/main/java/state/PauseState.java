@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import logic.input.InputCommand;
 import logic.input.InputUtility;
 import model.rule.Rule;
@@ -113,6 +114,7 @@ public class PauseState implements GameState {
 
     private void createOverlay() {
         pauseOverlay = new VBox();
+        pauseOverlay.setMinWidth(Screen.getPrimary().getBounds().getWidth());
         pauseOverlay.setPrefSize(TARGET_SCREEN_WIDTH, TARGET_SCREEN_HEIGHT);
 
         pauseOverlay.setAlignment(Pos.TOP_CENTER);
