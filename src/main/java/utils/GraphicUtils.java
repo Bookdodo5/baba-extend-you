@@ -11,9 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import model.entity.Direction;
 import model.entity.Entity;
@@ -88,6 +86,8 @@ public class GraphicUtils {
     public static HBox createTextNode(String text, double scale, Color color) {
         HBox container = new HBox();
         container.setAlignment(Pos.CENTER);
+        container.setMaxWidth(FONT_WIDTH * text.length() * scale);
+        container.setMaxHeight(FONT_HEIGHT * scale);
 
         for (char c : text.toUpperCase().toCharArray()) {
             int idx = CHARACTER_MAP.indexOf(c);
@@ -138,18 +138,6 @@ public class GraphicUtils {
         button.setPrefWidth(prefWidth);
         button.setPrefHeight(prefHeight);
         return button;
-    }
-
-    /**
-     * Creates a styled {@link Button} with default height.
-     *
-     * @param text      the label text
-     * @param action    the action to run when clicked
-     * @param prefWidth the preferred button width
-     * @return the configured button
-     */
-    public static Button createButton(String text, Runnable action, int prefWidth) {
-        return createButton(text, action, prefWidth, (int) (FONT_HEIGHT * TEXT_SCALE));
     }
 
     /**
@@ -275,7 +263,7 @@ public class GraphicUtils {
             if(effect != null && effectEntities.contains(entity)) {
                 gc.setEffect(effect);
             }
-            ImageUtils.drawSprite(gc, image, animationFrame, spriteRow, drawX, drawY);
+            GraphicUtils.drawSprite(gc, image, animationFrame, spriteRow, drawX, drawY);
             gc.setEffect(null);
         }
     }
@@ -314,6 +302,59 @@ public class GraphicUtils {
         Color innerBgColor = outerBgColor.darker().darker();
         gc.setFill(innerBgColor);
         gc.fillRect(offset.x, offset.y, innerWidth, innerHeight);
+    }
+
+
+
+    /**
+     * Draws a single sprite frame from a sprite sheet onto the graphics context.
+     *
+     * @param gc        the graphics context to draw on
+     * @param image     the sprite sheet image
+     * @param spriteCol the column index (animation frame) in the sprite sheet
+     * @param spriteRow the row index in the sprite sheet
+     * @param drawX     the x pixel coordinate to draw at
+     * @param drawY     the y pixel coordinate to draw at
+     */
+    public static void drawSprite(GraphicsContext gc, Image image, int spriteCol, int spriteRow, int drawX, int drawY) {
+        gc.drawImage(
+                image,
+                SPRITE_SIZE * spriteCol, SPRITE_SIZE * spriteRow,
+                SPRITE_SIZE, SPRITE_SIZE,
+                drawX,
+                drawY,
+                SPRITE_SIZE, SPRITE_SIZE
+        );
+    }
+
+    /**
+     * Draws the given text string onto the graphics context using the bitmap font,
+     * with a custom scale and color. Characters not found in the font map are rendered
+     * as blank space.
+     *
+     * @param gc    the graphics context to draw on
+     * @param text  the text to render (case-insensitive)
+     * @param drawX     the x pixel coordinate to start drawing at
+     * @param drawY     the y pixel coordinate to start drawing at
+     * @param scale the scale factor applied to each character
+     */
+    public static void drawText(GraphicsContext gc, String text, double drawX, double drawY, double scale) {
+        for (int i = 0; i < text.length(); i++) {
+            int idx = CHARACTER_MAP.indexOf(Character.toUpperCase(text.charAt(i)));
+            if (idx == -1) {
+                continue;
+            }
+
+            int srcX = (idx % FONT_PER_ROW) * FONT_WIDTH;
+            int srcY = (idx / FONT_PER_ROW) * FONT_HEIGHT + 2;
+
+            gc.drawImage(
+                    FONT_SHEET, srcX, srcY,
+                    FONT_WIDTH, FONT_HEIGHT,
+                    drawX + FONT_WIDTH * scale * i, drawY,
+                    FONT_WIDTH * scale, FONT_HEIGHT * scale
+            );
+        }
     }
 }
 

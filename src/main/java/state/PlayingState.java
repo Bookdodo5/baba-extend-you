@@ -77,7 +77,6 @@ public class PlayingState implements GameState {
     /** {@inheritDoc} No cleanup is needed when exiting the playing state. */
     @Override
     public void onExit() {
-
     }
 
     /** {@inheritDoc} Updates particles, processes win, runs level logic, and handles menu input. */

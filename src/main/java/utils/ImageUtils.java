@@ -19,6 +19,7 @@ import static application.Constant.SPRITE_SIZE;
 public class ImageUtils {
     private static final Map<String, Image> COLOR_CACHE = new HashMap<>();
     private static final Map<Integer, Color> AVERAGE_COLOR_CACHE = new HashMap<>();
+    private static final Map<String, Image> SCALE_CACHE = new HashMap<>();
 
     /**
      * Computes the average color (excluding fully transparent pixels) of an image.
@@ -101,6 +102,12 @@ public class ImageUtils {
      * @return the scaled image
      */
     public static Image scaleNearestNeighbor(Image source, double scale) {
+        String cacheKey = System.identityHashCode(source) + "_" + scale;
+        Image cachedImage = SCALE_CACHE.get(cacheKey);
+        if (cachedImage != null) {
+            return cachedImage;
+        }
+
         int scaledWidth = (int) (source.getWidth() * scale);
         int scaledHeight = (int) (source.getHeight() * scale);
 
@@ -115,6 +122,7 @@ public class ImageUtils {
             }
         }
 
+        SCALE_CACHE.put(cacheKey, scaledImage);
         return scaledImage;
     }
 
@@ -130,26 +138,5 @@ public class ImageUtils {
                 ImageUtils.class.getResourceAsStream(path)
         );
         return new Image(inputStream);
-    }
-
-    /**
-     * Draws a single sprite frame from a sprite sheet onto the graphics context.
-     *
-     * @param gc        the graphics context to draw on
-     * @param image     the sprite sheet image
-     * @param spriteCol the column index (animation frame) in the sprite sheet
-     * @param spriteRow the row index in the sprite sheet
-     * @param drawX     the x pixel coordinate to draw at
-     * @param drawY     the y pixel coordinate to draw at
-     */
-    public static void drawSprite(GraphicsContext gc, Image image, int spriteCol, int spriteRow, int drawX, int drawY) {
-        gc.drawImage(
-                image,
-                SPRITE_SIZE * spriteCol, SPRITE_SIZE * spriteRow,
-                SPRITE_SIZE, SPRITE_SIZE,
-                drawX,
-                drawY,
-                SPRITE_SIZE, SPRITE_SIZE
-        );
     }
 }

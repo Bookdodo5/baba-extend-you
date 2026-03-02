@@ -2,7 +2,12 @@ package state;
 
 import application.GameController;
 import application.Audio;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import logic.input.InputCommand;
 import logic.input.InputUtility;
 import model.entity.Entity;
@@ -10,20 +15,29 @@ import model.entity.TypeRegistry;
 import model.map.LevelLoader;
 import model.map.LevelMap;
 import utils.GraphicUtils;
-import utils.ImageUtils;
 
 import java.awt.*;
 import java.io.InputStream;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static application.Constant.*;
 
 public class MapState implements GameState {
 
-    private final LevelMap levelSelectorMap;
+    private final double LEVEL_NAME_SCALE = 1.5;
+    private final double LEVEL_NUMBER_SCALE = 0.8;
+
+    private static final ColorAdjust INCOMPLETE_LEVEL_EFFECT = new ColorAdjust();
+    static {
+        INCOMPLETE_LEVEL_EFFECT.setSaturation(0.1);
+        INCOMPLETE_LEVEL_EFFECT.setBrightness(-0.3);
+        INCOMPLETE_LEVEL_EFFECT.setHue(0.7);
+    }
 
     private final Map<Point, String> LEVEL_POSITION_FILENAME;
-
+    private final LevelMap levelSelectorMap;
     private final Point cursorPos;
 
     public MapState() {
@@ -45,7 +59,7 @@ public class MapState implements GameState {
                 try {
                     int x = Integer.parseInt(parts[1].trim());
                     int y = Integer.parseInt(parts[2].trim());
-                    LEVEL_POSITION_FILENAME.put(new Point(x, y), parts[0]);
+                    LEVEL_POSITION_FILENAME.put(new Point(x, y), parts[0].trim());
                 } catch (NumberFormatException e) {
                     // skip malformed line
                 }
@@ -57,6 +71,7 @@ public class MapState implements GameState {
 
     @Override
     public void onEnter(GameStateEnum previousState) {
+        Audio.resumeMusic();
     }
 
     @Override
@@ -68,6 +83,7 @@ public class MapState implements GameState {
      */
     @Override
     public void update() {
+
         InputCommand input = InputUtility.getTriggered();
         switch (input) {
             case MOVE_UP -> handleMoveUp();
@@ -75,15 +91,20 @@ public class MapState implements GameState {
             case MOVE_LEFT -> handleMoveLeft();
             case MOVE_RIGHT -> handleMoveRight();
             case TRIGGER -> handleTrigger();
+            case MENU -> handleMenu();
         }
+    }
+
+    private void handleMenu() {
+        GameController.getInstance().setState(GameStateEnum.TITLE);
+        Audio.playSfx("sound/SFX/esc.wav");
     }
 
     private void handleTrigger() {
         String levelFile = LEVEL_POSITION_FILENAME.get(cursorPos);
-        if (levelFile == null) {
-            return;
+        if (levelFile != null) {
+            GameController.getInstance().playLevel(levelFile);
         }
-        GameController.getInstance().playLevel("map/" + levelFile);
     }
 
     private void handleMoveRight() {
@@ -153,19 +174,76 @@ public class MapState implements GameState {
                 SPRITE_SIZE * levelSelectorMap.getHeight()
         );
 
+        renderEntities(gc, offset);
+        renderLevelName(gc, offset);
+        renderLevelNumber(gc, offset);
+        renderCursor(gc, offset);
+    }
+
+    private void renderEntities(GraphicsContext gc, Point offset) {
+        Set<Entity> incompleteLevels = levelSelectorMap.getEntities().stream()
+                .filter(e -> e.getType() == TypeRegistry.TILE)
+                .filter(e -> {
+                    Point position = levelSelectorMap.getPosition(e);
+                    String levelFileName = LEVEL_POSITION_FILENAME.get(position);
+                    return !GameController.getInstance().isLevelCompleted(levelFileName);
+                })
+                .collect(Collectors.toSet());
+
         GraphicUtils.renderEntities(
                 gc, levelSelectorMap, offset,
-                null, null
+                incompleteLevels, INCOMPLETE_LEVEL_EFFECT
         );
+    }
 
-        // Draw the player cursor on top of the map entities
+    private void renderCursor(GraphicsContext gc, Point offset) {
         long currentTime = System.currentTimeMillis();
         int animationFrame = (int) ((currentTime / MILLISECONDS_PER_FRAME) % WOBBLE_FRAME_COUNT);
-        ImageUtils.drawSprite(
+        GraphicUtils.drawSprite(
                 gc, TypeRegistry.JAVA.getSpriteSheet(),
                 animationFrame, 0,
                 SPRITE_SIZE * cursorPos.x + offset.x,
                 SPRITE_SIZE * cursorPos.y + offset.y
         );
+    }
+
+    private void renderLevelName(GraphicsContext gc, Point offset) {
+        String levelFileName = LEVEL_POSITION_FILENAME.get(cursorPos);
+
+        if (levelFileName != null) {
+            String cleanedName = levelFileName
+                    .split("\\.")[0]
+                    .split("/")[1]
+                    .replace("_", " ");
+
+            double textOffset = cleanedName.length() * FONT_WIDTH * LEVEL_NAME_SCALE;
+            double mapOffset = levelSelectorMap.getWidth() * SPRITE_SIZE;
+
+            GraphicUtils.drawText(
+                    gc, cleanedName,
+                    offset.x - (textOffset - mapOffset) / 2.0,
+                    20,
+                    LEVEL_NAME_SCALE
+            );
+        }
+    }
+
+    private void renderLevelNumber(GraphicsContext gc, Point offset) {
+        for(Map.Entry<Point, String> entry : LEVEL_POSITION_FILENAME.entrySet()) {
+            Point position = entry.getKey();
+            String levelFileName = entry.getValue();
+            String levelNumber = levelFileName.split("/")[1].split("_")[0];
+
+            double textOffsetX = levelNumber.length() * FONT_WIDTH * LEVEL_NUMBER_SCALE;
+            double textOffsetY = FONT_HEIGHT * LEVEL_NUMBER_SCALE - 2;
+            double x = offset.x + SPRITE_SIZE * position.x + (SPRITE_SIZE - textOffsetX) / 2.0;
+            double y = offset.y + SPRITE_SIZE * position.y + (SPRITE_SIZE - textOffsetY) / 2.0;
+
+            GraphicUtils.drawText(
+                    gc, levelNumber,
+                    x, y,
+                    LEVEL_NUMBER_SCALE
+            );
+        }
     }
 }

@@ -44,6 +44,7 @@ public class TitleState implements GameState {
      */
     @Override
     public void onEnter(GameStateEnum previousState) {
+        Audio.resumeMusic();
         Audio.playMusic("sound/music/Pixel_Quest_MainTheme.wav");
         createTitleBox();
         putTitleBox();

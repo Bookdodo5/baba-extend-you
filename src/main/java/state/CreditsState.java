@@ -75,7 +75,9 @@ public class CreditsState implements GameState {
 
         // Header Section
         HBox creditsTitle = GraphicUtils.createTextNode("Credits", 4.0, Color.WHITE);
+        creditsTitle.setMinWidth(TARGET_SCREEN_WIDTH);
         mainLayout.setTop(creditsTitle);
+        creditsTitle.setAlignment(Pos.CENTER);
         BorderPane.setMargin(creditsTitle, new Insets(20, 20, 30, 20));
 
         // Main Content Section
@@ -91,6 +93,7 @@ public class CreditsState implements GameState {
 
         // ESC to return
         HBox footerText = GraphicUtils.createTextNode("Press ESC to return", 1.0, Color.LIGHTGRAY);
+        footerText.setMinWidth(TARGET_SCREEN_WIDTH);
         mainLayout.setBottom(footerText);
         BorderPane.setMargin(footerText, new Insets(10, 20, 20, 20));
 
