@@ -2,6 +2,10 @@
 
 "Java Is You" is a grid-based puzzle game inspired by the greatest game I've ever played "Baba Is You", built entirely from scratch using Java and JavaFX.
 
+## Quick View
+
+Play the promotional website online: https://java-is-you.vercel.app
+
 ## What is this game about?
 
 You push blocks around a grid to form rules, which change how the world behaves in real time.
