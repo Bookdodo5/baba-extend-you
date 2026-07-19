@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Is You — a programming puzzle game where you change the rules</title>
+<meta name="description" content="A grid-based puzzle game inspired by Baba Is You, built from scratch in Java. Push word blocks to rewrite the rules of each level — 31 handcrafted puzzles themed on computer science.">
+<meta property="og:title" content="Java Is You">
+<meta property="og:description" content="A programming puzzle game where you change the rules. Rewrite. Run. Solve.">
+<meta property="og:image" content="https://raw.githubusercontent.com/Bookdodo5/java-is-you/main/src/main/resources/title/background.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#090B10">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ============ base ============ */
+:root{
+  --bg:#090B10; --bg2:#0F172A; --card:#171B24;
+  --line:rgba(255,255,255,.08);
+  --yellow:#FACC15; --pink:#F472B6; --blue:#38BDF8; --green:#22C55E; --purple:#8B5CF6;
+  --ink:#E7ECF5; --dim:#94A3B8;
+  --px:'Press Start 2P',monospace; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif; font-size:16px; line-height:1.65;
+  overflow-x:hidden;
+}
+img{max-width:100%}
+a{color:var(--blue);text-decoration:none}
+::selection{background:rgba(250,204,21,.35)}
+section{scroll-margin-top:90px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 28px}
+h2.px{
+  font-family:var(--px);font-size:clamp(18px,3vw,30px);line-height:1.5;
+  text-align:center;letter-spacing:1px;
+}
+h2.px .sp{color:var(--yellow);font-size:.6em;vertical-align:middle}
+.kicker{
+  text-align:center;color:var(--dim);margin-top:14px;font-size:17px;
+}
+/* pixel sprite helper: 3-frame wobble sheets, optional row for tiled/directional */
+.spr{
+  width:var(--cell,64px);height:var(--cell,64px);flex:none;
+  background-image:var(--img);
+  background-size:calc(var(--cell,64px)*3) auto;
+  background-position-x:0;
+  background-position-y:calc(var(--cell,64px)*var(--row,0)*-1);
+  background-repeat:no-repeat;
+  image-rendering:pixelated;
+  animation:wob .55s steps(3) infinite;
+}
+@keyframes wob{to{background-position-x:calc(var(--cell,64px)*-3)}}
+
+/* ============ background atmosphere ============ */
+.fx{position:fixed;inset:0;pointer-events:none;z-index:0}
+.fx-scan{
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.14) 2px 4px);
+  opacity:.5;z-index:3;
+}
+.fx-vig{background:radial-gradient(ellipse 90% 70% at 50% 20%,transparent 55%,rgba(0,0,0,.55));z-index:2}
+.fx-glow{
+  background:
+    radial-gradient(520px 340px at 12% 8%,rgba(139,92,246,.10),transparent 70%),
+    radial-gradient(620px 420px at 88% 20%,rgba(56,189,248,.08),transparent 70%),
+    radial-gradient(520px 380px at 70% 90%,rgba(244,114,182,.06),transparent 70%);
+}
+#particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+.pt{position:absolute;bottom:-12px;border-radius:1px;animation:rise linear infinite;opacity:0}
+.pt.star{font-family:var(--px);background:none!important;color:var(--c)}
+@keyframes rise{
+  0%{transform:translateY(0);opacity:0}
+  8%{opacity:var(--o)}
+  90%{opacity:var(--o)}
+  100%{transform:translateY(calc(-100vh - 40px));opacity:0}
+}
+.code-float{position:fixed;z-index:1;pointer-events:none;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre;opacity:.13;animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateY(-10px)}to{transform:translateY(12px)}}
+@media(max-width:1150px){.code-float{display:none}}
+
+/* ============ nav ============ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  transition:background .3s,border-color .3s,backdrop-filter .3s;
+  border-bottom:1px solid transparent;
+}
+nav.scrolled{background:rgba(9,11,16,.82);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+.nav-in{max-width:1200px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;gap:28px}
+.logo{font-family:var(--px);font-size:13px;color:var(--ink);letter-spacing:1px;white-space:nowrap}
+.logo b{color:var(--yellow);font-weight:400}.logo i{color:var(--pink);font-style:normal}
+.nav-links{display:flex;gap:26px;margin-left:auto}
+.nav-links a{
+  font-family:var(--px);font-size:9px;color:var(--dim);letter-spacing:1px;position:relative;padding:6px 0;
+}
+.nav-links a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--yellow);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.nav-links a:hover{color:var(--ink)}.nav-links a:hover::after{transform:scaleX(1)}
+.nav-star{
+  display:flex;align-items:center;gap:8px;font-family:var(--px);font-size:9px;color:var(--ink);
+  border:1px solid rgba(250,204,21,.45);border-radius:9px;padding:10px 14px;
+  background:rgba(250,204,21,.06);transition:.25s;
+}
+.nav-star:hover{background:rgba(250,204,21,.14);transform:translateY(-1px);box-shadow:0 4px 18px rgba(250,204,21,.25)}
+.nav-star .st{color:var(--yellow)}
+#burger{display:none}
+@media(max-width:960px){
+  .nav-links{display:none}
+  .nav-star{margin-left:auto;padding:9px 11px;font-size:8px}
+  .logo{font-size:11px}
+}
+
+/* ============ hero ============ */
+header{position:relative;z-index:2;min-height:100svh;display:flex;flex-direction:column;padding:120px 0 40px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:center;margin-block:auto}
+.g{font-family:'Inter','DejaVu Sans',sans-serif}
+.title-px{font-family:var(--px);font-size:clamp(40px,6.2vw,84px);line-height:1.22;letter-spacing:2px}
+.title-px .l1{color:var(--yellow);text-shadow:0 0 26px rgba(250,204,21,.45),4px 4px 0 rgba(0,0,0,.55)}
+.title-px .l2{color:#fff;text-shadow:0 0 18px rgba(255,255,255,.25),4px 4px 0 rgba(0,0,0,.55)}
+.title-px .l3{color:var(--pink);text-shadow:0 0 26px rgba(244,114,182,.5),4px 4px 0 rgba(0,0,0,.55)}
+.tagline{margin-top:30px;font-size:clamp(17px,1.6vw,21px);color:var(--ink);max-width:46ch}
+.tagline em{font-style:normal;color:var(--yellow);font-weight:600}
+.rrs{margin-top:16px;font-family:var(--mono);font-size:15px;color:var(--blue)}
+.rrs .cur{display:inline-block;width:9px;height:17px;background:var(--blue);vertical-align:-3px;margin-left:3px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.cta{margin-top:38px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:11px;
+  font-family:var(--px);font-size:12px;letter-spacing:1px;
+  padding:19px 26px;border-radius:12px;transition:transform .2s,box-shadow .2s,background .2s;
+  cursor:pointer;border:1px solid transparent;
+}
+.btn-play{background:var(--yellow);color:#0B0D12;animation:glowpulse 2.6s ease-in-out infinite}
+.btn-play:hover{transform:translateY(-3px);box-shadow:0 10px 34px rgba(250,204,21,.5)}
+@keyframes glowpulse{0%,100%{box-shadow:0 6px 22px rgba(250,204,21,.28)}50%{box-shadow:0 6px 30px rgba(250,204,21,.5)}}
+.btn-ghost{background:rgba(23,27,36,.7);color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22);box-shadow:0 8px 26px rgba(0,0,0,.5)}
+.btn-ghost .spr{--cell:26px}
+.cta-note{width:100%;font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+.cta-note a{color:var(--dim);text-decoration:underline dotted}
+
+/* board panel */
+.board-side{position:relative}
+.board-tilt{transition:transform .2s ease-out;transform-style:preserve-3d;perspective:900px}
+.board-frame{
+  background:#12101B;border:1px solid var(--line);outline:2px solid rgba(255,255,255,.05);outline-offset:5px;
+  border-radius:14px;padding:14px;position:relative;
+  box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 60px rgba(139,92,246,.10);
+}
+.board-cap{margin-top:14px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.board-cap b{color:var(--yellow);font-weight:600}
+.board{
+  position:relative;outline:none;border-radius:8px;touch-action:manipulation;
+  --cell:min(64px,calc((100vw - 90px)/var(--cols)));
+  width:calc(var(--cell)*var(--cols));height:calc(var(--cell)*var(--rows));
+  background:
+    repeating-linear-gradient(0deg,transparent 0 calc(var(--cell) - 1px),rgba(255,255,255,.045) calc(var(--cell) - 1px) var(--cell)),
+    repeating-linear-gradient(90deg,transparent 0 calc(var(--cell) - 1px),rgba(255,255,255,.045) calc(var(--cell) - 1px) var(--cell)),
+    #0C0A13;
+}
+.board:focus-visible{box-shadow:0 0 0 2px rgba(56,189,248,.6)}
+.ent{
+  position:absolute;left:0;top:0;z-index:2;
+  transform:translate(calc(var(--cell)*var(--x)),calc(var(--cell)*var(--y)));
+  transition:transform .14s ease-out;
+}
+.ent.word{z-index:3;cursor:grab}
+.ent.word:hover{filter:drop-shadow(0 0 7px rgba(255,255,255,.5))}
+.ent.lift{opacity:.25}
+.ent.glow{filter:drop-shadow(0 0 8px rgba(250,204,21,.65))}
+.ent.flash{animation:flash .7s ease-out}
+@keyframes flash{0%,40%{filter:drop-shadow(0 0 12px rgba(34,197,94,.9)) brightness(1.7)}}
+.ghost{position:fixed;z-index:999;pointer-events:none;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6)) brightness(1.15);animation:none}
+.slot-hint{
+  position:absolute;z-index:1;width:var(--cell);height:var(--cell);
+  transform:translate(calc(var(--cell)*var(--x)),calc(var(--cell)*var(--y)));
+  border:2px dashed rgba(139,92,246,.7);border-radius:8px;margin:0;
+  animation:slotpulse 1.8s ease-in-out infinite;
+}
+@keyframes slotpulse{50%{border-color:rgba(139,92,246,.25);box-shadow:0 0 14px rgba(139,92,246,.25)}}
+.click-cover{
+  position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
+  background:rgba(9,8,14,.55);backdrop-filter:blur(2px);border-radius:8px;cursor:pointer;border:0;
+  font-family:var(--px);font-size:12px;color:#fff;text-shadow:2px 2px 0 #000;letter-spacing:1px;
+  transition:opacity .3s;text-align:center;
+}
+.click-cover:hover{background:rgba(9,8,14,.4)}
+.click-cover .big{display:block;text-align:center;font-size:26px;color:var(--yellow);margin-bottom:14px;animation:bob 1.6s ease-in-out infinite}
+.board-toast{
+  position:absolute;left:50%;bottom:10px;transform:translateX(-50%) translateY(6px);z-index:11;
+  font-family:var(--px);font-size:9px;line-height:1.7;color:#fff;text-align:center;
+  background:rgba(12,10,19,.92);border:1px solid var(--line);border-radius:8px;padding:9px 13px;
+  opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;max-width:96%;
+}
+.board-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.board-toast.good{border-color:rgba(34,197,94,.6);color:#A7F3D0}
+.board-toast.bad{border-color:rgba(244,114,182,.6);color:#FBCFE8}
+.win-cover{
+  position:absolute;inset:0;z-index:12;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background:rgba(9,8,14,.85);border-radius:8px;text-align:center;padding:20px;
+}
+.win-cover.show{display:flex;animation:winin .35s ease-out}
+@keyframes winin{from{opacity:0;transform:scale(.92)}}
+.win-cover .wt{font-family:var(--px);font-size:clamp(16px,3vw,24px);color:var(--yellow);text-shadow:0 0 24px rgba(250,204,21,.7);animation:bob 1.4s ease-in-out infinite}
+.win-cover .ws{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.win-cover .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.mini-btn{
+  font-family:var(--px);font-size:9px;color:var(--ink);background:var(--card);
+  border:1px solid var(--line);border-radius:8px;padding:11px 14px;cursor:pointer;transition:.2s;letter-spacing:1px;
+}
+.mini-btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.25)}
+.mini-btn.gold{background:var(--yellow);color:#0B0D12;border-color:transparent}
+.confetto{position:absolute;width:7px;height:7px;z-index:13;pointer-events:none;animation:cfall 1.25s ease-in forwards}
+@keyframes cfall{to{transform:translateY(calc(var(--cell)*var(--rows)))rotate(540deg);opacity:0}}
+.pad{
+  display:flex;gap:8px;justify-content:center;align-items:center;margin-top:12px;flex-wrap:wrap;
+}
+.pad button{
+  font-family:var(--px);font-size:10px;color:var(--dim);background:var(--card);
+  border:1px solid var(--line);border-radius:8px;min-width:40px;padding:10px 11px;cursor:pointer;transition:.15s;
+}
+.pad button:hover{color:var(--ink);border-color:rgba(255,255,255,.25)}
+.pad button:active{transform:translateY(1px)}
+.pad button.g{font-size:14px;line-height:1;padding:8px 11px}
+.pad .lbl{font-family:var(--mono);font-size:11px;color:var(--dim);margin:0 4px}
+
+/* scroll indicator */
+.scrolldown{position:relative;z-index:2;text-align:center;margin-top:46px;font-family:var(--px);font-size:10px;color:var(--purple);letter-spacing:2px}
+.scrolldown .ch{display:block;margin-top:10px;color:var(--blue);animation:bob 1.5s ease-in-out infinite;font-size:13px}
+@keyframes bob{50%{transform:translateY(7px)}}
+
+/* ============ play section ============ */
+#play{position:relative;z-index:2;padding:130px 0 40px;
+  background:linear-gradient(180deg,transparent,rgba(15,23,42,.55) 18%,rgba(15,23,42,.55) 82%,transparent);
+}
+.play-grid{display:grid;grid-template-columns:auto minmax(320px,1fr);gap:60px;align-items:center;margin-top:64px}
+.demo-wrap{display:flex;gap:18px;align-items:flex-start}
+.tray{
+  display:flex;flex-direction:column;gap:10px;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:12px;
+}
+.tray .t-lbl{font-family:var(--px);font-size:8px;color:var(--dim);text-align:center;letter-spacing:1px;margin-bottom:2px}
+.tray-slot{width:52px;height:52px;border:1px dashed rgba(255,255,255,.14);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.tray-slot .spr{--cell:48px;cursor:grab;animation-name:wob}
+.tray-slot .spr:hover{filter:drop-shadow(0 0 7px rgba(255,255,255,.5))}
+.tray-slot.used .spr{display:none}
+.statements{display:flex;flex-direction:column;gap:26px}
+.statements .st{font-family:var(--px);font-size:clamp(15px,2.1vw,22px);line-height:1.6}
+.st.c1{color:#fff}.st.c2{color:var(--blue)}.st.c3{color:var(--pink)}
+.statements hr{border:0;border-top:2px solid var(--purple);width:64px;margin:6px 0}
+.heart-note{display:flex;gap:16px;align-items:flex-start}
+.heart-note svg{flex:none;animation:heartbeat 1.6s ease-in-out infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}12%{transform:scale(1.14)}24%{transform:scale(1)}}
+.heart-note p{font-family:var(--mono);font-size:15px;color:var(--dim)}
+.heart-note b{color:var(--purple);font-weight:600}
+
+/* ============ features ============ */
+#features{position:relative;z-index:2;padding:130px 0 60px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:64px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px 26px;
+  text-align:center;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative;overflow:hidden;
+}
+.card::before{content:'';position:absolute;inset:0;background:radial-gradient(240px 130px at 50% 0%,var(--tint),transparent 75%);opacity:0;transition:opacity .3s}
+.card:hover{transform:translateY(-6px);border-color:var(--edge);box-shadow:0 16px 44px rgba(0,0,0,.5),0 0 30px var(--tint)}
+.card:hover::before{opacity:1}
+.card .ico{height:64px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;position:relative}
+.card .ico .spr{--cell:56px}
+.card .code-ico{font-family:var(--mono);font-weight:600;font-size:34px;color:var(--blue);text-shadow:0 0 18px rgba(56,189,248,.6)}
+.card h3{font-family:var(--px);font-size:12px;letter-spacing:1px;line-height:1.8;margin-bottom:14px;color:#fff}
+.card p{font-size:14.5px;color:var(--dim)}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.cards{grid-template-columns:1fr}}
+
+/* ============ gallery ============ */
+#gallery{position:relative;z-index:2;padding:130px 0 60px}
+.g-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:22px;margin-top:64px}
+.g-item{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.25s;position:relative}
+.g-item:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.2);box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.g-item .tag{position:absolute;left:12px;top:12px;z-index:2;font-family:var(--px);font-size:8px;color:#fff;background:rgba(9,11,16,.8);border:1px solid var(--line);border-radius:6px;padding:7px 9px;letter-spacing:1px}
+.g-video{grid-row:span 2;display:flex}
+.g-video iframe{width:100%;aspect-ratio:16/9;border:0;align-self:stretch;height:100%}
+.g-item img{display:block;width:100%;height:100%;object-fit:cover}
+.g-item.pix img{image-rendering:pixelated}
+.g-item.fit{display:flex;align-items:center;justify-content:center;background:#0C0A13;min-height:150px}
+.g-item.fit img{object-fit:contain;height:auto;padding:22px 26px}
+@media(max-width:900px){.g-grid{grid-template-columns:1fr}.g-video{grid-row:auto}}
+.marquee{margin-top:26px;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0;position:relative}
+.marquee::before,.marquee::after{content:'';position:absolute;top:0;bottom:0;width:90px;z-index:2}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.marquee::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+.mq-track{display:flex;gap:34px;width:max-content;animation:mq 46s linear infinite;font-family:var(--px);font-size:10px;color:var(--dim);white-space:nowrap}
+.marquee:hover .mq-track{animation-play-state:paused}
+.mq-track .dot{color:var(--yellow)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ============ about ============ */
+#about{position:relative;z-index:2;padding:130px 0 60px}
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center;margin-top:64px}
+.about-grid .txt p{color:var(--dim);margin-bottom:18px;font-size:16.5px}
+.about-grid .txt p b{color:var(--ink)}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.chip{font-family:var(--px);font-size:8.5px;color:var(--ink);letter-spacing:1px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+.chip.y{color:var(--yellow);border-color:rgba(250,204,21,.4)}
+.chip.b{color:var(--blue);border-color:rgba(56,189,248,.4)}
+.chip.g{color:var(--green);border-color:rgba(34,197,94,.4)}
+.chip.p{color:var(--pink);border-color:rgba(244,114,182,.4)}
+.about-shot{border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.about-shot img{display:block}
+.about-shot .cap{font-family:var(--mono);font-size:12px;color:var(--dim);text-align:center;padding:11px;background:var(--card)}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr}}
+
+/* ============ faq ============ */
+#faq{position:relative;z-index:2;padding:130px 0 100px}
+.faq-list{max-width:780px;margin:56px auto 0;display:flex;flex-direction:column;gap:14px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 24px;transition:border-color .25s}
+details[open]{border-color:rgba(139,92,246,.5)}
+summary{cursor:pointer;list-style:none;font-weight:600;font-size:16px;padding:20px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';font-family:var(--px);color:var(--purple);font-size:13px;transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details .a{padding:0 0 22px;color:var(--dim);font-size:15.5px}
+details .a code{font-family:var(--mono);font-size:12.5px;background:#0C0F16;border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+details .a pre{font-family:var(--mono);font-size:12px;background:#0C0F16;border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;margin-top:10px;color:#B7C3D8}
+
+/* ============ footer ============ */
+footer{position:relative;z-index:2;margin-top:40px}
+.terrain{position:relative;height:120px;overflow:hidden}
+.terrain svg{position:absolute;bottom:0;left:0;width:100%;height:100%}
+.terrain .spr{position:absolute;bottom:34px;--cell:40px}
+.firefly{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--yellow);box-shadow:0 0 8px 2px rgba(250,204,21,.55);animation:ffly 5.5s ease-in-out infinite}
+@keyframes ffly{0%,100%{transform:translate(0,0);opacity:.25}30%{opacity:1}50%{transform:translate(16px,-18px);opacity:.7}80%{opacity:.95}}
+.pheart{position:absolute;color:var(--pink);font-size:11px;font-family:'Inter',sans-serif;animation:heartrise 6s ease-in infinite;opacity:0}
+@keyframes heartrise{0%{transform:translateY(0);opacity:0}15%{opacity:.85}100%{transform:translateY(-70px);opacity:0}}
+.foot-bar{background:#0A0714;border-top:1px solid var(--line);padding:38px 0 46px;text-align:center}
+.foot-bar .logo{font-size:12px}
+.foot-links{display:flex;gap:26px;justify-content:center;margin:20px 0;flex-wrap:wrap}
+.foot-links a{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.foot-links a:hover{color:var(--ink)}
+.foot-note{font-size:13px;color:#5B677B;max-width:640px;margin:0 auto;padding:0 20px}
+.foot-note a{color:#7F8CA3;text-decoration:underline dotted}
+
+/* reveal on scroll */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+
+/* responsive hero/play stacking */
+@media(max-width:1160px){
+  .hero{grid-template-columns:1fr;gap:54px}
+  .board-side{justify-self:center}
+  .play-grid{grid-template-columns:1fr;gap:54px}
+  .demo-wrap{justify-content:center}
+  header{padding-top:110px}
+}
+@media(max-width:640px){
+  .demo-wrap{flex-direction:column;align-items:center}
+  .tray{flex-direction:row;flex-wrap:wrap;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .mq-track{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- atmosphere -->
+<div class="fx fx-glow" aria-hidden="true"></div>
+<div class="fx fx-vig" aria-hidden="true"></div>
+<div class="fx fx-scan" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+<pre class="code-float" style="left:2.5%;top:20%;color:#38BDF8" aria-hidden="true">class Player {
+    boolean you;
+}</pre>
+<pre class="code-float" style="right:2.5%;top:26%;color:#8B5CF6;animation-delay:-6s" aria-hidden="true">Rule rule
+  = parse(words);
+
+engine.update();</pre>
+<pre class="code-float" style="left:4%;top:64%;color:#22C55E;animation-delay:-3s" aria-hidden="true">if (rule.isYou()) {
+    move();
+}</pre>
+<pre class="code-float" style="right:4.5%;top:62%;color:#F472B6;animation-delay:-9s" aria-hidden="true">// Everything
+// is a rule.</pre>
+
+<!-- nav -->
+<nav id="nav">
+  <div class="nav-in">
+    <a class="logo" href="#top"><b>JAVA</b> IS <i>YOU</i></a>
+    <div class="nav-links">
+      <a href="#play">GAMEPLAY</a>
+      <a href="#features">FEATURES</a>
+      <a href="#gallery">GALLERY</a>
+      <a href="#about">ABOUT</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="nav-star" href="https://github.com/Bookdodo5/java-is-you" target="_blank" rel="noopener">
+      <span class="st g">★</span> STAR ON GITHUB
+    </a>
+  </div>
+</nav>
+
+<!-- hero -->
+<header id="top">
+  <div class="wrap hero">
+    <div class="hero-copy">
+      <h1 class="title-px">
+        <span class="l1">JAVA</span><br>
+        <span class="l2">IS</span><br>
+        <span class="l3">YOU</span>
+      </h1>
+      <p class="tagline">A programming puzzle game where <em>you change the rules.</em></p>
+      <p class="rrs">&gt; Rewrite. Run. Solve.<span class="cur" aria-hidden="true"></span></p>
+      <div class="cta">
+        <a class="btn btn-play" href="https://github.com/Bookdodo5/java-is-you/raw/main/GAME/java_is_you.exe"><span class="g">▶</span>&nbsp; PLAY GAME</a>
+        <a class="btn btn-ghost" href="https://github.com/Bookdodo5/java-is-you" target="_blank" rel="noopener">
+          <span class="spr" style="--img:url(assets/GIT.png)" aria-hidden="true"></span> VIEW ON GITHUB
+        </a>
+        <p class="cta-note">Windows .exe — on macOS/Linux run the <a href="#faq">JAR with Java 24</a></p>
+      </div>
+    </div>
+
+    <div class="board-side">
+      <div class="board-tilt" id="tilt">
+        <div class="board-frame">
+          <div class="board" id="hero-board" tabindex="0" aria-label="Playable demo of level 1. Use arrow keys to move."></div>
+        </div>
+      </div>
+      <p class="board-cap"><b>LEVEL 1 — JAVA IS YOU</b> · the game's real first level, playable right here</p>
+      <div class="pad" data-board="hero-board">
+        <button class="g" data-mv="0,-1" aria-label="move up">▲</button>
+        <button class="g" data-mv="-1,0" aria-label="move left">◀</button>
+        <button class="g" data-mv="0,1" aria-label="move down">▼</button>
+        <button class="g" data-mv="1,0" aria-label="move right">▶</button>
+        <span class="lbl">·</span>
+        <button data-act="undo">Z UNDO</button>
+        <button data-act="reset">R RESET</button>
+      </div>
+    </div>
+  </div>
+
+  <a class="scrolldown" href="#play">SCROLL TO PLAY<span class="ch g">▼</span></a>
+</header>
+
+<!-- play in your browser -->
+<section id="play">
+  <div class="wrap">
+    <h2 class="px rv"><span class="sp g">✦</span> PLAY IN YOUR BROWSER <span class="sp g">✦</span></h2>
+    <p class="kicker rv">Drag the words to change the rules and see what happens!</p>
+
+    <div class="play-grid">
+      <div class="demo-side rv">
+        <div class="demo-wrap">
+          <div class="board-frame">
+            <div class="board" id="demo-board" tabindex="0" aria-label="Sandbox board. Drag word tiles onto the grid to form rules, arrow keys to move."></div>
+          </div>
+          <div class="tray" id="tray">
+            <div class="t-lbl">WORDS</div>
+          </div>
+        </div>
+        <p class="board-cap">psst — try <b>BUG IS STOP</b>… or steal <b>WIN</b> for yourself</p>
+        <div class="pad" data-board="demo-board">
+          <button class="g" data-mv="0,-1" aria-label="move up">▲</button>
+          <button class="g" data-mv="-1,0" aria-label="move left">◀</button>
+          <button class="g" data-mv="0,1" aria-label="move down">▼</button>
+          <button class="g" data-mv="1,0" aria-label="move right">▶</button>
+          <span class="lbl">·</span>
+          <button data-act="undo">Z UNDO</button>
+          <button data-act="reset">R RESET</button>
+        </div>
+      </div>
+
+      <div class="statements rv">
+        <div class="st c1">CHANGE THE RULES.</div>
+        <div class="st c2">CHANGE THE WORLD.</div>
+        <div class="st c3">SOLVE THE PUZZLE.</div>
+        <hr>
+        <div class="heart-note">
+          <svg width="34" height="30" viewBox="0 0 7 6" aria-hidden="true" shape-rendering="crispEdges">
+            <g fill="#8B5CF6">
+              <rect x="1" y="0" width="2" height="1"/><rect x="4" y="0" width="2" height="1"/>
+              <rect x="0" y="1" width="7" height="2"/>
+              <rect x="1" y="3" width="5" height="1"/><rect x="2" y="4" width="3" height="1"/>
+              <rect x="3" y="5" width="1" height="1"/>
+            </g>
+            <g fill="#0B0D12"><rect x="2" y="1" width="1" height="1"/><rect x="4" y="1" width="1" height="1"/></g>
+          </svg>
+          <p>Rules aren't <b>hardcoded</b>.<br>You rewrite them.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- features -->
+<section id="features">
+  <div class="wrap">
+    <h2 class="px rv"><span class="sp g">✦</span> NOT YOUR AVERAGE PUZZLE GAME <span class="sp g">✦</span></h2>
+    <p class="kicker rv">Programming isn't about memorizing syntax. It's about changing the rules.</p>
+    <div class="cards">
+      <div class="card rv" style="--tint:rgba(139,92,246,.14);--edge:rgba(139,92,246,.5)">
+        <div class="ico"><span class="spr" style="--img:url(assets/BUG.png);--row:2" aria-hidden="true"></span></div>
+        <h3>SOLVE PUZZLES</h3>
+        <p>Challenging levels that teach logic, not syntax.</p>
+      </div>
+      <div class="card rv" style="--tint:rgba(34,197,94,.14);--edge:rgba(34,197,94,.5)">
+        <div class="ico"><span class="spr" style="--img:url(assets/YOU.png)" aria-hidden="true"></span></div>
+        <h3>REWRITE RULES</h3>
+        <p>Move words, change meanings, break expectations.</p>
+      </div>
+      <div class="card rv" style="--tint:rgba(56,189,248,.14);--edge:rgba(56,189,248,.5)">
+        <div class="ico"><span class="code-ico" aria-hidden="true">&lt;/&gt;</span></div>
+        <h3>LEARN BY PLAYING</h3>
+        <p>Understand programming concepts through game mechanics.</p>
+      </div>
+      <div class="card rv" style="--tint:rgba(244,114,182,.14);--edge:rgba(244,114,182,.5)">
+        <div class="ico"><span class="spr" style="--img:url(assets/FLAG.png)" aria-hidden="true"></span></div>
+        <h3>HANDCRAFTED LEVELS</h3>
+        <p>31 carefully designed puzzles with multiple solutions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- gallery -->
+<section id="gallery">
+  <div class="wrap">
+    <h2 class="px rv"><span class="sp g">✦</span> SEE IT IN ACTION <span class="sp g">✦</span></h2>
+    <p class="kicker rv">31 levels themed around computer science — from logic gates to git rebase.</p>
+    <div class="g-grid rv">
+      <div class="g-item g-video">
+        <iframe src="https://www.youtube-nocookie.com/embed/HdFx5f9YEyg" title="Java Is You — presentation video" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="g-item pix fit"><span class="tag">TITLE SCREEN</span><img src="assets/title.gif" alt="Animated Java Is You title screen" loading="lazy"></div>
+      <div class="g-item pix"><span class="tag">IN-GAME RULES</span><img src="assets/title-bg.png" alt="Game background full of rules like JAVA IS YOU and WATER IS SINK" loading="lazy"></div>
+    </div>
+  </div>
+  <div class="marquee rv" aria-hidden="true">
+    <div class="mq-track" id="mq"></div>
+  </div>
+</section>
+
+<!-- about -->
+<section id="about">
+  <div class="wrap">
+    <h2 class="px rv"><span class="sp g">✦</span> WHY JAVA IS YOU <span class="sp g">✦</span></h2>
+    <div class="about-grid">
+      <div class="txt rv">
+        <p><b>Every level is a tiny program.</b> The rules on the board are its statements — push them around and the world recompiles in real time. Walls stop being solid. Flags stop being goals. You stop being you.</p>
+        <p>Built <b>entirely from scratch</b> in Java and JavaFX — no game engine. A custom rule parser and evaluator, full undo/redo history, particles, sound, and 31 handcrafted levels themed on real computer-science ideas: logic gates, pipelining, linked lists, encapsulation, even <b>git rebase</b>.</p>
+        <p>It began as a university project and turned into a love letter to <a href="https://hempuli.com/baba/" target="_blank" rel="noopener">Baba Is You</a> — and to the idea that programming is really about <b>changing the rules</b>.</p>
+        <div class="chips">
+          <span class="chip y">JAVA 24</span>
+          <span class="chip b">JAVAFX</span>
+          <span class="chip g">NO ENGINE</span>
+          <span class="chip p">31 LEVELS</span>
+          <span class="chip">OPEN SOURCE</span>
+        </div>
+      </div>
+      <div class="about-shot rv">
+        <img src="assets/title-bg.png" alt="The actual title-screen artwork of Java Is You">
+        <div class="cap">the game's actual title artwork — every rule on it is real</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- faq -->
+<section id="faq">
+  <div class="wrap">
+    <h2 class="px rv"><span class="sp g">✦</span> FAQ <span class="sp g">✦</span></h2>
+    <div class="faq-list rv">
+      <details>
+        <summary>Is this Baba Is You?</summary>
+        <div class="a">It's a loving homage. The word-pushing idea comes from Hempuli's masterpiece <a href="https://hempuli.com/baba/" target="_blank" rel="noopener">Baba Is You</a> — but Java Is You is built completely from scratch in Java, with 31 original levels themed around computer science instead.</div>
+      </details>
+      <details>
+        <summary>Do I need to know Java to play?</summary>
+        <div class="a">Not at all. You learn the ideas by playing: levels are built around concepts like conditionals, loops, inheritance, logic gates and databases. If you already code, you'll grin at the references.</div>
+      </details>
+      <details>
+        <summary>How do I run the game?</summary>
+        <div class="a">On Windows, just grab the <a href="https://github.com/Bookdodo5/java-is-you/raw/main/GAME/java_is_you.exe">.exe</a> — it bundles its own Java runtime. On macOS/Linux, download the <a href="https://github.com/Bookdodo5/java-is-you/tree/main/GAME">JAR</a> plus <a href="https://gluonhq.com/products/javafx/" target="_blank" rel="noopener">JavaFX 24</a>, then:
+        <pre>java --module-path /path/to/javafx/lib \
+  --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.media \
+  --enable-native-access=ALL-UNNAMED -jar java_is_you.jar</pre></div>
+      </details>
+      <details>
+        <summary>What are the controls?</summary>
+        <div class="a">Arrow keys / WASD to move every YOU. <code>Z</code> undo, <code>Y</code> redo, <code>R</code> restart, <code>Esc</code> menu. The two boards on this page use the same keys.</div>
+      </details>
+      <details>
+        <summary>I'm stuck on a level.</summary>
+        <div class="a">Stuck is part of the fun — but if a puzzle really has you, there's an official <a href="https://fearless-mascara-8d7.notion.site/Java-Is-Hint-318907b6fd93807db7b2e0e1e478b3a2" target="_blank" rel="noopener">hint book</a> with nudges for every level.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer>
+  <div class="terrain" aria-hidden="true">
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path fill="#1B1233" d="M0,70 60,70 60,55 140,55 140,72 260,72 260,50 340,50 340,66 470,66 470,54 560,54 560,74 700,74 700,52 800,52 800,68 930,68 930,50 1030,50 1030,70 1120,70 1120,58 1200,58 1200,120 0,120Z"/>
+      <path fill="#241847" d="M0,92 90,92 90,80 210,80 210,94 330,94 330,78 480,78 480,92 610,92 610,80 760,80 760,96 880,96 880,82 1020,82 1020,94 1200,94 1200,120 0,120Z"/>
+      <path fill="#0A0714" d="M0,108 1200,108 1200,120 0,120Z"/>
+    </svg>
+    <span class="spr" style="--img:url(assets/FLAG.png);left:12%;bottom:46px"></span>
+    <span class="spr" style="--img:url(assets/BUG.png);--row:3;right:16%;bottom:34px"></span>
+    <span class="spr" style="--img:url(assets/JAVA.png);left:48%;bottom:40px;--cell:36px"></span>
+    <span class="firefly" style="left:22%;bottom:60px"></span>
+    <span class="firefly" style="left:36%;bottom:45px;animation-delay:-2s"></span>
+    <span class="firefly" style="left:64%;bottom:66px;animation-delay:-3.4s"></span>
+    <span class="firefly" style="left:81%;bottom:52px;animation-delay:-1.2s"></span>
+    <span class="pheart" style="left:29%;bottom:50px">♥</span>
+    <span class="pheart" style="left:70%;bottom:44px;animation-delay:-3s">♥</span>
+  </div>
+  <div class="foot-bar">
+    <span class="logo"><b>JAVA</b> IS <i>YOU</i></span>
+    <div class="foot-links">
+      <a href="https://github.com/Bookdodo5/java-is-you" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/Bookdodo5/java-is-you/raw/main/GAME/java_is_you.exe">Download</a>
+      <a href="https://youtu.be/HdFx5f9YEyg" target="_blank" rel="noopener">Trailer</a>
+      <a href="https://fearless-mascara-8d7.notion.site/Java-Is-Hint-318907b6fd93807db7b2e0e1e478b3a2" target="_blank" rel="noopener">Hints</a>
+    </div>
+    <p class="foot-note">Made with ☕ and ♥ in pure Java · inspired by <a href="https://hempuli.com/baba/" target="_blank" rel="noopener">Baba Is You</a> by Hempuli, with admiration — this is an unaffiliated fan project. © 2026 Bookdodo5, open source.</p>
+  </div>
+</footer>
+
+<script>
+/* ================= Java Is You — tiny web port of the rule engine ================= */
+const ASSET = k => `assets/${k}.png`;
+const NOUNS = ['JAVA','FLAG','GIT','WIRE','BUG'];
+const PROPS = ['YOU','WIN','STOP','PUSH'];
+const TILED = {WIRE:1};          // sprite row = neighbor bitmask (UP1 RIGHT2 DOWN4 LEFT8) — same as GraphicUtils
+const DIRECTIONAL = {BUG:1};     // sprite row = direction index (UP0 RIGHT1 DOWN2 LEFT3)
+
+const w = (kind,x,y) => ({kind,x,y,word:true});
+const o = (kind,x,y) => ({kind,x,y,word:false,dir:2});
+const range = n => [...Array(n).keys()];
+
+/* --- pure engine --- */
+function computeRules(ents){
+  const words = ents.filter(e=>e.word);
+  const at = (x,y)=>words.find(e=>e.x===x&&e.y===y);
+  const rules = [];
+  for(const is of words){
+    if(is.kind!=='IS') continue;
+    for(const [dx,dy] of [[1,0],[0,1]]){
+      const n = at(is.x-dx, is.y-dy);
+      if(!n || !NOUNS.includes(n.kind)) continue;
+      let x = is.x+dx, y = is.y+dy;
+      while(true){
+        const p = at(x,y);
+        if(!p || !PROPS.includes(p.kind)) break;
+        rules.push({noun:n.kind, prop:p.kind, tiles:[n,is,p]});
+        const and = at(x+dx, y+dy);
+        if(and && and.kind==='AND'){ x+=2*dx; y+=2*dy; continue; }
+        break;
+      }
+    }
+  }
+  return rules;
+}
+const ruleSet = rules => {
+  const m = new Map();
+  for(const r of rules){ if(!m.has(r.noun)) m.set(r.noun,new Set()); m.get(r.noun).add(r.prop); }
+  return m;
+};
+const objProps = (e,rs) => e.word ? new Set() : (rs.get(e.kind)||new Set());
+// walk the push chain; returns movers or null when blocked
+// ponytail: a cell holding both a STOP and a PUSH entity resolves as pushable — never happens in these two levels
+function attemptMove(ents, cols, rows, mover, dx, dy, rs){
+  const movers = [mover];
+  let x = mover.x+dx, y = mover.y+dy;
+  while(true){
+    if(x<0||y<0||x>=cols||y>=rows) return null;
+    const cell = ents.filter(e=>e.x===x&&e.y===y);
+    const pushables = cell.filter(e=>e.word||objProps(e,rs).has('PUSH'));
+    if(pushables.length){ movers.push(...pushables); x+=dx; y+=dy; continue; }
+    if(cell.some(e=>objProps(e,rs).has('STOP'))) return null;
+    return movers;
+  }
+}
+
+/* --- levels --- */
+const heroLevel = {
+  cols:9, rows:9,
+  ents: () => [
+    w('JAVA',0,0), w('IS',1,0), w('YOU',2,0),
+    w('FLAG',6,0), w('IS',7,0), w('WIN',8,0),
+    ...range(9).map(x=>o('WIRE',x,2)),
+    o('GIT',4,3), o('GIT',4,4), o('GIT',4,5),
+    o('JAVA',1,4), o('FLAG',7,4),
+    ...range(9).map(x=>o('WIRE',x,6)),
+    w('GIT',0,8), w('IS',1,8), w('PUSH',2,8),
+    w('WIRE',6,8), w('IS',7,8), w('STOP',8,8),
+  ],
+  cover:true,
+};
+const demoLevel = {
+  cols:7, rows:6,
+  ents: () => [
+    w('FLAG',0,0), w('IS',1,0), w('WIN',2,0),
+    o('BUG',3,2), o('BUG',3,3), o('BUG',3,4),
+    o('JAVA',1,3), o('FLAG',5,3),
+  ],
+  slot:{x:3,y:0},
+  tray:['JAVA','BUG','IS','YOU','STOP','PUSH','AND'],
+};
+
+/* --- board --- */
+let uid = 0;
+class Board{
+  constructor(el, level){
+    this.el = el; this.level = level;
+    this.cols = level.cols; this.rows = level.rows;
+    el.style.setProperty('--cols', this.cols);
+    el.style.setProperty('--rows', this.rows);
+    this.toastEl = Object.assign(document.createElement('div'), {className:'board-toast'});
+    this.winEl = document.createElement('div');
+    this.winEl.className = 'win-cover';
+    this.winEl.innerHTML = `<div class="wt"><span class="g">★</span> YOU WIN <span class="g">★</span></div>
+      <div class="ws">that's the whole idea — rules can change.</div>
+      <div class="row"><button class="mini-btn" data-w="again">PLAY AGAIN</button>
+      <a class="mini-btn gold" href="https://github.com/Bookdodo5/java-is-you/raw/main/GAME/java_is_you.exe">GET THE FULL GAME</a></div>`;
+    this.winEl.querySelector('[data-w]').addEventListener('click', ()=>{ this.reset(); this.el.focus(); });
+    if(level.slot){
+      const s = Object.assign(document.createElement('div'), {className:'slot-hint'});
+      s.style.setProperty('--x', level.slot.x); s.style.setProperty('--y', level.slot.y);
+      el.appendChild(s);
+    }
+    el.append(this.toastEl, this.winEl);
+    this.trayEl = null;
+    this.won = false; this.undoStack = [];
+    this.ents = [];
+    level.ents().forEach(e=>this.addEnt(e));
+    if(level.cover){
+      const c = Object.assign(document.createElement('button'), {className:'click-cover'});
+      c.innerHTML = `<span><span class="big g">▶</span>CLICK TO PLAY</span>`;
+      c.addEventListener('click', ()=>{ c.remove(); this.el.focus(); });
+      el.appendChild(c);
+    }
+    el.addEventListener('keydown', ev=>this.onKey(ev));
+    this.postChange(true);
+  }
+  cellPx(){ return this.el.getBoundingClientRect().width / this.cols; }
+  addEnt(data, slotEl){
+    const e = {...data, id:uid++, slotEl};
+    e.el = document.createElement('div');
+    e.el.className = 'ent spr' + (e.word ? ' word' : '');
+    e.el.style.setProperty('--img', `url(${ASSET(e.word && NOUNS.includes(e.kind) ? 'TEXT_'+e.kind : e.kind)})`);
+    this.el.appendChild(e.el);
+    if(e.word) bindDrag(this, e.el, {type:'ent', ent:e});
+    this.ents.push(e);
+    this.place(e);
+    return e;
+  }
+  removeEnt(e){ e.el.remove(); this.ents = this.ents.filter(x=>x!==e); }
+  place(e){
+    e.el.style.setProperty('--x', e.x);
+    e.el.style.setProperty('--y', e.y);
+    let row = 0;
+    if(!e.word && TILED[e.kind]){
+      const same = (x,y)=>this.ents.some(t=>!t.word&&t.kind===e.kind&&t.x===x&&t.y===y);
+      row = (same(e.x,e.y-1)?1:0)|(same(e.x+1,e.y)?2:0)|(same(e.x,e.y+1)?4:0)|(same(e.x-1,e.y)?8:0);
+    }else if(!e.word && DIRECTIONAL[e.kind]) row = e.dir ?? 2;
+    e.el.style.setProperty('--row', row);
+  }
+  snapshot(){
+    this.undoStack.push(this.ents.map(e=>({kind:e.kind,x:e.x,y:e.y,word:e.word,dir:e.dir,trayIdx:e.slotEl?.dataset.idx})));
+    if(this.undoStack.length>120) this.undoStack.shift();
+  }
+  restore(snap){
+    this.ents.slice().forEach(e=>this.removeEnt(e));
+    if(this.trayEl) this.trayEl.querySelectorAll('.tray-slot').forEach(s=>s.classList.remove('used'));
+    snap.forEach(d=>{
+      let slotEl;
+      if(d.trayIdx!==undefined && this.trayEl){
+        slotEl = this.trayEl.querySelector(`.tray-slot[data-idx="${d.trayIdx}"]`);
+        slotEl?.classList.add('used');
+      }
+      this.addEnt({kind:d.kind,x:d.x,y:d.y,word:d.word,dir:d.dir}, slotEl);
+    });
+    this.won = false; this.winEl.classList.remove('show');
+    this.postChange(true);
+  }
+  undo(){ if(this.undoStack.length) this.restore(this.undoStack.pop()); }
+  reset(){
+    this.undoStack = [];
+    if(this.trayEl) this.trayEl.querySelectorAll('.tray-slot').forEach(s=>s.classList.remove('used'));
+    this.ents.slice().forEach(e=>this.removeEnt(e));
+    this.level.ents().forEach(e=>this.addEnt(e));
+    this.won = false; this.winEl.classList.remove('show');
+    this.postChange(true);
+  }
+  move(dx,dy){
+    if(this.won) return;
+    const rs = ruleSet(computeRules(this.ents));
+    const yous = this.ents.filter(e=>objProps(e,rs).has('YOU'))
+      .sort((a,b)=>(b.x*dx+b.y*dy)-(a.x*dx+a.y*dy));
+    if(!yous.length){ this.toast('NOTHING IS YOU — DRAG YOU BACK','bad'); return; }
+    let moved = false, snapped = false;
+    for(const you of yous){
+      const movers = attemptMove(this.ents, this.cols, this.rows, you, dx, dy, rs);
+      if(!movers) continue;
+      if(!snapped){ this.snapshot(); snapped = true; }
+      new Set(movers).forEach(m=>{ m.x+=dx; m.y+=dy; });
+      you.dir = dy<0?0:dx>0?1:dy>0?2:3;
+      moved = true;
+    }
+    if(moved) this.postChange();
+  }
+  onKey(ev){
+    const k = ev.key.toLowerCase();
+    const map = {arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};
+    if(map[k]){ ev.preventDefault(); this.move(...map[k]); }
+    else if(k==='z'){ ev.preventDefault(); this.undo(); }
+    else if(k==='r'){ ev.preventDefault(); this.reset(); }
+    else if(k===' '){ ev.preventDefault(); }
+  }
+  toast(msg, cls){
+    this.toastEl.textContent = msg;
+    this.toastEl.className = 'board-toast show ' + (cls||'');
+    clearTimeout(this._tt);
+    this._tt = setTimeout(()=>this.toastEl.classList.remove('show'), 2400);
+  }
+  win(){
+    if(this.won) return;
+    this.won = true;
+    this.winEl.classList.add('show');
+    for(let i=0;i<26;i++){
+      const c = document.createElement('div');
+      c.className = 'confetto';
+      c.style.cssText = `left:${Math.random()*100}%;top:-8px;background:${['#FACC15','#F472B6','#38BDF8','#22C55E','#8B5CF6'][i%5]};animation-delay:${Math.random()*.4}s`;
+      this.el.appendChild(c);
+      setTimeout(()=>c.remove(), 1900);
+    }
+  }
+  postChange(silent){
+    const rules = computeRules(this.ents);
+    const rs = ruleSet(rules);
+    const strs = [...new Set(rules.map(r=>`${r.noun} IS ${r.prop}`))];
+    if(!silent && this.last){
+      const added = strs.filter(s=>!this.last.includes(s));
+      const gone = this.last.filter(s=>!strs.includes(s));
+      if(added.length){
+        this.toast('NEW RULE: '+added[0],'good');
+        rules.filter(r=>added.includes(`${r.noun} IS ${r.prop}`)).forEach(r=>r.tiles.forEach(t=>{
+          t.el.classList.remove('flash'); void t.el.offsetWidth; t.el.classList.add('flash');
+        }));
+      } else if(gone.length) this.toast('RULE BROKEN: '+gone[0],'bad');
+    }
+    this.last = strs;
+    this.ents.forEach(e=>{
+      this.place(e);
+      e.el.classList.toggle('glow', !e.word && objProps(e,rs).has('WIN'));
+    });
+    const yous = this.ents.filter(e=>objProps(e,rs).has('YOU'));
+    if(!silent && !yous.length) this.toast('NOTHING IS YOU','bad');
+    if(yous.some(y=>objProps(y,rs).has('WIN') ||
+        this.ents.some(e=>e!==y && e.x===y.x && e.y===y.y && objProps(e,rs).has('WIN'))))
+      this.win();
+  }
+}
+
+/* --- drag & drop (board words + tray tiles) --- */
+function bindDrag(board, el, src){
+  el.addEventListener('pointerdown', down => {
+    if(board.won) return;
+    down.preventDefault();
+    const cellPx = board.cellPx();
+    const ghost = document.createElement('div');
+    ghost.className = 'spr ghost';
+    ghost.style.setProperty('--cell', cellPx+'px');
+    const kind = src.type==='ent' ? src.ent.kind : src.kind;
+    ghost.style.setProperty('--img', `url(${ASSET(NOUNS.includes(kind) ? 'TEXT_'+kind : kind)})`);
+    document.body.appendChild(ghost);
+    const at = ev => { ghost.style.left = (ev.clientX-cellPx/2)+'px'; ghost.style.top = (ev.clientY-cellPx/2)+'px'; };
+    at(down);
+    const srcEl = src.type==='ent' ? src.ent.el : el;
+    srcEl.classList.add('lift');
+    el.setPointerCapture(down.pointerId);
+    const onMove = ev => at(ev);
+    const onUp = ev => {
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointercancel', onUp);
+      ghost.remove(); srcEl.classList.remove('lift');
+      const r = board.el.getBoundingClientRect();
+      const cx = Math.floor((ev.clientX-r.left)/cellPx), cy = Math.floor((ev.clientY-r.top)/cellPx);
+      const inside = ev.clientX>=r.left && ev.clientX<r.right && ev.clientY>=r.top && ev.clientY<r.bottom;
+      const free = !board.ents.some(e=>e.word && e.x===cx && e.y===cy);
+      if(src.type==='tray'){
+        if(inside && free){
+          board.snapshot();
+          board.addEnt(w(src.kind,cx,cy), src.slotEl);
+          src.slotEl.classList.add('used');
+          board.postChange();
+        }
+      }else{
+        const e = src.ent;
+        if(inside && free && (cx!==e.x || cy!==e.y)){
+          board.snapshot(); e.x = cx; e.y = cy; board.postChange();
+        }else if(!inside && e.slotEl){
+          board.snapshot(); e.slotEl.classList.remove('used');
+          board.removeEnt(e); board.postChange();
+        }
+      }
+      board.el.focus({preventScroll:true});
+    };
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointercancel', onUp);
+  });
+  el.style.touchAction = 'none';
+}
+
+/* --- boot boards --- */
+const heroBoard = new Board(document.getElementById('hero-board'), heroLevel);
+const demoBoard = new Board(document.getElementById('demo-board'), demoLevel);
+const trayEl = document.getElementById('tray');
+demoBoard.trayEl = trayEl;
+demoLevel.tray.forEach((kind,i)=>{
+  const slot = document.createElement('div');
+  slot.className = 'tray-slot'; slot.dataset.idx = i;
+  const tile = document.createElement('div');
+  tile.className = 'spr';
+  tile.style.setProperty('--img', `url(${ASSET(NOUNS.includes(kind) ? 'TEXT_'+kind : kind)})`);
+  tile.setAttribute('role','img'); tile.setAttribute('aria-label', kind+' word tile — drag onto the board');
+  slot.appendChild(tile);
+  trayEl.appendChild(slot);
+  bindDrag(demoBoard, tile, {type:'tray', kind, slotEl:slot});
+});
+
+/* d-pads */
+document.querySelectorAll('.pad').forEach(pad=>{
+  const board = pad.dataset.board==='hero-board' ? heroBoard : demoBoard;
+  pad.querySelectorAll('button').forEach(b=>b.addEventListener('click', ()=>{
+    if(b.dataset.mv){ const [dx,dy]=b.dataset.mv.split(',').map(Number); board.move(dx,dy); }
+    else if(b.dataset.act==='undo') board.undo();
+    else board.reset();
+    board.el.querySelector('.click-cover')?.remove();
+    board.el.focus({preventScroll:true});
+  }));
+});
+
+/* --- atmosphere: particles --- */
+const pWrap = document.getElementById('particles');
+const COLORS = ['#FACC15','#F472B6','#38BDF8','#22C55E','#8B5CF6'];
+for(let i=0;i<26;i++){
+  const p = document.createElement('span');
+  const star = Math.random()<.18;
+  p.className = 'pt'+(star?' star':'');
+  const c = COLORS[i%5], s = star?8:(2+Math.random()*3);
+  p.style.cssText = `left:${Math.random()*100}%;--o:${.15+Math.random()*.3};--c:${c};`+
+    (star?`font-size:${s}px;`:`width:${s}px;height:${s}px;background:${c};`)+
+    `animation-duration:${16+Math.random()*22}s;animation-delay:-${Math.random()*30}s;`;
+  if(star) p.textContent = '✦';
+  pWrap.appendChild(p);
+}
+
+/* nav scroll state */
+const nav = document.getElementById('nav');
+addEventListener('scroll', ()=>nav.classList.toggle('scrolled', scrollY>30), {passive:true});
+
+/* hero board tilt */
+const tilt = document.getElementById('tilt');
+if(matchMedia('(hover:hover) and (prefers-reduced-motion:no-preference)').matches){
+  tilt.addEventListener('mousemove', e=>{
+    const r = tilt.getBoundingClientRect();
+    const rx = ((e.clientY-r.top)/r.height-.5)*-5, ry = ((e.clientX-r.left)/r.width-.5)*6;
+    tilt.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+  });
+  tilt.addEventListener('mouseleave', ()=>tilt.style.transform='');
+}
+
+/* reveal on scroll */
+const io = new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+}), {threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* level-name marquee */
+const LEVELS = ['JAVA IS YOU','WHERE DO I GO','NOW WHAT IS THIS','OUT OF REACH','SUMMER IN THAILAND','ENCAPSULATED','CROSSING RIVER','INHERITANCE','LOGIC GATE','FETCH DECODE EXECUTE','SHIFT REGISTER','STATIC HAZARD','PROPAGATION DELAY','SPEED UP','SERIAL COMMUNICATION','CONDITIONALS','LOOP','NESTED LOOP',"DON'T TOUCH IF IT WORKS",'TRAVELLING SALESMAN','LINKED LIST','DURABILITY','HORIZONTAL SCALING','TERNARY RELATIONSHIP','REDUNDANCY','TRIGGER','STORED PROCEDURE','JAR','GIT REBASE','STACK PANE','JAVA IS WIN'];
+const mq = document.getElementById('mq');
+mq.innerHTML = [...LEVELS,...LEVELS].map((l,i)=>`<span>${String((i%31)+1).padStart(2,'0')} ${l}</span><span class="dot g">✦</span>`).join('');
+
+/* --- engine self-check (console only) --- */
+(function selfTest(){
+  const t1 = computeRules([w('JAVA',0,0),w('IS',1,0),w('YOU',2,0)]);
+  console.assert(t1.length===1 && t1[0].noun==='JAVA' && t1[0].prop==='YOU', 'rule parse');
+  const t2 = computeRules([w('FLAG',0,0),w('IS',1,0),w('WIN',2,0),w('AND',3,0),w('PUSH',4,0)]);
+  console.assert(t2.length===2 && t2[1].prop==='PUSH', 'AND chain');
+  const ents = [o('JAVA',0,0),o('WIRE',1,0),w('WIRE',0,1),w('IS',1,1),w('STOP',2,1)];
+  const rs = ruleSet(computeRules(ents));
+  console.assert(attemptMove(ents,3,2,ents[0],1,0,rs)===null, 'STOP blocks');
+  const ents2 = [o('JAVA',0,0),o('GIT',1,0),w('GIT',0,1),w('IS',1,1),w('PUSH',2,1)];
+  const rs2 = ruleSet(computeRules(ents2));
+  console.assert(attemptMove(ents2,4,2,ents2[0],1,0,rs2)?.length===2, 'PUSH chain');
+  console.log('%c[selftest] engine OK — JAVA IS YOU','color:#FACC15');
+})();
+</script>
+</body>
+</html>

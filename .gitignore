@@ -42,4 +42,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+### Agent internal state ###
+.omc/
+
 *.puml
