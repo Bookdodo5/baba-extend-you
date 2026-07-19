@@ -4,7 +4,7 @@
 
 ## Quick View
 
-Play the promotional website online: https://java-is-you.vercel.app
+Play the promotional website online: https://java-is-you.ratchaphon.com
 
 ## What is this game about?
 
