@@ -19,6 +19,14 @@ The game has 31 levels, themed around computer science concepts.
 
 ## Running
 
+### Windows (easiest)
+
+1. Install a Java 24 JRE/JDK (e.g. [Adoptium](https://adoptium.net)) if you don't have one.
+2. Download `GAME/java_is_you.exe`.
+3. Double-click it to run.
+
+### Other platforms / from source
+
 Download the jar, and run it with:
 
 ```
